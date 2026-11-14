@@ -1,6 +1,6 @@
 # glance-core CHECKPOINT
 
-Wave: c1-exact-picture. Brief: ~/claude-handoffs/glance-core_2026-11-14_c1-exact-picture_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1).
+Wave: c1-exact-picture (closed, tag v0.1.0). Brief: ~/claude-handoffs/glance-core_2026-11-14_c1-exact-picture_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1).
 
 ## DONE
 - Read in full: the brief, the two notes it names, roadmap, parity (Core + Glance routing / exactness / alpha), research §0 §3 §9. `.ref/DXVKit-Plus` refreshed to `v0.8.0` (9bc1977).
@@ -26,8 +26,16 @@ Wave: c1-exact-picture. Brief: ~/claude-handoffs/glance-core_2026-11-14_c1-exact
 - Briefs for DXVKit Plus: `~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md` (eight findings; supersedes the first, which lacked the BC7 one).
 - Gates on the final tree: fmt ok; clippy `-D warnings` ok (rustc 1.99.1 and 1.100.0); `GLANCE_REQUIRE_GPU=1 cargo test --workspace --release` 32 passed, 0 failed; `cargo deny check` ok; `cargo build --release` ok.
 
+- Verifier (`cc-kit:verifier`) on this file, the results doc, the handoff draft and the parity Core items: 88 claims — 63 confirmed, 12 wrong, 13 unproven. All 12 wrong corrected (none was a pixel result: counts, wording, one W0 comparison, the first CI run's second failure, "every frame shown" for OS-codec clips). Of the 13 unproven, 4 closed by committing `tools/swift-crosstest` and the frame-0 Swift hashes; the rest are stated as such in the handoff. Two real findings from it: one H.264 clip's probe counts 15 frames the OS decoder does not serve (for DXVKit Plus's container-timing wave); the blank check now counts frames without colour.
+- Harness rerun after the corrections (`docs/data/c1-verify-testfiles.json`): same results; 2 DXV / HAP frames and 0 OS-codec frames without colour.
+- CI green on fda39bd (run 43642394798: lint, macos, windows).
+- Handoff: `docs/handoffs/c1-exact-picture.md`, copied to `~/claude-handoffs/glance-core_2026-11-14_c1-exact-picture-result.md`. Tag `v0.1.0`.
+- **Wave closed.**
+
 ## NEXT
-- Verifier on this file, the results doc and the handoff; handoff with receipts; tag `v0.1.0` on a green `main`; push.
+- Amrit: yes / no on the egui-fonts licence exception (handoff, "For Amrit").
+- DXVKit Plus runs `~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md` when Amrit says so (its "API gaps" wave), plus the native frame-count item in the handoff.
+- Then core wave C2 (time and sound) — waits for DXVKit Plus's container timing and audio. No C2 brief is queued.
 
 ## STATE
 - Test media (read-only): `<testfiles>` (174 movie files).
@@ -38,7 +46,6 @@ Wave: c1-exact-picture. Brief: ~/claude-handoffs/glance-core_2026-11-14_c1-exact
 - The Swift cross-test program: `tools/swift-crosstest` (not in the Rust workspace, not built by CI; needs `.ref/glance`).
 
 ## OPEN
-- [ ] verifier, handoff, tag v0.1.0
 
 ## IDEAS
 - Skip the Alpha Type pass for Premultiplied clips (hand egui DXVKit Plus's output directly).
