@@ -51,6 +51,8 @@ jobs:
         run: ./target/release/glance-proof gpu || echo "no GPU adapter on this runner - the GPU tests skip"
       - name: test
         run: cargo test --workspace --release
+      - name: what this runner's GPU does with a reserved BC7 block (recorded, not a gate)
+        run: cargo test --release -p glance-gpu --test exact reserved_bc7 -- --nocapture 2>&1 | grep -E "reserved BC7|SKIP|test result"
       - name: check x86_64-apple-darwin (universal macOS builds)
         run: cargo check --workspace --target x86_64-apple-darwin
       - name: check aarch64-apple-ios (GlancEhr's third target)

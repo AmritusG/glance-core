@@ -121,7 +121,7 @@ C1–C3 are tagged `v0.1.0` … `v0.3.0`; Glance can start on `v0.3.0`.
 DXVKit Plus's run order, which the "waits for" column follows (Cowork, 2026-11-14): exact path
 (**done**, v0.8.0) → container timing (edit lists, `ctts`) → audio → API gaps (the format
 description's alpha mode, the DXV variant in `MediaInfo`, and what C1 found:
-`~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief.md`) → Windows backend → encoders and
+`~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md`) → Windows backend → encoders and
 the QuickTime writer (approved under MIT: Amrit 2026-11-14, "Yes"; still last).
 
 ### Apps (the agreed order; each in its own repo and window)
@@ -221,7 +221,7 @@ everything on the Mac.
   of the decoders with the DXVKit Plus dependency once DXVKit Plus has caught up; hand over the
   encoders.
 
-- `~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief.md` (C1) — what the core's C1 found
+- `~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md` (C1) — what the core's C1 found
   in DXVKit Plus's probe and demuxer: track choice in movies with several video tracks, a HAP track
   with samples past the end of the file, content before extension, the Apple island on
   `x86_64-apple-darwin` and iOS, a lenient FourCC reader for the message.

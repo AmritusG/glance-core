@@ -119,7 +119,7 @@ fn what_nothing_plays_gets_swift_glances_line() {
 
 /// Known difference, pinned so a change is noticed: a movie with a DXV track and a HAP track. Swift
 /// Glance plays the DXV track (DXV is tried first); DXVKit Plus's probe takes the HAP track.
-/// Reported to DXVKit Plus (`DXVKit-Plus_2026-11-14_c1-findings_brief.md`).
+/// Reported to DXVKit Plus (`DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md`).
 #[test]
 fn a_movie_with_a_dxv_and_a_hap_track_plays_the_hap_track() {
     let scratch = Scratch::new("two-tracks");

@@ -6,17 +6,18 @@ Glance, CueGlance, GlEnc, MaCrate, later GlancEhr — each live in their own rep
 
 Read first: `docs/00-ROADMAP.md` (crates, waves, pins), `docs/01-RESEARCH.md` (what the Swift apps
 and the existing Rust code do, with sources), `docs/02-PARITY.md` (the gate each Rust app must pass
-before it replaces its Swift twin), `CHECKPOINT.md` (where the work stands).
+before it replaces its Swift twin), `CHECKPOINT.md` (where the work stands). Measured results per wave: `docs/03-W0-RESULTS.md`,
+`docs/04-C1-RESULTS.md`.
 
 ## Layout
 
 | Crate | What |
 |---|---|
-| `glance-media` | open / probe a file, the family's alpha rule. A facade over DXVKit Plus. |
-| `glance-gpu` | decoded frame → picture (as-stored RGBA from DXVKit Plus, then the Alpha Type pass). |
+| `glance-media` | route a file by content (and say why nothing plays it), open it, the family's alpha rule, the clip key and the Alpha Type hint. A facade over DXVKit Plus. |
+| `glance-gpu` | decoded frame → picture (as-stored RGBA from DXVKit Plus's exact block path, then the Alpha Type pass); the device; the 0-difference render harness (`verify`). |
 | `glance-playback` | a clip on the host clock (DXVKit Plus cache + transport), timing statistics. |
-| `glance-ui` | the egui host (winit + egui-winit + egui-wgpu, no eframe), the video widget, the checkerboard. |
-| `glance-proof` | the W0 proof binary. Not a product. |
+| `glance-ui` | the egui host (winit + egui-winit + egui-wgpu, no eframe), the video widget, the checkerboard; `headless`: the same widget drawn offscreen, for tests. |
+| `glance-proof` | the proof window (W0), and `verify` / `hapq` / `gpu` without a window. Not a product. |
 
 Planned crates (audio, library-db, arena-client, encode, settings) are in the roadmap; a crate is
 created in the wave that fills it, never as an empty stub.
@@ -40,7 +41,8 @@ created in the wave that fills it, never as an empty stub.
    they disagree; the code wins.
 6. **Alpha.** Frames are decoded as stored. DXV alpha is the user's per-clip Alpha Type
    (Premultiplied default / Straight); HAP alpha is straight; the choice is a uniform in the
-   present pass, never a re-decode. Writers write straight.
+   present pass, never a re-decode. Writers write straight. The present pass is integer
+   arithmetic (one answer on every backend).
 7. **Checkerboard** (shared spec): 8 pt squares, greys 0.85 / 0.65, in window points.
 8. **Numbers only from release builds.** Test media is Amrit's own, read-only, never copied into
    the repo; say which files. Committed fixtures must be our own (CC0) or MIT.
@@ -55,8 +57,16 @@ created in the wave that fills it, never as an empty stub.
 cargo fmt --all --check
 cargo clippy --workspace --all-targets --release -- -D warnings
 cargo test --workspace --release
+cargo deny check
 cargo build --release
 ```
+
+The exactness bar is a test: the picture equals the CPU reference at max 0 (`crates/glance-gpu/tests/exact.rs`),
+window-scaled within 1 (`crates/glance-ui/tests/screen.rs`). A change that moves either is not done.
+GPU tests skip on a machine without a GPU; on the home machine run them with `GLANCE_REQUIRE_GPU=1`
+so a skip is a failure. Tests on Amrit's media skip where the folder is absent (`GLANCE_TESTFILES`
+names another one). CI (`.github/workflows/ci.yml`) runs the gates on every push; a tag is made
+only from a green `main`. Fixtures and their licences: `tests/fixtures/`, `ATTRIBUTION.md`.
 
 GUI runs: `pgrep -x glance-proof` / `pkill -9 -x glance-proof` before and after (exact name, never
 `pkill -f`).

@@ -29,7 +29,7 @@ struct Counts {
 /// not check that the samples are inside the file, so the clip opens and the frames past the cut
 /// fail one by one; DXVKit Plus's demuxer refuses a track with a sample outside the file (as
 /// DXVKit, and so Swift Glance, does for DXV), so the Rust family shows the line instead.
-/// Reported to DXVKit Plus (`DXVKit-Plus_2026-11-14_c1-findings_brief.md`).
+/// Reported to DXVKit Plus (`DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md`).
 const KNOWN: [(&str, &str, &str); 1] = [("adv_trunc_hapm_midframe.mov", "route", "unsupported")];
 
 /// Every line of `table` against the Rust code on the same file under `root`.
