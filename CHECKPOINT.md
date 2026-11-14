@@ -15,6 +15,11 @@ Wave: w0-recon-plan-proof. Brief: ~/claude-handoffs/glance-core_2026-11-14_w0-re
 - Proof, final binary, release, 120 Hz, 15.0 s measured per run (`docs/03-W0-RESULTS.md`, raw `docs/data/w0-proof-{a,b,c,d}.{json,csv}`): run A `Metric_01_HapM.mov` (HAP Q Alpha 1080p25) + `DXT5-DXV3.mov` (DXV3 NQ Alpha 1080p30): 376 and 451 frames shown, 0 skipped, present interval p50 8.34 ms / p99 8.58 ms, picture vs CPU decode max 2 / 255. Runs B–D (HAP chunked + DXV HQ Alpha; HAP Q Alpha 2160p + DXV NQ; ProRes 4444 2160p native + DXV NQ Alpha): 0 skipped in every clip, picture vs CPU max 0–1.
 - Briefs for other repos: `~/claude-handoffs/DXVKit-Plus_2026-11-14_glance-family-needs_brief.md`, `~/claude-handoffs/loombda-rs_2026-11-14_dxvkit-plus-dedupe_brief.md`.
 
+- GitHub: private `AmritusG/glance-core`, `main` pushed (first commit `f4ea06a`).
+- Verifier (`cc-kit:verifier`) on this checkpoint, the results doc and `01-RESEARCH.md` §0 / §6: 64 claims — 54 confirmed, 6 wrong, 4 unproven. The 6 wrong were corrected in the docs (a rounding 0.207 → 0.206; "0.05" → "0.06–0.07"; GlEnc does have an OpenGL preview; iCrate plays HAP through Metal too; glance is 3 commits past v0.18.1; a stale OPEN line). Unproven and stated as such: exit codes are not in the data files; the earlier-build stutter figures have no data file; nobody has looked at the window.
+- Handoff: `docs/handoffs/w0-recon-plan-proof.md`, copied to `~/claude-handoffs/glance-core_2026-11-14_w0-recon-plan-proof-result.md`.
+- **Wave closed.**
+
 ## NEXT
 - Amrit rules on the contradictions and decisions in `docs/01-RESEARCH.md` §0 and §9 (first: iCrate shares sidecars, not the database; ProRes on Windows; the 0-difference render bar; the loombda-rs encoders under MIT).
 - Then core wave C1 (exact picture) — needs DXVKit Plus brief item 1 or a relaxed bar. No brief is queued until Amrit decides.
@@ -29,9 +34,6 @@ Wave: w0-recon-plan-proof. Brief: ~/claude-handoffs/glance-core_2026-11-14_w0-re
 - Alpha rule in code: DXV alpha = per-clip Alpha Type (default Premultiplied); HAP alpha = straight; frames decoded as stored. Checkerboard 8 pt, greys 0.85 / 0.65.
 
 ## OPEN
-- [ ] GitHub repo created, committed, pushed
-- [ ] Verifier run on this checkpoint
-- [ ] Handoff written, committed and copied to the mailbox
 
 ## IDEAS
 - A `glance-proof --headless` mode that renders offscreen and hashes frames, for CI without a window server.

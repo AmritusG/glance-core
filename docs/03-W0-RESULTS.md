@@ -54,12 +54,13 @@ picture read back from the GPU against DXVKit Plus's CPU decode of the same fram
 | C | HAP Q Alpha 2160p | 451 | **0** | 30.07 (30) | 0.008 / 0.017 / 0.02 | 2.60 / 3.65 / 4.50 | 1 | 1 / 0.049 |
 | C | DXV NQ 1080p | 451 | **0** | 30.07 (30) | 0.006 / 0.015 / 0.02 | 0.35 / 0.60 / 0.71 | 1 | 1 / 0.076 |
 | D | ProRes 4444 2160p (native) | 451 | **0** | 30.07 (30) | 0.005 / 0.010 / 0.01 | 0.33 / 1.68 / 2.15 | 1 | not checked (no CPU decode of native frames) |
-| D | DXV NQ Alpha 1080p | 451 | **0** | 30.07 (30) | 0.006 / 0.022 / 0.03 | 0.59 / 1.08 / 1.21 | 1 | 1 / 0.207 |
+| D | DXV NQ Alpha 1080p | 451 | **0** | 30.07 (30) | 0.006 / 0.022 / 0.03 | 0.59 / 1.08 / 1.21 | 1 | 1 / 0.206 |
 
 The one cache miss per clip is its first frame (decoded on the spot); every other frame came from
-read-ahead (8 frames ahead, 4 worker threads). Shown fps reads 0.05 above the clip rate because the
+read-ahead (8 frames ahead, 4 worker threads). Shown fps reads 0.06–0.07 above the clip rate because the
 first showing is counted at time zero (376 showings = 375 frame periods in 15.0 s = 25.0).
-No decode error, no worker error, exit code 0 in every run.
+No decode error and no worker error in any run (JSON); each run exited with code 0 (printed by
+the run script in the session, not recorded in the data files).
 
 ## What this proves, and what it does not
 
@@ -88,8 +89,10 @@ Not proven here:
   alpha-only / HAP R / HAP HDR / legacy DXV, Windows. All later waves.
 - An earlier build of the proof (same decode path, before the Alpha Type pass was reworked)
   showed 1.6–4 % of refreshes taking two display periods (28–74 of ~1,800) while five recon agents
-  were also running on the machine; the final build shows 0–4 per run with two agents running.
-  The cause was not isolated (machine load or the changed draw path). No clip frame was skipped in
+  were also running on the machine; the final build shows 0–4 per run with fewer running. Those
+  earlier figures are from the session's console output only: their data files were overwritten
+  by the final runs, and machine load was not logged. The cause was not isolated (machine load or
+  the changed draw path). No clip frame was skipped in
   either case. To be measured properly in the playback wave, on an idle machine.
 
 ## Gates

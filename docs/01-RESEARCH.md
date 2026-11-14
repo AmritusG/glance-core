@@ -5,7 +5,7 @@ fact, is in `docs/research/`:
 
 | File | Covers | Lines | Read at commit |
 |---|---|---|---|
-| `research/glance.md` | Glance (Swift) + glance-releases | 972 | glance `a9dc601` (v0.18.1 + 2 doc commits) |
+| `research/glance.md` | Glance (Swift) + glance-releases | 972 | glance `a9dc601` (v0.18.1 + 3 commits: release scripts and docs) |
 | `research/cueglance.md` | CueGlance + cueglance-releases | 1,103 | cueglance `66edb15` (v1.4.1) |
 | `research/glenc.md` | GlEnc + glenc-public + glenc-releases | 1,473 | glenc `ed63fd6` (v1.6.2) |
 | `research/macrate.md` | MaCrate, CrateKit, iCrate, SendEhrKit | 1,141 | crate `89b210c` (0.16.4), SendEhr `1a03d33` (1.1.2) |
@@ -52,8 +52,11 @@ the code as it is and marks where a ruling changes the plan.
    only. HAP alpha is shown as stated (straight, no switch); opaque clips have none.
 5. **"Metal-specific shaders in the Swift apps"**: there are none on the Mac. Glance, CueGlance and
    MaCrate's preview render with **OpenGL 3.2** (GLSL 3.30 strings in
-   `glance/Sources/GlancePlayback/DXVRenderer.swift`, a `CAOpenGLLayer`); the Metal renderer is
-   iOS-only (iCrate) and covers DXV only. GlEnc has no GPU code at all. Porting is GLSL → WGSL.
+   `glance/Sources/GlancePlayback/DXVRenderer.swift`, a `CAOpenGLLayer`), and GlEnc's preview is
+   a `CAOpenGLLayer` too (`glenc/Sources/GlEnc/PreviewVideoLayer.swift`; its encoders are CPU
+   code). Metal is iOS-only (iCrate): `MetalDXVRenderer` for DXV, and a Metal RGBA pass-through
+   for HAP frames decoded on the CPU (`crate/iPad/iCrate/iCrate/HAPPlayerHost.swift`). Porting is
+   GLSL → WGSL.
 6. **"GRDB schema/migrations"**: the 12 migrations are raw SQL, not the GRDB table DSL; no record
    stores a `Date` or `UUID`; no custom SQLite function or collation is registered. This makes a
    rusqlite twin simpler than the brief feared (`research/macrate-db.md` §0, §b, §c).
@@ -126,7 +129,8 @@ measurement scanner (loop quality, text detection through Vision OCR). The datab
 the **sidecars on the drive are canonical**. 334 tests.
 
 **iCrate.** Reads a drive's sidecars and stash file into an in-memory store, browses, previews
-(Metal, DXV only), edits metadata back into the sidecars.
+(Metal: DXV through `MetalDXVRenderer`, every HAP variant through an RGBA pass-through), edits
+metadata back into the sidecars.
 
 ## 3. Critical rules (each one decides code in the core)
 
