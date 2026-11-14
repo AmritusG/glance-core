@@ -265,7 +265,7 @@ pub fn reserved_bc7(w: u32, h: u32) -> Vec<u8> {
     let blocks = (w.div_ceil(4) * h.div_ceil(4)) as usize;
     let mut state = 7u64;
     let mut data: Vec<u8> = (0..blocks * 16).map(|_| rng(&mut state) as u8).collect();
-    data.chunks_exact_mut(16).for_each(|b| b[0] = 0);
+    data.as_chunks_mut::<16>().0.iter_mut().for_each(|b| b[0] = 0);
     video_movie(b"Hap7", w, h, &[hap_section(0xAC, &data)])
 }
 
