@@ -141,7 +141,8 @@ pub fn run(paths: &[PathBuf], root: Option<&Path>, every: u32) -> Result<Report,
             } else if exact {
                 "max 0".into()
             } else if !report.one_to_one.is_empty() && report.one_to_one.iter().all(|r| r.reference == Reference::None && r.nonblank && r.frames > 0) {
-                "shown (the OS decoder: no CPU reference)".into()
+                let r = &report.one_to_one[0];
+                format!("{} frames shown, {} not decoded, {} black (the OS decoder: no CPU reference)", r.frames, r.undecodable, r.black_frames)
             } else {
                 format!("{:?}", report.one_to_one.iter().map(|r| (r.reference, r.worst, r.differing, r.nonblank)).collect::<Vec<_>>())
             },

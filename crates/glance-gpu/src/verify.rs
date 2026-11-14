@@ -52,7 +52,10 @@ pub struct Row {
     pub worst: u8,
     /// Texels with any difference.
     pub differing: u64,
-    /// Whether any shown picture had a non-zero byte (a blank output is not a pass).
+    /// Shown frames whose picture has no colour at all (R, G and B zero in every texel). A clip
+    /// may hold such frames; a clip that is nothing else was not shown.
+    pub black_frames: u32,
+    /// Whether any shown frame had colour (a blank output is not a pass).
     pub nonblank: bool,
 }
 
@@ -93,7 +96,17 @@ pub fn clip_rows(gpu: &Gpu, presenter: &Presenter, clip: &Clip, path: BlockPath,
     let name = |v: &AlphaView| if *v == AlphaView::Straight { "straight" } else { "premultiplied" };
     let mut rows: Vec<Row> = views
         .iter()
-        .map(|v| Row { alpha: name(v), reference: Reference::None, frames: 0, undecodable: 0, texels: 0, worst: 0, differing: 0, nonblank: false })
+        .map(|v| Row {
+            alpha: name(v),
+            reference: Reference::None,
+            frames: 0,
+            undecodable: 0,
+            texels: 0,
+            worst: 0,
+            differing: 0,
+            black_frames: 0,
+            nonblank: false,
+        })
         .collect();
     let gpu_error = |e: GpuError| e.to_string();
     for index in (0..clip.info.frames).step_by(step.max(1) as usize) {
@@ -123,7 +136,9 @@ pub fn clip_rows(gpu: &Gpu, presenter: &Presenter, clip: &Clip, path: BlockPath,
             }
             row.frames = row.frames.saturating_add(1);
             row.texels = row.texels.saturating_add((got.len() / 4) as u64);
-            row.nonblank |= got.iter().any(|&b| b != 0);
+            let colour = got.as_chunks::<4>().0.iter().any(|p| p[..3] != [0; 3]);
+            row.black_frames = row.black_frames.saturating_add(u32::from(!colour));
+            row.nonblank |= colour;
         }
     }
     Ok(rows)

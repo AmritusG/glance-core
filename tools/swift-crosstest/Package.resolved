@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "dxvkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AmritusG/dxvkit.git",
+      "state" : {
+        "revision" : "2f5256ab2c2b10bdfebe68275129dbf51e48fd10",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}
