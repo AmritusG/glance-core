@@ -17,12 +17,17 @@ Wave: c1-exact-picture. Brief: ~/claude-handoffs/glance-core_2026-11-14_c1-exact
 - Amrit's decisions applied: licence MIT (`LICENSE`, workspace `license = "MIT"`, version 0.1.0), `README.md`, `docs/02-PARITY.md` (28 edits; Core "Decode and render" and "Alpha and background" ticked with evidence, what is not tickable on Metal said), `docs/00-ROADMAP.md` (25 edits), `docs/01-RESEARCH.md` §9 (16 decisions closed).
 - `cargo deny check`: advisories, bans, licenses, sources ok (`deny.toml`; two crate-scoped exceptions, one needs Amrit's yes: egui's built-in fonts).
 - CI: `.github/workflows/ci.yml`. First run (6b80bf1): lint ok, Windows check ok, macOS: the runner has a Metal GPU ("Apple Paravirtual device"); 176 of 180 sweep rows max 0 there, the 4 failing rows were HAP R with reserved-mode BC7 blocks (the virtual GPU decodes those differently). Generated BC7 blocks are now valid ones; reserved blocks have their own test.
-- Brief for DXVKit Plus: `~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief.md`.
 - Cross targets: `cargo check --workspace` ok for `x86_64-apple-darwin` and `aarch64-apple-ios` (rustc 1.100, local); `x86_64-pc-windows-msvc` ok on the Windows runner.
 
+- Amrit's clips through the harness, every frame (`glance-proof verify`, 667 s): 174 files — 134 DXV / HAP clips, 225 rows, 43,475 frame comparisons, 65,222,310,280 texels, **max 0**, 0 differing; scaled 450 screens, largest distance 1, none beyond; 33 OS-codec clips shown (11,378 frames, none blank); 7 refused with the message. `docs/data/c1-verify-testfiles.json`. Found and fixed on the way: a 3840x9626 clip above wgpu's default texture limit.
+- Proof window smoke run on the exact path (5 s, the W0 gate pair, harness running on the same GPU): 0 skipped, picture vs CPU max 0. `docs/data/c1-window-smoke.json`.
+- `docs/04-C1-RESULTS.md` written from the raw data.
+- CI green three times on main (2069c2b run 43638144973, ba20a42 run 43638498291); the runner's GPU returns opaque black for a reserved BC7 block (recorded by a CI step).
+- Briefs for DXVKit Plus: `~/claude-handoffs/DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md` (eight findings; supersedes the first, which lacked the BC7 one).
+- Gates on the final tree: fmt ok; clippy `-D warnings` ok (rustc 1.99.1 and 1.100.0); `GLANCE_REQUIRE_GPU=1 cargo test --workspace --release` 32 passed, 0 failed; `cargo deny check` ok; `cargo build --release` ok.
+
 ## NEXT
-- When the verify run over Amrit's folder ends (`docs/data/c1-verify-testfiles.json`): `python3 <scratch>/make_results.py <ci text>` writes `docs/04-C1-RESULTS.md`.
-- CI green on main for the final commit; then verifier, handoff, tag `v0.1.0`, push.
+- Verifier on this file, the results doc and the handoff; handoff with receipts; tag `v0.1.0` on a green `main`; push.
 
 ## STATE
 - Test media (read-only): `<testfiles>` (174 movie files).
@@ -33,8 +38,6 @@ Wave: c1-exact-picture. Brief: ~/claude-handoffs/glance-core_2026-11-14_c1-exact
 - The Swift cross-test program is not committed (session scratch folder); what it calls is written in the handoff.
 
 ## OPEN
-- [ ] Amrit's clips through the harness (run in progress) and `docs/04-C1-RESULTS.md`
-- [ ] CI green on main for the final commit
 - [ ] verifier, handoff, tag v0.1.0
 
 ## IDEAS

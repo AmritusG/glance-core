@@ -29,6 +29,7 @@ pub struct FileReport {
     pub route: &'static str,
     pub message: Option<String>,
     pub codec: String,
+    /// The DXV variant, from the middle frame's planes (a DXV track's FourCC does not say).
     pub variant: Option<&'static str>,
     pub width: u32,
     pub height: u32,
@@ -88,7 +89,7 @@ fn file_report(gpu: &Gpu, presenter: &Presenter, stage: &mut Stage, path: &Path,
     // The middle frame, window-scaled, for each Alpha Type the clip is read with.
     let middle = clip.info.frames / 2;
     if let Ok(frame) = clip.open().map_err(|e| e.to_string()).and_then(|mut s| s.decode(middle).map_err(|e| e.to_string())) {
-        report.variant = glance_media::dxv_variant_label(&frame);
+        report.variant = if clip.route == Route::Dxv { glance_media::dxv_variant_label(&frame) } else { None };
         let mut view = ClipView::new(&gpu.device);
         for alpha in glance_gpu::verify::views(&clip) {
             let Ok(reference) = expected_picture(&frame, alpha) else { continue };

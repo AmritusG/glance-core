@@ -1,0 +1,113 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 5.006463334,
+  "display_refresh_hz": 120.0,
+  "presents": 595,
+  "present_interval": {
+    "count": 595,
+    "mean_ms": 8.414093277310927,
+    "p50_ms": 8.327292,
+    "p95_ms": 16.56475,
+    "p99_ms": 16.833583,
+    "max_ms": 30.847208000000002
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/Metric_01_HapM.mov",
+      "codec": "HAP Q Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 201,
+      "clip_fps": 25.0,
+      "has_alpha": true,
+      "alpha_view": "Straight",
+      "cadence": {
+        "shown": 126,
+        "skipped": 0
+      },
+      "shown_fps": 25.167466851161404,
+      "fetch": {
+        "count": 126,
+        "mean_ms": 0.011829666666666667,
+        "p50_ms": 0.010208,
+        "p95_ms": 0.021500000000000002,
+        "p99_ms": 0.027375,
+        "max_ms": 0.032375
+      },
+      "show": {
+        "count": 126,
+        "mean_ms": 0.807701365079365,
+        "p50_ms": 0.788167,
+        "p95_ms": 1.006458,
+        "p99_ms": 1.061792,
+        "max_ms": 1.2862500000000001
+      },
+      "cache_hits": 646,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 157,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 149,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          63.93854021990741,
+          62.75795138888889,
+          55.22919704861111,
+          255.0
+        ]
+      },
+      "error": null
+    },
+    {
+      "path": "<testfiles>/DXT5-DXV3.mov",
+      "codec": "DXV Normal Quality With Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 300,
+      "clip_fps": 30.0,
+      "has_alpha": true,
+      "alpha_view": "Premultiplied",
+      "cadence": {
+        "shown": 151,
+        "skipped": 0
+      },
+      "shown_fps": 30.161011861312474,
+      "fetch": {
+        "count": 151,
+        "mean_ms": 0.01488327814569536,
+        "p50_ms": 0.014333,
+        "p95_ms": 0.026208000000000002,
+        "p99_ms": 0.031667,
+        "max_ms": 0.031875
+      },
+      "show": {
+        "count": 151,
+        "mean_ms": 0.5897759006622514,
+        "p50_ms": 0.566292,
+        "p95_ms": 0.7462080000000001,
+        "p99_ms": 0.995625,
+        "max_ms": 1.076875
+      },
+      "cache_hits": 646,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 187,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 179,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          17.371168016975307,
+          9.915277777777778,
+          25.760397858796296,
+          27.73706356095679
+        ]
+      },
+      "error": null
+    }
+  ]
+}
