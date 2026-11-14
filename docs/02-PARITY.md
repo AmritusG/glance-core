@@ -14,28 +14,33 @@ How to use it:
   otherwise. Items marked macOS-only have no Windows gate.
 - The numbers in the items (sizes, limits, timings) are the Swift apps' and are the pass criteria.
 
-Counts: core 30, Glance 94, CueGlance 95, GlEnc 112, MaCrate 126.
+- Items changed by Amrit's answers of 2026-11-14 (in `docs/01-RESEARCH.md` §9) carry that date and his words. "Fixed — differs from Swift on purpose" means the Rust app does the correct thing where the Swift app has a quirk; the Swift behaviour stays written in the item.
+- Ticks made in a core wave say which wave and which backend: **C1, Metal** = proven on Metal on the core's home machine, evidence in `docs/04-C1-RESULTS.md`. The Windows / Direct3D 12 half of a core item is proven at the Windows milestone (C4).
+
+Counts: core 35, Glance 94, CueGlance 95, GlEnc 114, MaCrate 127.
 
 ## Core (glance-core + DXVKit Plus) — inherited by every app
 
 ### Decode and render
-- [ ] Routing is by file content, never by extension: `DXD3` / `DXD4` / `DXDI` sample entries → DXV (the variant from the first packet); `Hap1` / `Hap5` / `HapY` / `HapM` / `HapA` → HAP; everything else → the OS decoder; what nothing decodes shows "<codec> in <CONTAINER> is not supported" (no fallback engine).
-- [ ] DXV3 DXT1, DXT5, YCG6, YG10 and legacy DXV1 / 2 (`DXDI`, raw and LZF) decode bit-exact with DXVKit's test vectors (DXVKit Plus: 334 rows).
-- [ ] The DXV coded texture is the display size rounded up to 16 on **both** axes for every variant; HAP pads to 4. (The older "DXV3 pads width only" rule is gone from the Swift code.)
-- [ ] **The exactness bar:** every DXV and HAP variant renders at 1:1 with max difference 0 per channel against the CPU decode (DXVKit's RGBA; the CPU HAP decoder), at every size from 1x1 to 3840x2160 including odd and non-16 sizes. Blocks are decoded in the shader from integer textures, never by the GPU's BC decoder. *W0: met for DXV High Quality only; 1–2 / 255 measured for DXT1 / DXT5 / HAP (DXVKit Plus brief).*
-- [ ] Window-scaled rendering (1.5x, 0.5x) is within 1 of a software model of the same filter.
-- [ ] The bar holds on every backend the apps ship on: Metal (macOS), Direct3D 12 (Windows); Vulkan if it is ever enabled.
-- [ ] Subsampled planes cover every pixel (ceil, never floor): a 1-row clip has a 1-row chroma plane.
-- [ ] Hostile files (truncated, garbage, wrong FourCC for the payload, zero bytes) give an error message, never a crash or a hang.
+- [x] Routing is by file content, never by extension: `DXD3` / `DXD4` / `DXDI` sample entries → DXV (the variant from the first packet); `Hap1` / `Hap5` / `HapY` / `HapM` / `HapA` → HAP; everything else → the OS decoder; what nothing decodes shows "<codec> in <CONTAINER> is not supported" (no fallback engine). — **C1, Metal:** `glance_media::route`; route, message and FourCC name equal Swift Glance's own code on 52 fixtures and on 173 of Amrit's 174 test files (`swift_parity.rs`, `routing.rs`). The one difference, a HAP movie cut off mid-data that Swift plays in part and Rust refuses with the message, and two limits of DXVKit Plus's probe (a movie with two video tracks; a movie named `.png` / `.lmbd`) are in `docs/04-C1-RESULTS.md` §4 and briefed to DXVKit Plus.
+- [x] **Added on purpose (Amrit 2026-11-14: add, then prune):** `Hap7` (HAP R), `HapH` (HAP HDR) and legacy DXV route and play in the Rust family; Swift Glance shows "Hap7 in MOV is not supported". HAP HDR has no CPU decode, so its gate is "plays and equals DXVKit Plus's GPU conversion", not max 0. — **C1, Metal:** `hap_hdr_plays_and_matches_dxvkit_plus`, HAP R in both exactness tests, `LegacyDxt1` / `LegacyDxt5` in the size sweep.
+- [x] DXV3 DXT1, DXT5, YCG6, YG10 and legacy DXV1 / 2 (`DXDI`, raw and LZF) decode bit-exact with DXVKit's test vectors (DXVKit Plus: 334 rows). — **C1, Metal:** the 334-row decode gate is DXVKit Plus's own (v0.8.0); here the 64 vector frames committed with an RGBA reference go through the whole pipeline and the picture read back from the GPU hashes to DXVKit's SHA-256 (`dxvkit_vector_pictures_hash_to_dxvkits_reference_rgba`).
+- [x] The DXV coded texture is the display size rounded up to 16 on **both** axes for every variant; HAP pads to 4. (The older "DXV3 pads width only" rule is gone from the Swift code.) — **C1, Metal:** the size sweep writes its movies with exactly those plane sizes (1x1 … 17x33 included) and every one decodes and renders at max 0 (`every_variant_at_every_size_equals_the_cpu_reference`).
+- [x] **The exactness bar:** every DXV and HAP variant renders at 1:1 with max difference 0 per channel against the CPU decode (DXVKit's RGBA; the CPU HAP decoder), at every size from 1x1 to 3840x2160 including odd and non-16 sizes. Blocks are decoded in the shader from integer textures, never by the GPU's BC decoder. — **C1, Metal:** DXVKit Plus v0.8.0's exact block path, default in `glance_gpu::ClipView`. 12 variants x 9 sizes x each Alpha Type: 180 rows, max 0; 36 fixture movies, 563 frame comparisons, max 0; every frame of Amrit's DXV and HAP test clips, max 0 (`docs/04-C1-RESULTS.md` §1–§2). HAP R (BC7) is decoded by the GPU's BC7 decoder, which is exact; HAP HDR see above.
+- [x] **HAP Q follows the Vidvox reference, not Swift Glance (Cowork decision 2026-11-14, verified against Vidvox's shader):** untruncated BC3 palette, chroma offset 128/255, `scale = B * 255/8 + 1` — DXVKit Plus's decode. Swift Glance truncates the palette to 8 bits and centres chroma at 127.5 (`glance/Sources/GlanceCore/HAPHQDecoder.swift:329-343`). The Rust family's HAP Q picture therefore differs from Swift Glance's on purpose: by at most 2 / 255 on 43.4 % of texels — 43.26 % by 1, 0.16 % by 2, per clip between 7 % and 99 % (measured on every frame of Amrit's 31 HAP Q and HAP Q Alpha clips, 5.19 billion texels: `docs/04-C1-RESULTS.md` §5). It is exact (max 0) against DXVKit Plus's CPU decode. — **C1, Metal.**
+- [x] Window-scaled rendering (1.5x, 0.5x) is within 1 of a software model of the same filter. — **C1, Metal:** the real egui widget drawn offscreen (`glance_ui::headless`), 134 screens of every variant, largest distance 1, none beyond (`window_scaled_screens_are_within_1_of_the_bilinear_model`); and the middle frame of each of Amrit's clips. The filter is bilinear over the finished (premultiplied) picture. Swift Glance filters first and premultiplies after, and keeps DXV High Quality chroma nearest; the two agree for opaque and premultiplied clips at any scale and for every clip at 1:1 (`docs/04-C1-RESULTS.md` §3).
+- [ ] The bar holds on every backend the apps ship on: Metal (macOS), Direct3D 12 (Windows); Vulkan if it is ever enabled. — Metal: met in C1 (the items above). Direct3D 12: not run yet, proven at the Windows milestone (C4); the present pass is integer arithmetic so that it has one answer on every backend.
+- [x] Subsampled planes cover every pixel (ceil, never floor): a 1-row clip has a 1-row chroma plane. — **C1, Metal:** YCG6 and YG10 at 1x1, 2x2, 3x3, 5x7, 15x9, 17x33 in the size sweep, max 0.
+- [x] Hostile files (truncated, garbage, wrong FourCC for the payload, zero bytes) give an error message, never a crash or a hang. — **C1, Metal:** about 3,000 damaged copies of six fixture movies, garbage and zero-byte files under a time limit (`hostile_files_give_a_message_never_a_crash_or_a_hang`), and Amrit's own `adv_*` files (`amrits_test_files_come_back`).
 
 ### Alpha and background
-- [ ] Frames are decoded as stored; nothing un-premultiplies or premultiplies on decode.
-- [ ] DXV clips with alpha (DXT5, YG10, legacy DXT5) get a per-clip "Alpha Type": Premultiplied (default) / Straight. Straight multiplies colour by alpha in the present pass; the blend is `ONE, ONE_MINUS_SRC_ALPHA`.
-- [ ] HAP alpha (Hap5, HapM) is straight, shown as stated ("Alpha Type: Straight (HAP)", no switch). Native codecs that state their alpha mode (ProRes 4444, HEVC with alpha) follow the format description.
-- [ ] The Alpha Type hint ("looks premultiplied" / "looks straight" / "can't tell") uses Glance's probe: first + middle frame, share of pixels with 8 < alpha < 200 whose max(R,G,B) > alpha + 24; ≤ 0.5 % premultiplied, ≥ 3 % straight, else or < 500 samples can't tell. The hint never changes the setting.
-- [ ] A clip's choice is remembered by content, not path: `clipKey` = SHA-256 of byte size, frame count, size and first + last packets, byte-identical to Glance's, so choices made in the Swift apps still apply.
-- [ ] Checkerboard: 8 pt squares, greys 0.85 and 0.65, in window points scaled by the display's scale factor; Black is the other mode; opaque clips look the same in both.
-- [ ] Writers write straight alpha (GlEnc, DXV and HAP).
+- [x] Frames are decoded as stored; nothing un-premultiplies or premultiplies on decode. — **C1, Metal:** the picture read as Premultiplied is the stored texel, equal to DXVKit's reference RGBA by hash (64 vector frames) and to the CPU decode everywhere else.
+- [x] DXV clips with alpha (DXT5, YG10, legacy DXT5) get a per-clip "Alpha Type": Premultiplied (default) / Straight. Straight multiplies colour by alpha in the present pass; the blend is `ONE, ONE_MINUS_SRC_ALPHA`. — **C1, Metal:** Straight is `round(colour * alpha / 255)` in whole code values, max 0 against the same arithmetic on the CPU, for every variant and size; the wrong Alpha Type is caught (`a_flipped_bit_and_the_wrong_alpha_type_are_caught`); the blend over the checkerboard within 1 of the model.
+- [ ] HAP alpha (Hap5, HapM) is straight, shown as stated ("Alpha Type: Straight (HAP)", no switch). Native codecs that state their alpha mode (ProRes 4444, HEVC with alpha) follow the format description. — HAP half met in C1 on Metal (Hap5, HapM, HAP R and alpha-only HapA are read straight, max 0; HapA is shown as white at its alpha, as Swift Glance shows it). Native half open: DXVKit Plus does not report the format description's alpha mode yet (its brief, "API gaps"); until then such clips get the choice.
+- [x] The Alpha Type hint ("looks premultiplied" / "looks straight" / "can't tell") uses Glance's probe: first + middle frame, share of pixels with 8 < alpha < 200 whose max(R,G,B) > alpha + 24; ≤ 0.5 % premultiplied, ≥ 3 % straight, else or < 500 samples can't tell. The hint never changes the setting. — **C1:** samples, exceeding and the hint equal Swift Glance's own probe on all 12 fixture clips and all 51 of Amrit's DXV clips with alpha (`swift_parity.rs`).
+- [x] A clip's choice is remembered by content, not path: `clipKey` = SHA-256 of byte size, frame count, size and first + last packets, byte-identical to Glance's, so choices made in the Swift apps still apply. — **C1:** `glance_media::clip_key` equals Swift Glance's `clipKey` on 35 fixture movies and 75 of Amrit's DXV clips (every DXV file there), and gives no key where Swift gives none; the byte layout is recomputed in `the_clip_key_is_the_documented_bytes`.
+- [x] Checkerboard: 8 pt squares, greys 0.85 and 0.65, in window points scaled by the display's scale factor; Black is the other mode; opaque clips look the same in both. — **C1, Metal:** `the_checkerboard_is_8_point_squares_only_under_the_picture` at 1x and 2x display scale (values 217 and 166, 8 and 16 pixels, black bars beside the picture). Which square is the lighter one at the picture's corner is a look detail for Glance G2 (Swift: the bottom-left cell is the darker one; here the top-left cell is the lighter one).
+- [ ] Writers write straight alpha (GlEnc, DXV and HAP). — not a C1 item: there is no writer in the core until the GlEnc wave.
 
 ### Time
 - [ ] Frame `n` is exactly frame `n` after any seek, on every decode path (shuffled seeks equal sequential decode).
@@ -48,8 +53,11 @@ Counts: core 30, Glance 94, CueGlance 95, GlEnc 112, MaCrate 126.
 ### Settings, identity, release
 - [ ] Each Rust app carries its Swift twin's bundle id (`com.amritus.glance`, `com.amritus.cueglance`, `com.amritus.glenc`, `com.amritus.crate`) and reads and writes the same preference keys in the same store on macOS (the `UserDefaults` domain of that id), with the same value encodings, so settings survive the swap in both directions.
 - [ ] On Windows the same keys live in one documented per-user location per app.
+- [ ] macOS builds are universal, arm64 + x86_64 (Amrit 2026-11-14: "Intel too"; the Swift apps build for the host only). The core compiles for `x86_64-apple-darwin` in CI from C1.
 - [ ] macOS: Developer ID signed, hardened runtime, notarised, stapled, DMG; the release goes to the app's existing public releases repo as `v<version>` with the DMG and its `.sha256`; exactly one LaunchServices record after install.
-- [ ] Windows: signed installer; SmartScreen does not block a fresh download once reputation exists (the signing route is Amrit's decision, `docs/00-ROADMAP.md` §8).
+- [ ] Windows: Windows 11 only (Amrit 2026-11-14: "11 only"); the installer says so on Windows 10.
+- [ ] Windows: signed installer — Microsoft Artifact Signing, Public Trust, organisation validation as Creativeations (Amrit 2026-11-14: "I have a buisness, Creativeations. Registered since 2010 and still active."); SmartScreen does not block a fresh download once reputation exists.
+- [ ] ProRes on Windows: not supported until Apple's ProRes Program Office answers (Amrit 2026-11-14: "How do I proceed to get a yes from them?" — he writes to them as Creativeations); the app says so plainly ("ProRes 422 in MOV is not supported" with the reason), on open and wherever ProRes is offered as an output. macOS keeps Apple's own codec.
 - [ ] No FFmpeg, libav, GStreamer or libmpv is linked or bundled; every dependency's licence is MIT / BSD / Apache-2.0 / Zlib / ISC (or approved by Amrit by name), enforced by `cargo deny` in every app repo.
 - [ ] No crash on any input: the never-crash lints hold in every crate; a GPU without BC texture support gets a clear message.
 - [ ] The app's look matches the Swift app side by side (Amrit's eyes): layout, spacing, colours, fonts, icons — "keep each app's current look".
@@ -102,7 +110,7 @@ Detail and sources: `docs/research/glance.md`.
 - [ ] BC1: 5:6:5 bit-replicated, thirds and halves truncated; three-colour index 3 is black with alpha 255; DXT5 colour blocks always four-colour.
 - [ ] BC4: truncated 8-bit palette for DXT5 alpha / HapY luma / HapM alpha; exact 1/35 palette for DXV HQ planes.
 - [ ] DXV HQ colour: chroma midpoint 127.5, non-reversible YCoCg, R / B overflow folding, round half up, nearest chroma.
-- [ ] Hap Q colour: integer scaled-YCoCg inverse with D = B + 8 and offset 255/2, round half up.
+- [ ] ~~Hap Q colour: integer scaled-YCoCg inverse with D = B + 8 and offset 255/2, round half up.~~ **Changed (Cowork decision 2026-11-14):** Hap Q colour follows the Vidvox reference as DXVKit Plus decodes it — untruncated BC3 palette, chroma offset 128/255, exact integers, round half up. Differs from Swift Glance by at most 2 / 255 (core item "HAP Q follows the Vidvox reference").
 - [ ] Padding never shows: no stray column or row at the right or bottom edge at any size or scale.
 - [ ] Chroma planes are sized ceil(w/2) × ceil(h/2); a 1-pixel-tall HQ clip does not crash.
 - [ ] No sRGB / gamma conversion is applied to decoded values.
@@ -131,7 +139,7 @@ Detail and sources: `docs/research/glance.md`.
 - [ ] Every clip opens playing and looping.
 - [ ] Space toggles play / pause exactly once per press.
 - [ ] `L` toggles loop; the title shows `[LOOP]` while looping; the bar's loop button is lit.
-- [ ] With loop off, playback stops on the last frame (AV path: next Play restarts from frame 0).
+- [ ] With loop off, playback stops on the last frame; the next Play restarts from frame 0 on every path. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** Swift Glance restarts only on the AVFoundation path; on DXV and HAP, Play at the end stays on the last frame.
 - [ ] `,` / `.` step exactly one frame back / forward, pause playback, keep audio silent and aligned, and clamp at both ends.
 - [ ] ← / → seek 5 s; with Shift 0.5 s; bar buttons seek 10 s.
 - [ ] Restart seeks to frame 0 and keeps the play / pause state.
@@ -242,7 +250,7 @@ Detail and sources: `docs/research/cueglance.md`.
 - [ ] Widths and heights that are not multiples of 16 or 4 show no shear and no padding at any scale
 - [ ] BC blocks decoded in the shader from integer textures with the integer palettes of 4.3
 - [ ] YCG6/YG10 use the Arena YCoCg maths (midpoint 127.5, nearest chroma, R/B folding, round at the end)
-- [ ] Hap Q / HapM use the integer scaled-YCoCg inverse
+- [ ] Hap Q / HapM use the Vidvox-reference scaled-YCoCg inverse as DXVKit Plus decodes it (**changed, Cowork decision 2026-11-14**; Swift: D = B + 8, midpoint 127.5; at most 2 / 255 apart)
 - [ ] Picture is aspect-fit in the pane; letterbox black
 - [ ] Background Black: transparent pixels read black; Checkerboard: 8 pt cells, greys 0.85 / 0.65, DPI-scaled, only under the picture; same look on every engine
 - [ ] Background choice applies at once (also to a paused frame) and persists
@@ -281,7 +289,7 @@ Detail and sources: `docs/research/cueglance.md`.
 - [ ] `.cueproj` read: the 6 required top-level keys + optional `alphaType`; 7 cue keys; unknown curve ids and colours tolerated
 - [ ] `.cueproj` written byte-identical to the Swift app for the same project (sorted keys, 2-space indent, `" : "`, `\/`, number shapes, no trailing newline, atomic write); `alphaType` omitted when unset
 - [ ] A sidecar saved by Swift CueGlance, loaded and saved untouched, is byte-identical
-- [ ] Decide and document what happens to unknown top-level keys (Swift drops them)
+- [ ] The CueSync fields `tracks`, `playlists` and `selectedTrackId` survive a load and save. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** Swift CueGlance drops them on save although a comment promises they survive; a project that holds them is therefore not byte-identical to Swift's output, on purpose. Other unknown top-level keys: decide and document in the CueGlance wave (Swift drops them)
 - [ ] After load, missing Start / End cues are appended
 - [ ] Save writes `clip.cueproj` next to the clip; with no clip it falls back to the last project path, else Save As
 - [ ] Nothing is written to disk without an explicit Save
@@ -315,6 +323,7 @@ Detail and sources: `docs/research/glenc.md`.
 - [ ] Files can still be sent to the app: drop on the window, drop on the app icon, "Open with", command-line open with several paths (all paths become jobs).
 - [ ] Paths that arrive before the window exists (cold launch) are queued once the UI is ready.
 - [ ] A drop of non-movie files adds no rows and shows no error.
+- [ ] Paths that arrive by "Open with", the app icon or the command line pass the same movie-type filter as a drop. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** GlEnc 1.6.2's open-with path skips the filter.
 - [ ] "Add files…" picker is multi-select and limited to movie types.
 - [ ] One main window; its size and position survive a relaunch.
 
@@ -385,7 +394,7 @@ Detail and sources: `docs/research/glenc.md`.
 ### Trim, crop, resize
 - [ ] In / Out are inclusive frame indices; the output contains exactly frames In…Out.
 - [ ] Progress of a trimmed job runs 0–100 % over the trimmed range.
-- [ ] Decision recorded on audio for trimmed jobs (v1.6.2 muxes the full-length source audio).
+- [ ] A trimmed job's audio covers the trimmed range In…Out, like its picture. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** GlEnc 1.6.2 muxes the full-length source audio.
 - [ ] Crop is in source pixels, top-left origin, applied before resize.
 - [ ] Crop overlay has four corner handles, interior drag, dim mask, optional clip-boundary outline.
 - [ ] Arrow keys nudge the crop by 4 px (16 px with Shift); Esc cancels the edit; frame-step arrows are inactive during a crop edit.
@@ -429,6 +438,7 @@ Detail and sources: `docs/research/glenc.md`.
 - [ ] Play / pause, frame step, loop, scrub bar with In / Out markers, timecode `HH:MM:SS:FF`, typed In / Out timecodes.
 - [ ] Playback loops inside the trim window when loop is on, and stops at Out when it is off.
 - [ ] DXV, HAP and other sources all preview, including HAP with audio.
+- [ ] `DXD4` sources preview like `DXD3`. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** GlEnc 1.6.2's preview FourCC sets lack `DXD4`.
 - [ ] Sources with real alpha show a checkerboard through transparent pixels; opaque sources never do; an opaque ProRes 4444 file is treated as opaque.
 - [ ] Straight-alpha frames are composited correctly (no darkening, no vanished video).
 - [ ] Checkerboard extent preference: fill viewport / behind video only.
@@ -436,7 +446,7 @@ Detail and sources: `docs/research/glenc.md`.
 
 ### Settings and shortcuts
 - [ ] All 20 settings in section 7.2 persist with the same defaults.
-- [ ] "Reset to Defaults" restores the factory values.
+- [ ] "Reset to Defaults" restores the factory values, the checkerboard extent (`checkerboardScope`) included. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** GlEnc 1.6.2 leaves `checkerboardScope` as it was.
 - [ ] Shortcuts: preferences, show / hide preview (⇧⌘P), select all clips (⇧⌘A), reset selected (⌘R), reset all finished (⇧⌘R), select finished (⌥⌘A), encode queue (⌘↩), cancel all (⌘.), Space, ← / →, I, O.
 - [ ] Queue menu "Change Selected Clips" / "Change All Clips" with the ten submenus.
 
@@ -585,6 +595,7 @@ Flat, testable items. Section references point at the facts above; `db` = `macra
 - [ ] Readings for the lab-parity corpus match the Swift scanner's values (loop score, cycle, join step, cuts, flashes, flicker, flow, black share, centre share) (§2.14, `crate/CLAUDE.md:219-223`)
 - [ ] Measured box in the info panel shows every row, with "not measured" for missing values and a field-visibility menu (§2.14)
 - [ ] `measurements.sqlite` written by either app is read by the other (db §c.3, §d.3)
+- [ ] macOS: the scanner's text check (Vision OCR) gives the Swift scanner's readings. ~~Windows: the same text check.~~ **Struck for Windows (Amrit 2026-11-14: "Drop"):** the Windows app has no text reading; its "no text" filter treats every clip as not measured for text.
 
 ### Settings and state
 - [ ] Every preference in §6.2 has an equivalent with the same default
@@ -600,6 +611,7 @@ Flat, testable items. Section references point at the facts above; `db` = `macra
 - [ ] File-system event bursts in a watched folder (about 2 per second) do not rebuild an open menu or reload the grid (`crate/CHECKPOINT.md:18-19`)
 
 ### Database compatibility with iCrate (and with the Swift MaCrate)
+The contract with iCrate is the sidecars, the stash file and `clip_id` on the media drive — iCrate never opens the database (`docs/01-RESEARCH.md` §0.1; Cowork decision 2026-11-14). The SQLite format is **also** kept identical, so the Swift and the Rust MaCrate can open the same library and the swap needs no migration. Both halves are gated below.
 - [ ] `clip_id` is bit-identical to Swift's for empty, sub-MiB, exactly-1-MiB and larger files (db §e.6)
 - [ ] A sidecar written by the Rust app decodes with Swift's `ClipMetadata` decoder: required keys `clip_id`, `created_at`, `updated_at` present; `null` for unset optionals; numbers for timestamps (db §h.1)
 - [ ] Sidecar file name is `.` + full clip file name + `.crate-meta.json`, in the clip's directory (db §h.1)

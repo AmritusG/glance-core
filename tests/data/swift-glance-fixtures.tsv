@@ -1,0 +1,52 @@
+dxvkit/streams/glenc/glenc_dxt1_pat100x36.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	b7dc5cbc7dfb4f27ad36b5757d2e52be29927261dbbb59068282d8740419ae7d	none	-	0	0
+dxvkit/streams/glenc/glenc_dxt1_pat18x10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	177983a77a0c31f92d0b27f4c3bfcc9414838123f1c014871b19b1821d2e1888	none	-	0	0
+dxvkit/streams/glenc/glenc_dxt1_pat48.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	2dabb363947211f3963ac83e7f0ef4763bd318cb47d592c1fc4d9b6956f4d370	none	-	0	0
+dxvkit/streams/glenc/glenc_dxt1_pat64.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	8ad763c79b5c1daa241928145ec25dd9ef7f557e3c6a7b1d9b122378f0ce3deb	none	-	0	0
+dxvkit/streams/glenc/glenc_dxt5_pat100x36.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	ad4bac8c9990d90e98957535043540f2dc1a26e09c54ee5cd47f89fe6ff8fc9c	choosable	can't tell	442	383
+dxvkit/streams/glenc/glenc_dxt5_pat18x10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	8a2da5cff7fb4305dcc24a7e4a27971554703101b8d76990d67c2e686e23a3a5	choosable	can't tell	24	18
+dxvkit/streams/glenc/glenc_dxt5_pat48.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	69573cfc1b3ab4e8f894116b995e9aa66bb97e70af7c54f45895c85ebf1239de	choosable	can't tell	143	136
+dxvkit/streams/glenc/glenc_dxt5_pat64.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	190116566b0d860c89fe5f7b91a208d3728552182fe6692ba31b3ee078d7fc1a	choosable	can't tell	496	430
+dxvkit/streams/glenc/glenc_ycg6_pat100x36.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	d23038b0acf564378053d2ced475877ba1ab60dced66c0183334eafa486841de	none	-	0	0
+dxvkit/streams/glenc/glenc_ycg6_pat18x10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	af9b29fe5ef9daf54584795052831bdb59e8135a9a711fe5441ba9b2f11aa0e9	none	-	0	0
+dxvkit/streams/glenc/glenc_ycg6_pat48.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	245d8466a843c4ddf6b97a010864347794fe3608f55630eb32357772519f9c1d	none	-	0	0
+dxvkit/streams/glenc/glenc_ycg6_pat64.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	9b2087bd236baf0b9bc37b5aa04bf26f0e25b77b39e6a3f9127402697072c09d	none	-	0	0
+dxvkit/streams/glenc/glenc_yg10_pat100x36.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	7965f644ba73d9712897250af979a53495153990c8af3716ebbb166021f62f41	choosable	can't tell	442	0
+dxvkit/streams/glenc/glenc_yg10_pat18x10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	9d273866b53101e3cf1e4dcd0e1e8d651afff5f3a23172ee6ec4acda463515e6	choosable	can't tell	24	0
+dxvkit/streams/glenc/glenc_yg10_pat48.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	701838c5b88dd2b3af03a48742df421dfa8b79707f9980448039c211fd196eb9	choosable	can't tell	143	0
+dxvkit/streams/glenc/glenc_yg10_pat64.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	c593311055ff365e88b48325f7ca385ac9e08e7da56e1b973222eddc97e50b6f	choosable	can't tell	496	1
+dxvkit/streams/invalid/bad_dxdi-lzf-backref-before-start.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	2d6f38f25524a467bb23c7daa72180aef9839db45b3af57c94f1fed1cd8a7245	none	-	0	0
+dxvkit/streams/invalid/bad_dxdi-lzf-short-output.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	b3b5cafbd5f51d60ab8e304951afb3a64a05e68513429d7d5d8b3165d2304cca	none	-	0	0
+dxvkit/streams/invalid/bad_dxt1-backref-before-start.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	fd4298e113aa53c278b2e9a9936b950b52a4026c8ca7624b37811f493cbd8cde	none	-	0	0
+dxvkit/streams/invalid/bad_dxt5-backref-before-start.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	5cc1b1574d84783f42f7047837ad77f0b89bdd4ab2f263cbafd243a8b12f8c06	-	-	0	0
+dxvkit/streams/invalid/bad_dxv3-header-size-exceeds-packet.mov	unsupported	DXV3 in MOV is not supported	[DXD3]	DXV3	-	-	-	0	0
+dxvkit/streams/invalid/bad_dxv3-payload-truncated.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	05d913c9ab486b820dc55987addf63921bbdf80ffc4c5c33e5e7b64a1b762d2e	none	-	0	0
+dxvkit/streams/invalid/bad_dxv3-unknown-tag.mov	unsupported	DXV3 in MOV is not supported	[DXD3]	DXV3	-	-	-	0	0
+dxvkit/streams/invalid/bad_packet-too-short.mov	unsupported	DXV3 in MOV is not supported	[DXD3]	DXV3	-	-	-	0	0
+dxvkit/streams/invalid/bad_ycg6-op-count-exceeds-blocks.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	6a8ba22e43dbe034aa8bebd36273f3cadf7498721f906139558c92371ad1b1ef	none	-	0	0
+dxvkit/streams/invalid/bad_ycg6-op-offset-below-header.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	a33dea9b953e68689c4ab10d3fe28ca8457379f3275a1df9722e8113f43b4120	none	-	0	0
+dxvkit/streams/synthetic/synthetic-dxdi_dxt1-lzf_pat100x36.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	e186d920fd59889b24f455b60b16ec866a4e06e006fd7943e049531e46fa95f3	none	-	0	0
+dxvkit/streams/synthetic/synthetic-dxdi_dxt1-lzf_pat64.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	00fe0265f7cfe1c922a8a43467bb39eaa7112da51dba02f70f558cf76eb2675b	none	-	0	0
+dxvkit/streams/synthetic/synthetic-dxdi_dxt1-raw_pat64.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	588e91a146bd844e114323ac23b54919b74cc881fd30c32be17c5c62e81df35b	none	-	0	0
+dxvkit/streams/synthetic/synthetic-dxdi_dxt5-lzf_pat64.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	6bc51c110d7be926026a85d096215ae212cd305180873bf53177e56cf2782c04	choosable	can't tell	496	430
+dxvkit/streams/synthetic/synthetic-dxdi_implied-dxt1-v2_pat64.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	665269c39ed31818284b82f5dc40a0d6ea2401f9289b940239caa5585e0b300c	none	-	0	0
+dxvkit/streams/synthetic/synthetic-dxdi_type03-implied-dxt1_pat64.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	a4d6f4acf143dbc2de33a84fc5f8dd03f62ad23756e3987bebf0c8d5d50dfd85	none	-	0	0
+dxvkit/streams/synthetic/synthetic-dxv3_dxt1-rawflag_pat64.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	1d6159626cbd3d97ca2e25991b3f4390100ccdfbaff7c634e7b55b522d23791b	none	-	0	0
+dxvkit/streams/synthetic/synthetic-dxv3_dxt5-rawflag_pat64.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	c573bcb2f9dcfc17236c0d2c85f5c13162562352e76902bc778cd6e2ab7f8b6d	choosable	can't tell	248	213
+synthetic_hap7.mov	unsupported	Hap7 in MOV is not supported	[Hap7]	-	-	-	-	0	0
+synthetic_haph.mov	unsupported	HapH in MOV is not supported	[HapH]	-	-	-	-	0	0
+tiles_dxt1.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	0309204dfaaaad22ebc82886a5e314711ac225d61f0c07e5165875ff0344fe12	none	-	0	0
+tiles_dxt5.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	fabe2971461612b3549b8e48b16f3375924566ca4744b9041ea7c693cea947a5	choosable	looks straight	1182	1081
+tiles_h264.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+tiles_hap1_chunks4.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+tiles_hap1.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+tiles_hap5.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+tiles_hapa.mov	hap	HAP Alpha-only in MOV is not supported	[HapA]	HAP Alpha-only	-	-	-	0	0
+tiles_hapm_chunks4.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+tiles_hapm.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+tiles_hapy.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+tiles_hevc.mp4	av	HEVC in MP4 is not supported	[hvc1]	HEVC	-	-	-	0	0
+tiles_mjpeg.mov	av	Motion JPEG in MOV is not supported	[jpeg]	Motion JPEG	-	-	-	0	0
+tiles_prores422.mov	av	ProRes 422 in MOV is not supported	[apcn]	ProRes 422	-	-	-	0	0
+tiles_prores4444.mov	av	ProRes 4444 in MOV is not supported	[ap4h]	ProRes 4444	-	-	-	0	0
+tiles_ycg6.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	e1c64db046168b734b362651445cf4cd2cbf77cade129f393fea53399f9abd95	none	-	0	0
+tiles_yg10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	327e7ec8e32dec0eb4757169bdf6e7a17320fe44bdf7a070712b0448f01da72c	choosable	looks straight	1182	1081

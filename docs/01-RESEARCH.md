@@ -22,9 +22,10 @@ them was machine-checked to exist, and the claims that contradict the brief were
 
 ## 0. Contradictions with the brief (STOP items — for Amrit)
 
-The brief's rule 7 says to stop on any contradiction. None of these blocks the W0 proof or the
-core's design, so the wave was finished and each is left **undecided** here; the roadmap plans for
-the code as it is and marks where a ruling changes the plan.
+The brief's rule 7 says to stop on any contradiction. None of these blocked the W0 proof or the
+core's design, so the wave was finished and each was left undecided here. Cowork's review of
+2026-11-14 accepted that ("finish the diagnosis, report once"); the points that needed a ruling
+are closed in §9.
 
 1. **iCrate does not share MaCrate's database.** The brief: *"iCrate: 'Shares the database' — Rust
    MaCrate must keep MaCrate's library database format so iCrate keeps working with it."* The code:
@@ -356,32 +357,72 @@ assigns each to the wave that depends on it.
     leaves `checkerboardScope` alone; preview FourCC sets lack `DXD4`. Bugs or behaviour — Amrit's
     call per item (`research/glenc.md` §12).
 
-## 9. Decisions for Amrit (one line each)
+## 9. Decisions — all closed 2026-11-14
+
+W0 put these 16 to Amrit. Each line keeps the question and gives the answer: Amrit's own words in
+quotes (2026-11-14 19:17), or Cowork's ruling where the question was technical and settled from the
+code. Source: `~/claude-handoffs/glance-core_2026-11-14_note-from-Cowork-w0-review.md`. Applied in
+core wave C1 to the licence, the roadmap and the parity checklists.
 
 1. iCrate compatibility means sidecars + stash file + `clip_id`, not the SQLite file — confirm, and
-   say whether the Rust MaCrate must also keep the SQLite format (recommended: yes, for the swap).
+   say whether the Rust MaCrate must also keep the SQLite format.
+   **Closed (Cowork, technical, 2026-11-14):** the Mac–iPad contract is the sidecars + the stash
+   file + `clip_id` (§0.1). The Rust MaCrate **also** keeps the SQLite format identical, so the
+   swap needs no migration.
 2. ProRes on Windows: none (a), ask Apple (b), own decoder (c), a young crate (c'), or
-   Mac-only (d)? Recommended: (a) for the first Windows releases, with (b) asked in parallel.
-3. The 0-difference render bar: keep it as the gate for the Rust apps (DXVKit Plus then gets the
-   integer-texel path for DXT1 / DXT5 / HAP), or accept the GPU's BC decode (≤ 2 / 255, what
-   Arena itself shows)? Recommended: keep it.
+   Mac-only (d)?
+   **Closed (Amrit, 2026-11-14):** "How do I proceed to get a yes from them?" — he contacts the
+   Apple ProRes Program Office (ProRes@apple.com) as Creativeations. Until Apple answers: no ProRes
+   on Windows, said plainly in the apps. The Mac keeps Apple's own codec.
+3. The 0-difference render bar: keep it as the gate, or accept the GPU's BC decode (≤ 2 / 255)?
+   **Closed (Cowork, technical, 2026-11-14):** keep 0-difference (Glance's standing rule). DXVKit
+   Plus built the exact path (v0.8.0); the core renders on it since C1 and measures max 0
+   (`docs/04-C1-RESULTS.md`).
 4. May loombda-rs's encoders, QuickTime writer and VideoToolbox / AudioToolbox encode move into
-   DXVKit Plus under MIT? (They are what GlEnc-rs needs.)
-5. May the Rust Arena client be written from SendEhrKit and released under the core's licence
-   (relicensing your GPL code), or does it stay GPL in its own crate?
+   DXVKit Plus under MIT?
+   **Closed (Amrit, 2026-11-14):** "Yes". It stays the last wave of DXVKit Plus's run order.
+5. May the Rust Arena client be written from SendEhrKit and released under the core's licence, or
+   does it stay GPL in its own crate?
+   **Closed (Amrit, 2026-11-14):** "reuse" — written from SendEhrKit and released under MIT. He is
+   the sole author; the relicence is recorded in the crate's header and NOTICE.
 6. Windows signing: an organisation (company) for Artifact Signing, or a CA certificate on a token?
+   **Closed (Amrit, 2026-11-14):** "I have a buisness, Creativeations. Registered since 2010 and
+   still active." — Microsoft Artifact Signing, Public Trust, organisation validation as
+   Creativeations. Needed at the Windows milestone: a business registration document issued within
+   the last 12 months, the business identifier, the business address, a monitored email on a domain
+   Creativeations owns; the certificate name is the registered legal name.
 7. glance-core's own licence: proprietary and private as now, or MIT like DXVKit Plus and Glance?
-8. egui 0.36.2 (as loombda-rs) or 0.37.0 for the family? Recommended: stay on 0.36.2, bump with
-   loombda-rs.
-9. Intel Macs: the Swift apps build for the host only (Apple silicon in practice). Universal
-   builds for the Rust apps, or Apple silicon only?
+   **Closed (Amrit, 2026-11-14):** "MIT". Done in C1 (`LICENSE`, `license = "MIT"` in the
+   workspace). The repository stays private until he says otherwise.
+8. egui 0.36.2 (as loombda-rs) or 0.37.0 for the family?
+   **Closed (Cowork, technical, 2026-11-14):** stay on 0.36.2, bump together with loombda-rs.
+9. Intel Macs: universal builds for the Rust apps, or Apple silicon only?
+   **Closed (Amrit, 2026-11-14):** "Intel too" — universal macOS builds (arm64 + x86_64) for every
+   Rust app. CI checks `x86_64-apple-darwin` since C1.
 10. Minimum macOS: stay at 14.0, or 14.2 if cpal needs it?
+    **Closed (Cowork, technical, 2026-11-14):** 14.0 unless a measured need (cpal) says 14.2;
+    decided in C2 from the build, not by guess.
 11. Windows minimum: Windows 10 or Windows 11 only?
+    **Closed (Amrit, 2026-11-14):** "11 only".
 12. GlEnc's four code quirks (hard spot 11): keep or fix in the Rust app?
-13. CueGlance: the `.cueproj` writer drops `tracks`, `playlists`, `selectedTrackId` from CueSync
-    files on save although a comment promises they survive — reproduce the loss, or preserve them?
+    **Closed (Amrit, 2026-11-14):** "fix" — the Rust app does the correct thing; the four items in
+    the GlEnc checklist read "fixed — differs from Swift on purpose".
+13. CueGlance: the `.cueproj` writer drops `tracks`, `playlists`, `selectedTrackId` on save —
+    reproduce the loss, or preserve them?
+    **Closed (Amrit, 2026-11-14):** "fix" — preserved.
 14. Glance: should Play at the end of a non-looping DXV / HAP clip restart from frame 0 like the
     AVFoundation path does?
+    **Closed (Amrit, 2026-11-14):** "fix" — yes, on every path.
 15. MaCrate on Windows: is the measurement scanner's text check (Vision OCR) dropped there?
-16. Where is the GlancEhr scope brief? It is not in `~/claude-handoffs` on this Mac, so the core's
-    plan covers GlancEhr's needs only as the W0 brief names them.
+    **Closed (Amrit, 2026-11-14):** "Drop" — struck for Windows in the MaCrate checklist.
+16. Where is the GlancEhr scope brief?
+    **Closed (Amrit's words via Cowork, 2026-11-14):** its scope is in `docs/00-ROADMAP.md` §3 —
+    a folder dragged in, random order with automated transitions, a settings menu with Glance's
+    look, Send To fullscreen on a second screen, Windows from day one, **and iPhone / iPad** ("plug
+    in their device and run allowed files directly from their device"). Consequence for the core:
+    iOS is not designed out; the core crates compile for `aarch64-apple-ios` in CI since C1.
+
+One more ruling of the same day, found between W0 and C1 (Cowork, verified against Vidvox's own
+Hap Q shader): **HAP Q follows the Vidvox reference as DXVKit Plus decodes it**, not Swift Glance's
+127.5 midpoint and truncated palette. The Rust family's HAP Q picture differs from Swift Glance's
+by at most 2 / 255, on purpose (`docs/04-C1-RESULTS.md` §5).

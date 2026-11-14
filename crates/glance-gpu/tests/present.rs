@@ -1,8 +1,9 @@
-//! The present pass against hand-computed values (needs a GPU; Metal on macOS, DX12 on Windows).
+//! The present pass against hand-computed values. Needs a GPU (Metal on macOS, DX12 on Windows);
+//! skips without one, unless `GLANCE_REQUIRE_GPU=1`.
 // Test helpers outside `#[test]` functions may fail loudly too.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use glance_gpu::{ClipView, Gpu, Presenter, read_texture_rgba};
+use glance_gpu::{ClipView, Presenter, read_texture_rgba};
 use glance_media::{AlphaView, Decoded, PixelFormat, Plane, Shading};
 
 const W: u32 = 32;
@@ -24,23 +25,19 @@ fn frame() -> Decoded {
     }
 }
 
-fn shown(alpha: AlphaView) -> impl Fn(u32) -> [u8; 4] {
-    let gpu = Gpu::headless().expect("a GPU");
+fn shown(alpha: AlphaView) -> Option<impl Fn(u32) -> [u8; 4]> {
+    let gpu = glance_gpu::verify::test_gpu().unwrap()?;
     let presenter = Presenter::new(&gpu.device);
     let mut view = ClipView::new(&gpu.device);
     let picture = view.show(&gpu, &presenter, &frame(), alpha).expect("show").clone();
     assert_eq!((picture.width(), picture.height()), (W, H));
     let rgba = read_texture_rgba(&gpu.device, &gpu.queue, &picture).expect("read back");
-    move |x| rgba[(x * 4) as usize..(x * 4 + 4) as usize].try_into().unwrap()
-}
-
-fn near(got: [u8; 4], want: [u8; 4]) {
-    assert!(got.iter().zip(want).all(|(g, w)| g.abs_diff(w) <= 1), "got {got:?}, want {want:?}");
+    Some(move |x: u32| rgba[(x * 4) as usize..(x * 4 + 4) as usize].try_into().unwrap())
 }
 
 #[test]
 fn premultiplied_colour_goes_out_as_stored() {
-    let px = shown(AlphaView::Premultiplied);
+    let Some(px) = shown(AlphaView::Premultiplied) else { return };
     assert_eq!(px(0), [200, 100, 50, 128]);
     assert_eq!(px(1), [10, 20, 30, 0]); // colour under alpha 0 survives: it adds to the background
     assert_eq!(px(2), [9, 8, 7, 255]);
@@ -48,15 +45,15 @@ fn premultiplied_colour_goes_out_as_stored() {
 
 #[test]
 fn straight_colour_is_multiplied_by_its_alpha() {
-    let px = shown(AlphaView::Straight);
-    near(px(0), [100, 50, 25, 128]);
+    let Some(px) = shown(AlphaView::Straight) else { return };
+    assert_eq!(px(0), [100, 50, 25, 128]); // round(200 * 128 / 255), round(100 * 128 / 255), round(50 * 128 / 255)
     assert_eq!(px(1), [0, 0, 0, 0]); // the control: the same texel that Premultiplied shows as 10 20 30
     assert_eq!(px(2), [9, 8, 7, 255]);
 }
 
 #[test]
 fn the_alpha_switch_recomposites_without_a_new_frame() {
-    let gpu = Gpu::headless().expect("a GPU");
+    let Some(gpu) = glance_gpu::verify::test_gpu().unwrap() else { return };
     let presenter = Presenter::new(&gpu.device);
     let mut view = ClipView::new(&gpu.device);
     assert!(view.relook(&gpu, &presenter, AlphaView::Premultiplied).is_err(), "nothing shown yet");

@@ -1,41 +1,39 @@
 # glance-core CHECKPOINT
 
-Wave: w0-recon-plan-proof. Brief: ~/claude-handoffs/glance-core_2026-11-14_w0-recon-plan-proof_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1).
+Wave: c1-exact-picture. Brief: ~/claude-handoffs/glance-core_2026-11-14_c1-exact-picture_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1).
 
 ## DONE
-- Brief read in full; repo initialised (`main`), `.ref/` + `target/` gitignored.
-- 14 reference repos cloned read-only into `.ref/` (glance, glance-releases, cueglance, cueglance-releases, glenc, glenc-public, glenc-releases, crate, CrateRelease, SendEhr, DXVKit-Plus, dxvkit, loombda-rs, swift-snappy). `git status` clean in each (reader agents' reports).
-- Recon extracted with a source line per fact: `docs/research/glance.md` (972 lines), `cueglance.md` (1,103), `glenc.md` (1,473), `macrate.md` (1,141), `macrate-db.md` (1,063), `backends.md` (1,219). 6,971 lines.
-- Existing Rust read by the main session (DXVKit Plus 0.7.1 @ 09f1dbc, loombda-rs @ b7e6f68): DXVKit Plus owns demux, HAP, DXV, native macOS decode, transport and wgpu upload; the core is a thin layer over it. Ownership table: `docs/01-RESEARCH.md` §6.
-- `docs/01-RESEARCH.md` (383 lines): synthesis, 9 contradictions with the brief (§0), critical rules, MaCrate data + cross-test plan, existing Rust, backends, 11 hard spots, 16 decisions for Amrit.
-- `docs/02-PARITY.md` (622 lines): 457 checklist items — core 30, Glance 94, CueGlance 95, GlEnc 112, MaCrate 126.
-- `docs/00-ROADMAP.md`: repos, crates, GlancEhr coverage, pins, waves, the replacement step, the Windows test plan, known limits.
-- Workspace: `glance-media`, `glance-gpu`, `glance-playback`, `glance-ui`, `glance-proof`. One wgpu (30.0.2) across DXVKit Plus 0.7.1 and egui 0.36.2 (`cargo tree -i wgpu`).
-- Gates on the final tree: `cargo fmt --all --check` ok; `cargo clippy --workspace --all-targets --release -- -D warnings` ok; `cargo test --workspace --release` 10 passed, 0 failed; `cargo build --release` ok.
-- Proof, final binary, release, 120 Hz, 15.0 s measured per run (`docs/03-W0-RESULTS.md`, raw `docs/data/w0-proof-{a,b,c,d}.{json,csv}`): run A `Metric_01_HapM.mov` (HAP Q Alpha 1080p25) + `DXT5-DXV3.mov` (DXV3 NQ Alpha 1080p30): 376 and 451 frames shown, 0 skipped, present interval p50 8.34 ms / p99 8.58 ms, picture vs CPU decode max 2 / 255. Runs B–D (HAP chunked + DXV HQ Alpha; HAP Q Alpha 2160p + DXV NQ; ProRes 4444 2160p native + DXV NQ Alpha): 0 skipped in every clip, picture vs CPU max 0–1.
-- Briefs for other repos: `~/claude-handoffs/DXVKit-Plus_2026-11-14_glance-family-needs_brief.md`, `~/claude-handoffs/loombda-rs_2026-11-14_dxvkit-plus-dedupe_brief.md`.
-
-- GitHub: private `AmritusG/glance-core`, `main` pushed (first commit `f4ea06a`).
-- Verifier (`cc-kit:verifier`) on this checkpoint, the results doc and `01-RESEARCH.md` §0 / §6: 64 claims — 54 confirmed, 6 wrong, 4 unproven. The 6 wrong were corrected in the docs (a rounding 0.207 → 0.206; "0.05" → "0.06–0.07"; GlEnc does have an OpenGL preview; iCrate plays HAP through Metal too; glance is 3 commits past v0.18.1; a stale OPEN line). Unproven and stated as such: exit codes are not in the data files; the earlier-build stutter figures have no data file; nobody has looked at the window.
-- Handoff: `docs/handoffs/w0-recon-plan-proof.md`, copied to `~/claude-handoffs/glance-core_2026-11-14_w0-recon-plan-proof-result.md`.
-- **Wave closed.**
+- Read in full: the brief, `~/claude-handoffs/glance-core_2026-11-14_note-from-Cowork-w0-review.md`, `~/claude-handoffs/glance-core_2026-11-14_note-from-DXVKit-Plus-w1-exact-path.md`, roadmap, parity (Core + Glance routing / exactness / alpha), research §0 §3 §9. `.ref/DXVKit-Plus` refreshed to `v0.8.0` (9bc1977).
+- Diagnosis read in source (Swift Glance a9dc601, DXVKit fb506da = v1.0.0 + docs, DXVKit Plus v0.8.0): routing order and message wording, `clipKey` layout, alpha-look probe, the exactness bar and where the Alpha Type pass sits, the scaled-filter model, the HAP Q formulas. Goes into `docs/handoffs/c1-exact-picture.md`.
+- Re-pin: `dxvkit-plus-{core,wgpu,apple}` tag `v0.8.0` (Cargo.lock 9bc1977c). No HAP Q hash was pinned in this repo from 0.7.1 (none to re-derive).
+- `glance-gpu`: `ClipView` on `BlockPath::Exact` by default, `with_path` / `set_path` / `path` for a grid; the present pass in whole code values (as stored / straight = round(c·a/255) / alpha-only = white at that alpha, as Swift Glance shows HapA); `expected_picture` (the CPU reference); `verify` module (the harness).
+- `glance-media`: `route` (content routing over DXVKit Plus's probe, Swift Glance's messages), `Clip::open`, `first_video_fourcc`, `display_name`, `clip_key`, `alpha_report` / `alpha_look_count` / `alpha_look`. `ClipPlayer::open` routes through it.
+- Fixtures committed from DXVKit Plus v0.8.0 with `cp -p` (CC0 tile movies, synthetic HAP R / HDR, DXVKit's MIT vector streams): `tests/fixtures/`, 1.2 MB.
+- Harness, `cargo test --release -p glance-gpu` (7 + 3 tests pass): every variant (12) at 9 sizes 1x1 … 3840x2160, each Alpha Type — 180 rows, max 0; 36 fixture files, 67 rows, 563 frame comparisons, max 0; 64 DXVKit vector pictures hash to DXVKit's reference RGBA; flipped-bit and wrong-Alpha-Type controls; sampled path measured 1–3 and told apart; HAP HDR equals DXVKit Plus's GPU conversion; OS-codec fixtures route Native and show.
 
 ## NEXT
-- Amrit rules on the contradictions and decisions in `docs/01-RESEARCH.md` §0 and §9 (first: iCrate shares sidecars, not the database; ProRes on Windows; the 0-difference render bar; the loombda-rs encoders under MIT).
-- Then core wave C1 (exact picture) — needs DXVKit Plus brief item 1 or a relaxed bar. No brief is queued until Amrit decides.
+- Swift cross-test harness (clipKey + probe + FourCC names on fixtures and Amrit's clips), test data committed.
+- glance-media tests: routing, messages, hostile files.
+- glance-ui headless stage + scaled (1.5x / 0.5x) and checkerboard tests.
+- `glance-proof verify` over Amrit's clips; HAP Q measurement vs Swift's convention; `docs/04-C1-RESULTS.md`, `docs/data/c1-*`.
+- Licence MIT, docs (roadmap, parity, research §9), CI, deny; verifier; handoff; tag v0.1.0.
 
 ## STATE
-- Test media (read-only): `<testfiles>` (`<testfiles>` does not exist on this Mac).
-- GlancEhr scope brief: not in `~/claude-handoffs` on this Mac.
-- Pins: DXVKit Plus tag `v0.7.1` (09f1dbc), wgpu 30.0.2, egui / egui-wgpu / egui-winit 0.36.2, winit 0.30.13, rustc 1.99.1.
-- Gates: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --release -- -D warnings`, `cargo test --workspace --release`, `cargo build --release`.
-- Proof: `./target/release/glance-proof <clip>... [--seconds N] [--warmup N] [--out f.json] [--log f.csv]`; without `--seconds` it stays open.
-- Not verified by eye: nobody has looked at the proof window; the picture is checked by GPU read-back against the CPU decode.
-- Alpha rule in code: DXV alpha = per-clip Alpha Type (default Premultiplied); HAP alpha = straight; frames decoded as stored. Checkerboard 8 pt, greys 0.85 / 0.65.
+- Test media (read-only): `<testfiles>`.
+- Pins: DXVKit Plus tag `v0.8.0` (9bc1977), wgpu 30.0.2, egui / egui-wgpu / egui-winit 0.36.2, winit 0.30.13, sha2 0.11.1, rustc 1.99.1.
+- Gates: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --release -- -D warnings`, `cargo test --workspace --release`, `cargo deny check`, `cargo build --release`.
+- Test support (movie writer, random-block frames of every variant): `tests/support/movie.rs`, included with `#[path]`.
+- GPU tests skip without a GPU unless `GLANCE_REQUIRE_GPU=1`.
 
 ## OPEN
+- [ ] Swift cross-test (clipKey, probe)
+- [ ] glance-media routing / message / hostile-file tests
+- [ ] headless stage, scaled-filter and checkerboard tests
+- [ ] Amrit's clips through the harness; HAP Q measurement
+- [ ] Licence, README, ATTRIBUTION, roadmap, parity, research §9
+- [ ] CI + cargo deny, green on main
+- [ ] results doc, verifier, handoff, tag v0.1.0
 
 ## IDEAS
-- A `glance-proof --headless` mode that renders offscreen and hashes frames, for CI without a window server.
 - Skip the Alpha Type pass for Premultiplied clips (hand egui DXVKit Plus's output directly).
 - Use the `.crate-meta.json` sidecar found in the test folder as the first cross-test fixture for `glance-library`.

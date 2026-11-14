@@ -1,26 +1,75 @@
 //! # glance-gpu — a decoded frame to a picture the viewer can show
 //!
-//! DXVKit Plus uploads a frame's blocks into BC textures and converts them to RGBA **as stored**
-//! (`dxvkit_plus_wgpu::FrameRenderer`). This crate adds the viewer's last step, [`Presenter`]: the
-//! clip's colour read as premultiplied or straight ([`AlphaView`]) and written **premultiplied**,
-//! ready to be blended over the viewer's background (`ONE, ONE_MINUS_SRC_ALPHA` — egui's blend, and
-//! the Swift apps' GL blend: Straight multiplies the colour by its alpha in the shader, Premultiplied
-//! passes it through). The per-clip Alpha Type switch is a uniform in this pass; it never re-decodes
-//! or re-uploads a frame.
+//! DXVKit Plus uploads a frame's blocks and converts them to RGBA **as stored**
+//! (`dxvkit_plus_wgpu::FrameRenderer`). A [`ClipView`] asks for its exact block path by default
+//! ([`BlockPath::Exact`]: BC1 / BC3 / BC4 blocks decoded in the shader from integer texels, equal to
+//! the CPU decode bit for bit — the family's exactness bar); a many-layer grid can put a view on
+//! [`BlockPath::Sampled`] instead, which is faster and within 3 / 255.
+//!
+//! This crate adds the viewer's last step, [`Presenter`]: the clip's colour read as premultiplied
+//! or straight ([`AlphaView`]) and written **premultiplied**, ready to be blended over the viewer's
+//! background (`ONE, ONE_MINUS_SRC_ALPHA` — egui's blend, and the Swift apps' GL blend: Straight
+//! multiplies the colour by its alpha in the shader, Premultiplied passes it through). The per-clip
+//! Alpha Type switch is a uniform in this pass; it never re-decodes or re-uploads a frame. The pass
+//! works in whole code values, so its output is the same on every backend: [`expected_picture`] is
+//! the same arithmetic on the CPU, and the two are equal, not close.
 //!
 //! One submission per shown frame: block upload, conversion and present pass share an encoder.
 #![forbid(unsafe_code)]
 
-use dxvkit_plus_wgpu::FrameRenderer;
-use glance_media::{AlphaView, Decoded};
+pub mod verify;
 
-pub use dxvkit_plus_wgpu::{Gpu, GpuError, read_texture_rgba};
+use dxvkit_plus_wgpu::FrameRenderer;
+use glance_media::{AlphaView, Decoded, MediaError, Shading};
+
+pub use dxvkit_plus_wgpu::{BlockPath, Gpu, GpuError, read_texture_rgba};
+
+/// The family's device: the high-performance adapter (Direct3D 12 on Windows, where a default
+/// request can come back as Vulkan), BC textures where the adapter has them, and the largest 2D
+/// texture the adapter offers up to DXVKit Plus's own limit of 16384 — wgpu's default of 8192 is
+/// smaller than clips people have (a 3840x9626 portrait clip is in the test library). An uncaptured
+/// wgpu error is logged, never a panic.
+pub fn open_gpu() -> Result<Gpu, GpuError> {
+    let backends = if cfg!(target_os = "windows") { wgpu::Backends::DX12 } else { wgpu::Backends::PRIMARY };
+    let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { backends, ..wgpu::InstanceDescriptor::new_without_display_handle() });
+    let adapter = pollster::block_on(
+        instance.request_adapter(&wgpu::RequestAdapterOptions { power_preference: wgpu::PowerPreference::HighPerformance, ..Default::default() }),
+    )
+    .map_err(|e| GpuError::NoAdapter(e.to_string()))?;
+    let required_features = adapter.features() & (wgpu::Features::TEXTURE_COMPRESSION_BC | wgpu::Features::TIMESTAMP_QUERY);
+    let required_limits =
+        wgpu::Limits { max_texture_dimension_2d: adapter.limits().max_texture_dimension_2d.min(dxvkit_plus_wgpu::MAX_EDGE), ..Default::default() };
+    let (device, queue) =
+        pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor { label: Some("glance"), required_features, required_limits, ..Default::default() }))
+            .map_err(|e| GpuError::Device(e.to_string()))?;
+    device.on_uncaptured_error(std::sync::Arc::new(|e: wgpu::Error| eprintln!("glance-gpu: uncaptured wgpu error: {e}")));
+    Ok(Gpu { instance, adapter, device, queue })
+}
+
+/// A frame the device cannot hold is an error with the numbers in it, not a wgpu validation error.
+fn check_size(device: &wgpu::Device, frame: &Decoded) -> Result<(), GpuError> {
+    let limit = device.limits().max_texture_dimension_2d;
+    let (width, height) = frame.size();
+    let planes = match frame {
+        Decoded::Planes { planes, .. } => planes.as_slice(),
+        Decoded::Native(_) => &[],
+    };
+    let largest = planes.iter().map(|p| p.width.max(p.height)).fold(width.max(height), u32::max);
+    if width == 0 || height == 0 {
+        return Err(GpuError::Invalid(format!("a {width}x{height} frame has no picture")));
+    }
+    if largest > limit {
+        return Err(GpuError::Unsupported(format!("a {width}x{height} clip is larger than this GPU's largest texture ({limit} pixels)")));
+    }
+    Ok(())
+}
 
 /// The present pass's output: premultiplied RGBA, values as shown (no sRGB conversion on write).
 pub const VIEW_FORMAT: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 
-/// The clip premultiplied for the blend, texel for texel. `mode` 0: the colour is premultiplied
-/// already (as stored); 1: straight (`rgb *= a`).
+/// The clip premultiplied for the blend, texel for texel, in 8-bit code values. `mode` 0: the
+/// colour is premultiplied already (out as stored); 1: straight (`rgb = round(rgb * a / 255)`);
+/// 2: an alpha-only frame, stored as a grey value: white at that alpha (`rgba = value`).
 const PRESENT_WGSL: &str = r#"
 struct U { mode: u32, pad0: u32, pad1: u32, pad2: u32 };
 @group(0) @binding(0) var<uniform> u: U;
@@ -35,12 +84,60 @@ fn vs(@builtin(vertex_index) i: u32) -> @builtin(position) vec4<f32> {
 @fragment
 fn fs(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
     let c = textureLoad(src, vec2<i32>(pos.xy), 0);
-    if (u.mode == 1u) {
-        return vec4<f32>(c.rgb * c.a, c.a);
+    if (u.mode == 0u) {
+        return c;
     }
-    return c;
+    let q = vec4<u32>(round(c * 255.0));
+    if (u.mode == 2u) {
+        return vec4<f32>(f32(q.r)) / 255.0;
+    }
+    let rgb = (q.rgb * q.a + vec3<u32>(127u)) / 255u;
+    return vec4<f32>(vec3<f32>(rgb), f32(q.a)) / 255.0;
 }
 "#;
+
+const MODE_AS_STORED: u32 = 0;
+const MODE_STRAIGHT: u32 = 1;
+const MODE_ALPHA_ONLY: u32 = 2;
+
+/// Whether a frame is alpha only (HAP Alpha-Only): DXVKit Plus hands it over as a grey picture, and
+/// the family shows it as white at that alpha, as Swift Glance does.
+fn alpha_only(frame: &Decoded) -> bool {
+    matches!(frame, Decoded::Planes { shading: Shading::AlphaOnly, .. })
+}
+
+fn present_mode(alpha_only: bool, alpha: AlphaView) -> u32 {
+    match (alpha_only, alpha) {
+        (true, _) => MODE_ALPHA_ONLY,
+        (false, AlphaView::Straight) => MODE_STRAIGHT,
+        (false, AlphaView::Premultiplied) => MODE_AS_STORED,
+    }
+}
+
+/// `round(c * a / 255)`: colour times alpha in 8-bit code values, halves up (the present pass's
+/// arithmetic, and Swift Glance's reference for a straight clip over black).
+pub fn premultiply(c: u8, a: u8) -> u8 {
+    ((u32::from(c) * u32::from(a) + 127) / 255) as u8
+}
+
+/// A frame's stored RGBA read as `alpha`, in place: what the present pass does, on the CPU.
+pub fn present_on_cpu(rgba: &mut [u8], frame: &Decoded, alpha: AlphaView) {
+    let texels = rgba.as_chunks_mut::<4>().0.iter_mut();
+    match present_mode(alpha_only(frame), alpha) {
+        MODE_ALPHA_ONLY => texels.for_each(|p| *p = [p[0]; 4]),
+        MODE_STRAIGHT => texels.for_each(|[r, g, b, a]| (*r, *g, *b) = (premultiply(*r, *a), premultiply(*g, *a), premultiply(*b, *a))),
+        _ => {}
+    }
+}
+
+/// The picture [`ClipView::show`] gives for `frame` read as `alpha`, computed on the CPU from
+/// DXVKit Plus's CPU decode: the reference the GPU picture is compared with (they are equal). An
+/// error for frames without a CPU decode (HAP HDR, native frames).
+pub fn expected_picture(frame: &Decoded, alpha: AlphaView) -> Result<Vec<u8>, MediaError> {
+    let mut rgba = frame.to_rgba()?;
+    present_on_cpu(&mut rgba, frame, alpha);
+    Ok(rgba)
+}
 
 #[repr(C)]
 #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
@@ -110,6 +207,10 @@ impl Presenter {
 /// picture. Nothing is reallocated while the clip's size stays the same.
 pub struct ClipView {
     renderer: FrameRenderer,
+    /// Whether the frame on the GPU is alpha only (decides the present mode of a re-look).
+    alpha_only: bool,
+    /// Whether a frame of the current block path is on the GPU.
+    shown: bool,
     uniform: wgpu::Buffer,
     /// The as-stored texture the bind group was built for.
     bound: Option<(wgpu::Texture, wgpu::BindGroup)>,
@@ -119,7 +220,13 @@ pub struct ClipView {
 }
 
 impl ClipView {
+    /// A view on the exact block path: what a one-clip viewer shows.
     pub fn new(device: &wgpu::Device) -> ClipView {
+        ClipView::with_path(device, BlockPath::Exact)
+    }
+
+    /// A view on a chosen block path ([`BlockPath::Sampled`] for the layers of a many-clip grid).
+    pub fn with_path(device: &wgpu::Device, path: BlockPath) -> ClipView {
         let uniform = device.create_buffer(&wgpu::BufferDescriptor {
             label: Some("glance-present"),
             size: std::mem::size_of::<Uniform>() as u64,
@@ -127,12 +234,27 @@ impl ClipView {
             mapped_at_creation: false,
         });
         ClipView {
-            renderer: FrameRenderer::new(device),
+            renderer: FrameRenderer::with_path(device, path),
+            alpha_only: false,
+            shown: false,
             uniform,
             bound: None,
             target: None,
             #[cfg(target_os = "macos")]
             importer: None,
+        }
+    }
+
+    pub fn path(&self) -> BlockPath {
+        self.renderer.path()
+    }
+
+    /// Change the block path. The frame on the GPU belongs to the old path: show a frame again
+    /// before the next [`ClipView::relook`].
+    pub fn set_path(&mut self, path: BlockPath) {
+        if path != self.renderer.path() {
+            self.renderer.set_path(path);
+            self.shown = false;
         }
     }
 
@@ -143,6 +265,7 @@ impl ClipView {
 
     /// Upload `frame`, convert it and premultiply it as `alpha` says; returns the picture.
     pub fn show(&mut self, gpu: &Gpu, presenter: &Presenter, frame: &Decoded, alpha: AlphaView) -> Result<&wgpu::Texture, GpuError> {
+        check_size(&gpu.device, frame)?;
         let mut enc = gpu.device.create_command_encoder(&wgpu::CommandEncoderDescriptor { label: Some("glance-show") });
         let stored = match frame {
             Decoded::Planes { .. } => {
@@ -151,6 +274,8 @@ impl ClipView {
             }
             Decoded::Native(native) => self.render_native(gpu, native)?,
         };
+        self.alpha_only = alpha_only(frame);
+        self.shown = true;
         self.present(gpu, presenter, &mut enc, &stored, alpha);
         gpu.queue.submit([enc.finish()]);
         self.target.as_ref().ok_or_else(|| GpuError::Invalid("no picture".into()))
@@ -158,7 +283,7 @@ impl ClipView {
 
     /// The frame already on the GPU read with another Alpha Type: no decode, no upload.
     pub fn relook(&mut self, gpu: &Gpu, presenter: &Presenter, alpha: AlphaView) -> Result<&wgpu::Texture, GpuError> {
-        let stored = self.renderer.output().ok_or_else(|| GpuError::Invalid("relook before a frame was shown".into()))?.clone();
+        let stored = self.renderer.output().filter(|_| self.shown).ok_or_else(|| GpuError::Invalid("relook before a frame was shown".into()))?.clone();
         let mut enc = gpu.device.create_command_encoder(&wgpu::CommandEncoderDescriptor { label: Some("glance-relook") });
         self.present(gpu, presenter, &mut enc, &stored, alpha);
         gpu.queue.submit([enc.finish()]);
@@ -185,7 +310,7 @@ impl ClipView {
     }
 
     fn present(&mut self, gpu: &Gpu, presenter: &Presenter, enc: &mut wgpu::CommandEncoder, stored: &wgpu::Texture, alpha: AlphaView) {
-        gpu.queue.write_buffer(&self.uniform, 0, bytemuck::bytes_of(&Uniform { mode: u32::from(alpha == AlphaView::Straight), pad: [0; 3] }));
+        gpu.queue.write_buffer(&self.uniform, 0, bytemuck::bytes_of(&Uniform { mode: present_mode(self.alpha_only, alpha), pad: [0; 3] }));
         if self.bound.as_ref().is_none_or(|(t, _)| t != stored) {
             let view = stored.create_view(&wgpu::TextureViewDescriptor::default());
             let group = gpu.device.create_bind_group(&wgpu::BindGroupDescriptor {

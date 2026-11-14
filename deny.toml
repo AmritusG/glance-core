@@ -1,0 +1,72 @@
+# cargo-deny policy (the model is DXVKit Plus's deny.toml): permissive dependencies only.
+#   cargo deny check
+# Run locally before every tag and by CI on every push (.github/workflows/ci.yml).
+
+[graph]
+all-features = true
+# The systems the family ships on or must not design out (docs/00-ROADMAP.md §3, §7).
+targets = ["aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-pc-windows-msvc", "aarch64-apple-ios"]
+
+[licenses]
+version = 2
+# The programme's allowlist (CLAUDE.md rule 2): MIT, BSD, Apache-2.0, Zlib, ISC first. Each further
+# entry below is a permissive licence a dependency of wgpu / egui / winit carries; none is copyleft.
+# No GPL, LGPL, AGPL, EPL or MPL: any crate under them fails this gate.
+allow = [
+    "MIT",
+    "MIT-0",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Zlib",
+]
+confidence-threshold = 0.93
+unused-allowed-license = "allow"
+# Two crate-scoped exceptions, not global allowances; nothing else may use these licences.
+# - `unicode-ident` (via proc-macro2, a build-time dependency of serde's derive): Unicode's data
+#   tables under Unicode-3.0, permissive and OSI-approved. DXVKit Plus carries the same exception.
+# - `epaint_default_fonts`: the fonts egui draws its text with (Ubuntu Light under the Ubuntu Font
+#   Licence 1.0, Noto Emoji under the SIL Open Font License 1.1; Hack and emoji-icon-font are MIT).
+#   Font files, not code; both licences allow bundling in an application. In the tree since W0
+#   (found by this gate in C1). It goes when the shell wave (C3) gives the apps the system font,
+#   as the Swift apps have. Needs Amrit's yes to stay until then: docs/handoffs/c1-exact-picture.md.
+exceptions = [
+    { name = "unicode-ident", allow = ["Unicode-3.0"] },
+    { name = "epaint_default_fonts", allow = ["OFL-1.1", "Ubuntu-font-1.0"] },
+]
+# Our own crates are unpublished (publish = false) and MIT.
+private = { ignore = true }
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+# Copyleft media stacks are never linked (Amrit's decision: no FFmpeg, libav, GStreamer or libmpv).
+deny = [
+    { name = "ffmpeg-next", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "ffmpeg-sys-next", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "ffmpeg-sys", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "ffmpeg-sys-the-third", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "ffmpeg-the-third", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "ac-ffmpeg", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "rsmpeg", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "video-rs", reason = "links FFmpeg (LGPL/GPL)" },
+    { name = "libmpv", reason = "LGPL/GPL media stack" },
+    { name = "libmpv2", reason = "LGPL/GPL media stack" },
+    { name = "libmpv-sys", reason = "LGPL/GPL media stack" },
+    { name = "libmpv2-sys", reason = "LGPL/GPL media stack" },
+    { name = "gstreamer", reason = "LGPL media stack" },
+    { name = "gstreamer-sys", reason = "LGPL media stack" },
+    { name = "gstreamer-video", reason = "LGPL media stack" },
+    { name = "gstreamer-app", reason = "LGPL media stack" },
+    { name = "symphonia", reason = "MPL-2.0" },
+    { name = "mp4parse", reason = "MPL-2.0" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+# The one git dependency: DXVKit Plus (Amrit's own, MIT), pinned by tag in Cargo.toml.
+allow-git = ["https://github.com/AmritusG/DXVKit-Plus"]

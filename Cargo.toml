@@ -3,11 +3,11 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.0.1"
+version = "0.1.0"
 edition = "2024"
 # Same floor as DXVKit Plus (let-chains, edition 2024).
 rust-version = "1.95"
-license = "LicenseRef-Proprietary"
+license = "MIT"
 authors = ["Amrit Rosell"]
 repository = "https://github.com/AmritusG/glance-core"
 publish = false
@@ -19,9 +19,9 @@ glance-playback = { path = "crates/glance-playback" }
 glance-ui = { path = "crates/glance-ui" }
 # Decoders, demux, transport and BC upload are DXVKit Plus's (MIT, Amrit's own): the core never
 # carries a second copy of a decoder. Pinned by tag; bumped deliberately (docs/00-ROADMAP.md §4).
-dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.7.1" }
-dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.7.1" }
-dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.7.1" }
+dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.8.0" }
+dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.8.0" }
+dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.8.0" }
 # One wgpu major across DXVKit Plus, loombda-rs and egui 0.36 (which requires wgpu ^30).
 wgpu = "30.0.1"
 egui = "0.36.2"
@@ -32,6 +32,8 @@ pollster = "1.0.1"
 bytemuck = { version = "1.25", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# SHA-256 for the clip key (RustCrypto, MIT OR Apache-2.0).
+sha2 = "0.11"
 
 # Never-crash rules, the same set DXVKit Plus and loombda-rs build under.
 [workspace.lints.rust]

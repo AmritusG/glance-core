@@ -1,0 +1,66 @@
+# The gates of CLAUDE.md, on every push. A tag is made only from a green main.
+#
+# What runs where (docs/handoffs/c1-exact-picture.md, DIAGNOSE 5):
+# - lint (Linux): rustfmt and cargo deny — no platform code needed.
+# - macos (Apple silicon runner): clippy, the tests, the release build, and cargo check for
+#   Intel macOS and iOS. The GPU tests run when the runner's virtual GPU gives wgpu a Metal
+#   adapter; without one they skip and say so (they are always a local gate on the core's home
+#   machine, where GLANCE_REQUIRE_GPU=1 makes a skip a failure). Tests on Amrit's own media skip:
+#   that media is never on a runner.
+# - windows: cargo check only. A build machine, not a test of the product — the product is tested
+#   on Windows at the Windows milestone (docs/00-ROADMAP.md §7).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: "0"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install stable --profile minimal --component rustfmt && rustup default stable
+      - run: cargo fmt --all --check
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          rustup toolchain install stable --profile minimal --component clippy
+          rustup default stable
+          rustup target add x86_64-apple-darwin aarch64-apple-ios
+      - uses: Swatinem/rust-cache@v2
+      - name: clippy
+        run: cargo clippy --workspace --all-targets --release -- -D warnings
+      - name: build
+        run: cargo build --release
+      - name: the GPU of this runner
+        run: ./target/release/glance-proof gpu || echo "no GPU adapter on this runner - the GPU tests skip"
+      - name: test
+        run: cargo test --workspace --release
+      - name: check x86_64-apple-darwin (universal macOS builds)
+        run: cargo check --workspace --target x86_64-apple-darwin
+      - name: check aarch64-apple-ios (GlancEhr's third target)
+        run: cargo check --workspace --target aarch64-apple-ios
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install stable --profile minimal && rustup default stable
+      - uses: Swatinem/rust-cache@v2
+      - name: check x86_64-pc-windows-msvc
+        run: cargo check --workspace --all-targets --target x86_64-pc-windows-msvc

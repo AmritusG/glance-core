@@ -16,9 +16,11 @@ glance-media = { workspace = true }
 dxvkit-plus-wgpu = { workspace = true }
 wgpu = { workspace = true }
 bytemuck = { workspace = true }
+pollster = { workspace = true }
+serde = { workspace = true }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 dxvkit-plus-apple = { workspace = true }
 
 [dev-dependencies]
-pollster = { workspace = true }
+sha2 = { workspace = true }

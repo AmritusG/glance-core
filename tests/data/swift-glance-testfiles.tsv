@@ -1,0 +1,174 @@
+_master_hapm_3840x2160.mov	av	ProRes 4444 in MOV is not supported	[ap4h]	ProRes 4444	-	-	-	0	0
+_master_hapm_512x512.mov	av	ProRes 4444 in MOV is not supported	[ap4h]	ProRes 4444	-	-	-	0	0
+_master_hapm_540x960.mov	av	ProRes 4444 in MOV is not supported	[ap4h]	ProRes 4444	-	-	-	0	0
+adv_corrupt_inner.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+adv_corrupt_outer.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+adv_garbage.mov	unsupported	MOV files are not supported	-	-	-	-	-	0	0
+adv_named_hap5_is_hapY.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+adv_not_hap_h264.mov	av	H.264 in MOV is not supported	[avc1]	H.264	-	-	-	0	0
+adv_stsd_hap5_is_hapY.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+adv_stsd_hapm_is_hap5.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+adv_trunc_hapm_50pct.mov	unsupported	MOV files are not supported	-	-	-	-	-	0	0
+adv_trunc_hapm_midframe.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+adv_trunc_hapm_no_moov.mov	unsupported	MOV files are not supported	-	-	-	-	-	0	0
+adv_zero.mov	unsupported	MOV files are not supported	-	-	-	-	-	0	0
+bad-audio-fixtures/bad-audio.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	6d2f2fa7f64db09fc62250c7999bb6110e9a1678d5872c8e01d6ba0a58ffb3a7	choosable	can't tell	0	0
+bad-audio-fixtures/bad-audio2_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	c197a3f31a6989a446114f3678284dc1a0510213d7c366de6ce847c1a791526c	choosable	can't tell	0	0
+bad-audio-fixtures/bad-audio2.mov	unsupported	MOV files are not supported	-	-	-	-	-	0	0
+bad-audio-fixtures/bad-audio2.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+bad-audio-fixtures/good-audio.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	6d2f2fa7f64db09fc62250c7999bb6110e9a1678d5872c8e01d6ba0a58ffb3a7	choosable	can't tell	0	0
+cellC_hap1_1080w_nonaligned.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+DXT1-DXV_DXV Normal Quality With Alpha [1280x720] [00.00.00-00.00.00].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	6bdef229a82bc27dcbe6da46e6bd62f7906b49df2a341037904eab167aafe0e2	choosable	can't tell	0	0
+DXT1-DXV_DXV Normal Quality With Alpha [1280x720].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	fc35bf2a526f338b9eed942db91f6947770b127b3d0716de96e03f6c61d39de2	choosable	can't tell	0	0
+DXT1-DXV_DXV Normal Quality With Alpha [1920x1080].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	cfb7d60c1f2b37519f2c463135c200c6053b1285af0b910b40845ae3dae694e6	choosable	can't tell	0	0
+DXT1-DXV_DXV Normal Quality With Alpha [800x800].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	9df7578fc6915b24aed0771b1823a298bb3a822e91e70d31b616707455b8426f	choosable	can't tell	0	0
+DXT1-DXV.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	138861fcfa1554610b9b8f0b97e2dbbc94e2e99d25557200fd914c05b9f83b31	none	-	0	0
+DXT5-DXV3_HapM.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+DXT5-DXV3.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	1ddfebf604332fe27d8b3b3ca368688fa6fa328d2fde9df175bb2b5b549264e0	choosable	looks premultiplied	224490	0
+glenc_hap1_1920x1080_chunks4.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+glenc_hap5_1080w_nonaligned_chunks4.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_1080w_nonaligned_single.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_1920x1080_chunks4.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_1920x1080_single.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_alpha_real_chunks4.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_alpha_real_single.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_LEAKTEST_chunks4.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_LEAKTEST_fromMaster.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_LEAKTEST_single.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_synth_straight_chunks4.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hap5_synth_straight_single.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+glenc_hapm_aligned_alpha.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+glenc_hapm_LEAKTEST_4k.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+glenc_hapm_LEAKTEST_chunks4_aligned.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+glenc_hapm_LEAKTEST_chunks4_nonaligned.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+glenc_hapm_LEAKTEST_single_aligned.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+glenc_hapm_LEAKTEST_single_nonaligned.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+glenc_hapm_portrait_nonaligned_alpha.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+glenc_hapy_fromMaster.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+glenc_hapy_portrait_nonaligned_single.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+hap-testclips/glenc_hapM_996x288.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+hap-testclips/glenc_hapY_996x288.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+hap-testclips/glenc_hapY_chunked.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+hap-testclips/glenc-hapm-gate_Hap5_HEVC.mp4	av	HEVC in MP4 is not supported	[hvc1]	HEVC	-	-	-	0	0
+hap-testclips/glenc-hapm-gate_Hap5.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+hap-testclips/glenc-hapm-gate.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+hap-testclips/hap_a_reference.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+hap-testclips/source_DXV High Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	4c91103875daedf3134c4439edce872c9f86533cdcfcf70c91cc7e5eba0206cb	choosable	can't tell	0	0
+hap-testclips/source_DXV High Quality.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	65bfeffca40f2601fa73db553ce9004c86c99599a11d08c926bd5b6b4a11ce4c	none	-	0	0
+hap-testclips/source_DXV Normal Quality With Alpha_DXV Normal Quality With Alpha [333x221]_DXV Normal Quality With Alpha_2.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	e0df8c9b2f4fa30366b85251aa71e41f83bc30f0359ee771dd67f0663e6d1dc4	choosable	can't tell	0	0
+hap-testclips/source_DXV Normal Quality With Alpha_DXV Normal Quality With Alpha [333x221]_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	e0df8c9b2f4fa30366b85251aa71e41f83bc30f0359ee771dd67f0663e6d1dc4	choosable	can't tell	0	0
+hap-testclips/source_DXV Normal Quality With Alpha_DXV Normal Quality With Alpha [333x221].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	c86c3831b091f337daa6aeaff37a7f883b04b001b964dd209dd0306356778c8b	choosable	can't tell	0	0
+hap-testclips/source_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	d1164c5ed8a6375433a73bd16ee4f342db31c50f2ae5ef4a73dfd2b5fe537131	choosable	can't tell	0	0
+hap-testclips/source_DXV Normal Quality_2.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	4019d47e7fb89b6a823f442c69f86407bb0945c75650b8eca00993af6d7e3ce7	none	-	0	0
+hap-testclips/source_DXV Normal Quality.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	4019d47e7fb89b6a823f442c69f86407bb0945c75650b8eca00993af6d7e3ce7	none	-	0	0
+hap-testclips/source_Hap1.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+hap-testclips/source_Hap5.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+hap-testclips/source_HapA.mov	hap	HAP Alpha-only in MOV is not supported	[HapA]	HAP Alpha-only	-	-	-	0	0
+hap-testclips/source_HapM_2_Hap5 [999x666].mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+hap-testclips/source_HapM_2.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+hap-testclips/source_HapM_3.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+hap-testclips/source_HapM.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+hap-testclips/source_HapY.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+hap-testclips/source.mov	av	H.264 in MOV is not supported	[avc1]	H.264	-	-	-	0	0
+hap-testclips/std_h264_audio_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	c197a3f31a6989a446114f3678284dc1a0510213d7c366de6ce847c1a791526c	choosable	can't tell	0	0
+hap-testclips/std_h264_audio_H.264.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+hap-testclips/std_h264_audio.mov	av	H.264 in MOV is not supported	[avc1]	H.264	-	-	-	0	0
+hap-testclips/std_hevc_audio.mov	av	HEVC in MOV is not supported	[hvc1]	HEVC	-	-	-	0	0
+hap-testclips/std_film_h264_audio_DXV High Quality With Alpha [00.00.00-00.10.00].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	6e52ac965347f5473d60064627e2084bd738be9c5a6aaa0f26332d153b6f0e20	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha [00.00.00-00.04.24].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	10a2730a5f596fc1219fed3059a43006e7f87d34c082911a9381b09be8dbb69d	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha [00.00.00-00.04.40].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	8b928c64c07b608744c71601e7f648e4cec982d38b966575efd0a7761e4fe016	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha [00.00.00-00.05.63].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	33bb371fe89df1d283e341d2bd4196a539ca4f10244209fe21c2a8fcd4475aa6	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha [00.02.60-00.13.64].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	61e42b02ffbcdc8b5c25d431934d300fbef9818dd0eadd120067ad503a878c14	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha [00.03.04-00.17.64].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	23790fb3694ba27859418cd1ab4f7bfa8bfb3b717e96ea8f546219ce6834a152	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha_2.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	41beda880e724b4c5543a4a22a62e2dcf3072cf56bdd62a92d4cbcb936f01415	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha_3.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	fd2fda6b741e08331fe7f76592ce10a25265293b7febdaeec7a4437069c32227	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha_H.264 [00.00.00-00.00.00]_2.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha_H.264 [00.00.00-00.00.00].mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+hap-testclips/std_film_h264_audio_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	d1db3c3707f54892903067a65e698885c1c5333fa05d4615973435b1293ad38e	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	97fb4c433264534c1676bfd973b0626f23e0b686042052670030d3204d847e47	choosable	can't tell	0	0
+hap-testclips/std_film_h264_audio.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+hap-testclips/std_prores_audio.mov	av	ProRes 422 in MOV is not supported	[apcn]	ProRes 422	-	-	-	0	0
+hap-testclips/test-hap1-audio_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	443555d78fadfe5cb30e651deb40d26d01368815793b8fa46c5fba80b938725a	choosable	can't tell	0	0
+hap-testclips/test-hap1-audio.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+hap-testclips/test-hap1.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+hap-testclips/test-hap5.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+hap-testclips/test-hapm.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+hap-testclips/test-hapy.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+hq-16px-test/ycg6-bothN16-1284x724.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	59bf5f333d2cb3ca7b545f8358a1a561e520bc7c14fae263c1831e3c9d4f1250	none	-	0	0
+hq-16px-test/ycg6-control-1280x720.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	6a87c41236ed075a5593d4aeb5436a4746171c8b018f69ae7c72d95c42ee4adf	none	-	0	0
+hq-16px-test/ycg6-width16-1280x724.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	beb984b6e5525af3244e412d1f37870c9317f80daefd3de754309e3de1b67764	none	-	0	0
+hq-16px-test/ycg6-widthN16-1284x720.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	027e76ad89a2fc9c7e0baddf687f10e7ec3ed9b5bc10cda51195777e651a807e	none	-	0	0
+hq-16px-test/yg10-bothN16-1284x724.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	904a246e017334761d2fa886c494f7d7bff87a4323fdd0e25cae62bd5f8897ba	choosable	can't tell	0	0
+hq-16px-test/yg10-control-1280x720.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	90f8102ce56536145a53d54522ba0e0c186ed0ee8d4582b6ba89fdfec1b667b0	choosable	can't tell	0	0
+hq-16px-test/yg10-width16-1280x724.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	2c417b0c4ef564461190f3c90f054ba26cf3d1a1d4c4d7fb5cf5b691b3706cb3	choosable	can't tell	0	0
+hq-16px-test/yg10-widthN16-1284x720.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	27545c5d11da75f562c52ecd100e806f17547f4312f19f382e5b2b5adabb73ca	choosable	can't tell	0	0
+Metric_01_DXV Normal Quality With Alpha_Hap5.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+Metric_01_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	d35e3b3def9ce846f5e9876ac01b3739510ef0f9a825db3c737d248e46a744fb	choosable	can't tell	0	0
+Metric_01_Hap1.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+Metric_01_Hap5.mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+Metric_01_HapM.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+Metric_01_HapY_2.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+Metric_01_HapY.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+Metric_01.mov	dxv	DXV1 in MOV is not supported	[DXDI]	DXV1	995c8096c827ee8c6102a2cd0e5129781d3ddf77842c9ff4047bada32e753166	none	-	0	0
+Old Testfiles/DXT1-DXV_DXV Normal Quality With Alpha [1280x720].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	58da1b3fd5ae63f9447a2f0c3136d4d71812cd153331988f87849264e45c51cf	choosable	can't tell	0	0
+Old Testfiles/DXT1-DXV_DXV Normal Quality With Alpha [1336x852].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	258d7ac610e5da9f28affd1bf3b8664134cbc51e6c6037c7ad2796835ef308cc	choosable	can't tell	0	0
+Old Testfiles/DXT1-DXV_DXV Normal Quality.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	81b07d9ba6b84561f92c590d11ba91f0af23123b6880b4a8e45c8129b90cc31e	none	-	0	0
+Old Testfiles/DXT1-DXV_Hap5 [1280x720].mov	hap	HAP Alpha in MOV is not supported	[Hap5]	HAP Alpha	-	-	-	0	0
+Old Testfiles/DXT5-DXV3_DXV High Quality With Alpha [1280x720].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	d1748765467201ebb180ac5febabbdda50efc5f072487df80aac2b0029659446	choosable	looks premultiplied	153868	0
+Old Testfiles/DXT5-DXV3_DXV Normal Quality With Alpha [1080x720].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	19bd686203272b748c6364d2effe6d1603a531a17ba347aa6512228284a6f218	choosable	looks premultiplied	130190	0
+Old Testfiles/DXT5-DXV3_DXV Normal Quality With Alpha_2.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	f5ca2de5a1cd8ff8da84a60190afd17483afe985614292b4a44ffc028ea37458	choosable	looks premultiplied	99762	0
+Old Testfiles/DXT5-DXV3_DXV Normal Quality With Alpha_3.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	5f1c0fd61435cafd1e378c0ab5b00eeaf734d6cf9a09016d83662c086e9645f8	choosable	looks premultiplied	71129	0
+Old Testfiles/DXT5-DXV3_DXV Normal Quality With Alpha_4.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	59cda506341d80af01fbf96145d8f644417d73f89acd16d1108b2021af266dd9	choosable	looks premultiplied	126322	0
+Old Testfiles/DXT5-DXV3_DXV Normal Quality With Alpha_5.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	76529e62818abc744be30ac0d271ea3aaabf8a9d45aebf762a8a13ef8ee90d4b	choosable	looks premultiplied	137104	0
+Old Testfiles/DXT5-DXV3_DXV Normal Quality With Alpha_6.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	7cd39dcdcf1e0497df117f0ae6768c7696bb128041255107217e211a4f2f7827	choosable	looks premultiplied	255475	2
+Old Testfiles/DXT5-DXV3_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	4e143e8e270c11863e7ea2c74c778c388d59b7c60d455dd9ebb70e84deb3f2b4	choosable	looks premultiplied	63862	0
+Old Testfiles/DXT5-DXV3_Hap1.mov	hap	HAP in MOV is not supported	[Hap1]	HAP	-	-	-	0	0
+Old Testfiles/DXT5-DXV3_HapM [1280x720].mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+Old Testfiles/DXT5-DXV3_HapY.mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+Old Testfiles/dxv3-dxt1.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	74c1108051057c52b53ffd6542e655dbd4863d8b5dfdc1f7f75d747ff06db2df	none	-	0	0
+Old Testfiles/dxv3-dxt5.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	f1aa31b1f0f54f764aa7b56a7dff773ebf3f40f968e56e21319fd9b03048439e	choosable	can't tell	0	0
+Old Testfiles/dxv3-ycg6.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	a09e6ad506d1b1133992d263772c7fdb4dd265d94b8fb11d7e51cddaf7cb5b14	none	-	0	0
+Old Testfiles/dxv3-yg10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	154c3b8c897ff8d684215307870e9954298c9a48a580015247e0a88fe60719a2	choosable	can't tell	0	0
+Old Testfiles/YCG6-DXV3_DXV Normal Quality [1280x720].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	ac1458e37755d15cb569b6f8794fb02c06aca56bad9b6957fcb207fc0fbe08f8	none	-	0	0
+Old Testfiles/YG10-DXV3_DXV High Quality [1280x720].mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	9b875a5febdf676f4a03ce3971f89b592223df324b734934fdac7e4c5f59d70a	none	-	0	0
+Old Testfiles/YG10-DXV3_HapY [1280x720].mov	hap	HAP Q in MOV is not supported	[HapY]	HAP Q	-	-	-	0	0
+SCANTEST/scantest1.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantest2.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantest3.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantest4.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantest5.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantest6.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestB1.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestB2.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestB3.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestB4.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestB5.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestB6.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestC1.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestC2.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestC3.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestC4.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestC5.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+SCANTEST/scantestC6.mp4	av	H.264 in MP4 is not supported	[avc1]	H.264	-	-	-	0	0
+clipS_ProRes 4444.mov	av	ProRes 4444 in MOV is not supported	[ap4h]	ProRes 4444	-	-	-	0	0
+v0.5.0-candidate/alley-dxt1.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	ca6f5ac4284e25d68194e34f5fe1b3c84d62f78faf3e56af78ba8222ce859d92	none	-	0	0
+v0.5.0-candidate/alley-dxt5.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	3df306822b66798481bf35bdb74850ea3b96ec1dc7b86e81ab2a4805e4fb8c6b	choosable	looks straight	267224	260309
+v0.5.0-candidate/alley-ycg6.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	8ed38c2dc3f1388e1266c36ed683ef0eed55e0d819a09e2aef2db167d9c50036	none	-	0	0
+v0.5.0-candidate/alley-yg10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	c3f393fbe7ba9227adfd196984245841faf4700eab4c6141b0a6fd10eed38771	choosable	looks straight	267224	259898
+v0.5.0-candidate/ame-dxt1.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	e305c0a37bf274d56c54a9d981c4f7c65a193d22663e4002d40633638bdaf5db	none	-	0	0
+v0.5.0-candidate/ame-dxt5.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	530bbf2e226d89a1b032081c16c07583cd908e6647502c5b04ff68a01cc2137c	choosable	looks premultiplied	267224	256
+v0.5.0-candidate/ame-ycg6.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	3e4dde3ee12fb825c95c7b27d8f8cd91ee2ef661aa49e84e804e3a41566fed05	none	-	0	0
+v0.5.0-candidate/ame-yg10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	f5e543c9690a5682e0e943fa7004619a8a6b094c8906a7922827d0a48cada377	choosable	looks premultiplied	267224	130
+v0.5.0-candidate/glenc-dxt1.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	e433ec477f2913856b29c68745599497b4be67354de1382b6da5cfa2da054e9c	none	-	0	0
+v0.5.0-candidate/glenc-dxt5.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	e4434acbe73fd57bbacbdf7ce2f93ca58262ccdb70e3cad84e4f0acb5de6cdd7	choosable	looks straight	267224	262912
+v0.5.0-candidate/glenc-ycg6.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	f84d1a283f0dc48ce629b48303226ac47e0dd6e76fe213607114d9b3beff1c41	none	-	0	0
+v0.5.0-candidate/glenc-yg10.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	c75f78815c05dce27fd9852d07a8f027a64f441e2835b2542591445d5503d451	choosable	looks premultiplied	267224	19
+v0.5.0-candidate/Test/DXT1-DXV.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	138861fcfa1554610b9b8f0b97e2dbbc94e2e99d25557200fd914c05b9f83b31	none	-	0	0
+v0.5.0-candidate/Test/YCG6-DXV3.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	579bc91424640edc9dba4fe9382882659fd46d435422096de2cb06beede86410	none	-	0	0
+v0.5.0-candidate/Test/YG10-DXV3.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	b510e1929f5f64ce9f600c92aca851a2bb52413634a5e3e8a939b9a90c4a9fc3	choosable	looks premultiplied	224422	1
+YCG6-DXV3_DXV Normal Quality With Alpha.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	2ff5ebfe08f2d1b19e1841e8cb55aed28fc655eb180d43440587d62da32e7d7c	choosable	can't tell	0	0
+YCG6-DXV3_DXV Normal Quality.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	73ce655cacd2962f0dfc8376a43846cdecd4cdac9412195e1257e0d8c583838b	none	-	0	0
+YCG6-DXV3_Hap5.mov	unsupported	MOV files are not supported	-	-	-	-	-	0	0
+YCG6-DXV3.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	579bc91424640edc9dba4fe9382882659fd46d435422096de2cb06beede86410	none	-	0	0
+YG10-DXV3_HapM.mov	hap	HAP Q Alpha in MOV is not supported	[HapM]	HAP Q Alpha	-	-	-	0	0
+YG10-DXV3.mov	dxv	DXV3 in MOV is not supported	[DXD3]	DXV3	b510e1929f5f64ce9f600c92aca851a2bb52413634a5e3e8a939b9a90c4a9fc3	choosable	looks premultiplied	224422	1

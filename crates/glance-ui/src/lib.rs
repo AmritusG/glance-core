@@ -13,7 +13,10 @@
 //! dithering is off: it would add noise to a scaled picture, and a viewer shows what the file holds.
 #![forbid(unsafe_code)]
 
-use egui_wgpu::{RenderState, RendererOptions, ScreenDescriptor, WgpuConfiguration, WgpuSetup, WgpuSetupExisting};
+pub mod headless;
+
+use egui::mutex::RwLock;
+use egui_wgpu::{RenderState, Renderer, RendererOptions, ScreenDescriptor, WgpuConfiguration, WgpuSetup, WgpuSetupExisting};
 use glance_gpu::Gpu;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -38,7 +41,7 @@ pub enum Background {
 
 /// Checkerboard squares, in points.
 pub const CHECKER_CELL: f32 = 8.0;
-/// The checkerboard's greys: 0.85 and 0.65.
+/// The checkerboard's greys, 0.85 and 0.65 of 255, rounded: the lighter square first.
 pub const CHECKER_GREYS: [u8; 2] = [217, 166];
 
 /// The checkerboard as a repeating 2x2 texture (made once per context).
@@ -97,7 +100,7 @@ pub struct Picture {
 /// What an [`App`] sees of the host during a frame.
 pub struct Host<'a> {
     pub gpu: &'a Gpu,
-    render: &'a RenderState,
+    renderer: &'a RwLock<Renderer>,
     /// Time between the last two presents (`None` on the first frames).
     pub last_interval: Option<Duration>,
     /// The display's refresh rate, when the OS reports one.
@@ -109,7 +112,7 @@ impl Host<'_> {
     pub fn picture(&mut self, slot: &mut Option<Picture>, texture: &wgpu::Texture) -> egui::load::SizedTexture {
         let size = egui::vec2(texture.width() as f32, texture.height() as f32);
         let view = texture.create_view(&wgpu::TextureViewDescriptor::default());
-        let mut renderer = self.render.renderer.write();
+        let mut renderer = self.renderer.write();
         let id = match slot {
             Some(p) if p.texture == *texture => p.id,
             Some(p) => {
@@ -141,7 +144,7 @@ struct Running<A> {
 
 impl<A: App> Running<A> {
     fn start(el: &ActiveEventLoop, title: &str, size: (f64, f64), make: impl FnOnce(&Gpu) -> Result<A, String>) -> Result<Running<A>, String> {
-        let gpu = Gpu::headless().map_err(|e| e.to_string())?;
+        let gpu = glance_gpu::open_gpu().map_err(|e| e.to_string())?;
         if !gpu.has_bc() {
             return Err("this GPU has no BC texture support (TEXTURE_COMPRESSION_BC)".into());
         }
@@ -197,8 +200,8 @@ impl<A: App> Running<A> {
     fn redraw(&mut self) {
         let raw = self.input.take_egui_input(&self.window);
         let Running { window, gpu, render, app, ctx, last_interval, .. } = self;
-        let mut host =
-            Host { gpu, render, last_interval: *last_interval, refresh_millihertz: window.current_monitor().and_then(|m| m.refresh_rate_millihertz()) };
+        let refresh_millihertz = window.current_monitor().and_then(|m| m.refresh_rate_millihertz());
+        let mut host = Host { gpu, renderer: &render.renderer, last_interval: *last_interval, refresh_millihertz };
         let mut out = ctx.run_ui(raw, |ui| {
             egui::CentralPanel::default().show(ui, |ui| app.frame(ui, &mut host));
         });

@@ -1,7 +1,8 @@
 //! # glance-media — the Glance family's one way to open a media file
 //!
-//! A thin facade over DXVKit Plus (`dxvkit-plus-core`, and `dxvkit-plus-apple` on macOS): probe a
-//! path, open a frame-exact decoder for it, and name its codec. Demux, HAP, DXV and the native OS
+//! A thin facade over DXVKit Plus (`dxvkit-plus-core`, and `dxvkit-plus-apple` on macOS): route a
+//! path by its content ([`route`]), open a frame-exact decoder for it ([`Clip::open`]), and name its
+//! codec. Demux, HAP, DXV and the native OS
 //! codecs are DXVKit Plus's; nothing is decoded here, so there is one decoder per codec across the
 //! whole programme (docs/00-ROADMAP.md §2).
 //!
@@ -13,51 +14,30 @@
 //!   the colour is read as premultiplied or straight is a viewing decision ([`AlphaView`]) that the
 //!   present pass in `glance-gpu` applies, so the per-clip switch never re-decodes a frame;
 //! - which clips get that switch ([`alpha_rule`]), as Glance 0.18 has it: DXV alpha is the user's
-//!   per-clip choice, HAP alpha is straight, opaque clips have none.
+//!   per-clip choice, HAP alpha is straight, opaque clips have none; the hint beside it
+//!   ([`alpha_report`]) and the key the choice is remembered by ([`clip_key`]), both identical to
+//!   Swift Glance's;
+//! - what the viewer says about a file nothing plays ([`NotPlayable`]), in Swift Glance's words.
 #![forbid(unsafe_code)]
 
-use dxvkit_plus_core::source::{self, AlphaMode, ImportOptions};
-use std::path::Path;
+mod alpha;
+mod route;
+
+use dxvkit_plus_core::source::{AlphaMode, ImportOptions};
+
+pub use alpha::{
+    AlphaLook, AlphaReport, AlphaRule, AlphaView, LOOK_MINIMUM_SAMPLES, LOOK_PREMULTIPLIED_AT_MOST, LOOK_STRAIGHT_AT_LEAST, alpha_look, alpha_look_count,
+    alpha_report, alpha_rule, clip_key,
+};
+pub use route::{Clip, NotPlayable, Route, display_name, first_video_fourcc, route, unsupported_message};
 
 pub use dxvkit_plus_core::MediaError;
 pub use dxvkit_plus_core::backend::NativeFrame;
+pub use dxvkit_plus_core::bc;
 pub use dxvkit_plus_core::cache::{self, CacheSettings, CacheStats, Player};
 pub use dxvkit_plus_core::source::{Decoded, FrameSource, MediaInfo, PixelFormat, Plane, Shading, SourceKind};
 pub use dxvkit_plus_core::time::{FrameRate, TICKS_PER_SECOND, Tick};
 pub use dxvkit_plus_core::transport;
-
-/// How a viewer reads a clip's colour against its alpha: the family's "Alpha Type" (Resolume
-/// Arena's name and default).
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
-pub enum AlphaView {
-    /// Colour already multiplied by alpha: blended as stored.
-    #[default]
-    Premultiplied,
-    /// Colour stored straight: multiplied by its alpha before the blend.
-    Straight,
-}
-
-/// What a clip's file says about its alpha, which decides whether the viewer offers the switch.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum AlphaRule {
-    /// No alpha: nothing to choose.
-    Opaque,
-    /// The format fixes it (HAP alpha is straight — Glance 0.18, Amrit 2026-10-10).
-    Stated(AlphaView),
-    /// The file does not say (DXV, DXVKit spec 8.5): the user's per-clip choice, default
-    /// [`AlphaView::Premultiplied`]. Native codecs with alpha land here too until DXVKit Plus
-    /// reports the format description's alpha mode (Glance reads it as stated).
-    Choosable,
-}
-
-/// The alpha rule of a probed clip.
-pub fn alpha_rule(info: &MediaInfo) -> AlphaRule {
-    match (info.has_alpha, info.kind) {
-        (false, _) => AlphaRule::Opaque,
-        (true, SourceKind::Hap) => AlphaRule::Stated(AlphaView::Straight),
-        (true, _) => AlphaRule::Choosable,
-    }
-}
 
 #[cfg(target_os = "macos")]
 fn platform_backend() -> Option<std::sync::Arc<dyn dxvkit_plus_core::backend::Backend>> {
@@ -69,33 +49,17 @@ fn platform_backend() -> Option<std::sync::Arc<dyn dxvkit_plus_core::backend::Ba
     None
 }
 
-fn import_options() -> ImportOptions {
+pub(crate) fn import_options() -> ImportOptions {
     ImportOptions { backend: platform_backend(), alpha_mode: AlphaMode::Straight, ..Default::default() }
 }
 
-/// What the file is, without decoding a pixel: codec, size, frame count, exact rate, timecode.
-pub fn probe(path: &Path) -> Result<MediaInfo, MediaError> {
-    let p = path.to_str().ok_or_else(|| MediaError::Invalid(format!("{} is not a UTF-8 path", path.display())))?;
-    source::probe(p, &import_options())
-}
-
-/// A frame-exact decoder for a probed file. A frame's chunks decompress on worker threads.
-pub fn open(info: &MediaInfo) -> Result<Box<dyn FrameSource>, MediaError> {
-    source::open(info, &import_options(), true)
-}
-
-/// The codec's name as the apps show it. HAP is named by its FourCC; a DXV track's FourCC does not
+/// The codec's name as the apps show it. HAP is named by its FourCC ([`display_name`], Swift
+/// Glance's names); a DXV track's FourCC does not
 /// say which variant it holds (the packet does), so DXV is named from a decoded frame's planes by
 /// [`dxv_variant_label`].
 pub fn codec_label(info: &MediaInfo) -> String {
     match (info.kind, info.codec.as_str()) {
-        (SourceKind::Hap, "Hap1") => "HAP".into(),
-        (SourceKind::Hap, "Hap5") => "HAP Alpha".into(),
-        (SourceKind::Hap, "HapY") => "HAP Q".into(),
-        (SourceKind::Hap, "HapM") => "HAP Q Alpha".into(),
-        (SourceKind::Hap, "HapA") => "HAP Alpha-Only".into(),
-        (SourceKind::Hap, "Hap7") => "HAP R".into(),
-        (SourceKind::Hap, "HapH") => "HAP HDR".into(),
+        (SourceKind::Hap, codec) => display_name(codec).unwrap_or(codec).into(),
         (SourceKind::Dxv, _) => "DXV".into(),
         (SourceKind::Lmbd, _) => "LMBD".into(),
         (_, codec) => codec.to_string(),
@@ -143,6 +107,8 @@ mod tests {
     fn hap_is_named_by_fourcc_and_unknown_codecs_keep_theirs() {
         assert_eq!(codec_label(&info(SourceKind::Hap, "HapM")), "HAP Q Alpha");
         assert_eq!(codec_label(&info(SourceKind::Hap, "Hap1")), "HAP");
+        assert_eq!(codec_label(&info(SourceKind::Hap, "HapA")), "HAP Alpha-only");
+        assert_eq!(codec_label(&info(SourceKind::Hap, "Hap7")), "HAP R");
         assert_eq!(codec_label(&info(SourceKind::Native, "ap4h")), "ap4h");
         // A DXV FourCC never names the variant.
         assert_eq!(codec_label(&info(SourceKind::Dxv, "DXD3")), "DXV");
@@ -153,10 +119,5 @@ mod tests {
         assert_eq!(dxv_variant_label(&frame(&[PixelFormat::Bc1])), Some("Normal Quality"));
         assert_eq!(dxv_variant_label(&frame(&[PixelFormat::Bc5, PixelFormat::Bc5])), Some("High Quality With Alpha"));
         assert_eq!(dxv_variant_label(&frame(&[PixelFormat::Bc7])), None);
-    }
-
-    #[test]
-    fn a_missing_file_is_an_error_not_a_panic() {
-        assert!(probe(Path::new("/nonexistent/clip.mov")).is_err());
     }
 }

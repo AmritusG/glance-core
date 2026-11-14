@@ -7,7 +7,7 @@
 #![forbid(unsafe_code)]
 
 use glance_media::transport::{Clip, Inputs, Settings, Transport};
-use glance_media::{CacheSettings, CacheStats, Decoded, MediaError, MediaInfo, Player, Tick, cache};
+use glance_media::{CacheSettings, CacheStats, Decoded, MediaError, MediaInfo, NotPlayable, Player, Route, Tick, cache};
 use std::path::Path;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -26,6 +26,7 @@ pub struct Shown {
 #[derive(Debug)]
 pub struct ClipPlayer {
     player: Player,
+    route: Route,
     transport: Transport,
     clip: Clip,
     settings: Settings,
@@ -35,15 +36,17 @@ pub struct ClipPlayer {
 }
 
 impl ClipPlayer {
-    /// Open `path` (looping, forward, speed 1). Its clock starts with the first
-    /// [`ClipPlayer::frame_at`], so time spent opening windows never eats frames.
-    pub fn open(path: &Path, cache: CacheSettings) -> Result<ClipPlayer, MediaError> {
-        let info = glance_media::probe(path)?;
-        let source = glance_media::open(&info)?;
+    /// Route and open `path` (looping, forward, speed 1); a file nothing plays comes back as the
+    /// line the viewer shows. Its clock starts with the first [`ClipPlayer::frame_at`], so time
+    /// spent opening windows never eats frames.
+    pub fn open(path: &Path, cache: CacheSettings) -> Result<ClipPlayer, NotPlayable> {
+        let routed = glance_media::route(path)?;
+        let source = routed.open()?;
         let cache = cache.clamped();
-        let clip = Clip { frames: info.frames.max(1), rate: info.rate };
+        let clip = Clip { frames: routed.info.frames.max(1), rate: routed.info.rate };
         Ok(ClipPlayer {
             player: Player::new(source, cache),
+            route: routed.route,
             transport: Transport::default(),
             clip,
             settings: Settings::default(),
@@ -54,6 +57,11 @@ impl ClipPlayer {
 
     pub fn info(&self) -> &MediaInfo {
         self.player.info()
+    }
+
+    /// Which engine plays the clip.
+    pub fn route(&self) -> Route {
+        self.route
     }
 
     pub fn cache_stats(&self) -> CacheStats {

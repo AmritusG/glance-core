@@ -13,6 +13,7 @@ workspace = true
 
 [dependencies]
 dxvkit-plus-core = { workspace = true }
+sha2 = { workspace = true }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 dxvkit-plus-apple = { workspace = true }
