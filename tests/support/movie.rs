@@ -219,7 +219,7 @@ impl Kind {
 
 /// `n` random blocks. Random bytes are valid blocks of every palette mode and index; the boundary
 /// cases random data rarely hits are forced on some blocks: equal endpoints, the extreme
-/// endpoints, all-zero and all-one blocks.
+/// endpoints, all-zero and all-one blocks (BC7: never a reserved mode).
 pub fn random_blocks(state: &mut u64, n: usize, block: Block) -> Vec<u8> {
     let bytes = block.bytes();
     let mut v = Vec::with_capacity(n * bytes + 8);
@@ -249,8 +249,24 @@ pub fn random_blocks(state: &mut u64, n: usize, block: Block) -> Vec<u8> {
             43 => b.fill(0xFF),
             _ => {}
         }
+        // BC7: a first byte of zero is a reserved mode, which the format leaves to the decoder (see
+        // `reserved_bc7`). Every other bit pattern is a valid block of one of the eight modes.
+        if block == Block::Bc7 && b[0] == 0 {
+            b[0] = 1 << (i % 8);
+        }
     }
     v
+}
+
+/// A HAP R frame of `w` x `h` whose BC7 blocks are all of a reserved mode (first byte zero). The
+/// BC7 definition says such a block decodes to transparent black; DXVKit Plus's CPU decoder and
+/// Apple's GPUs do that, but it is not something every GPU honours, and no encoder writes one.
+pub fn reserved_bc7(w: u32, h: u32) -> Vec<u8> {
+    let blocks = (w.div_ceil(4) * h.div_ceil(4)) as usize;
+    let mut state = 7u64;
+    let mut data: Vec<u8> = (0..blocks * 16).map(|_| rng(&mut state) as u8).collect();
+    data.chunks_exact_mut(16).for_each(|b| b[0] = 0);
+    video_movie(b"Hap7", w, h, &[hap_section(0xAC, &data)])
 }
 
 /// The sizes of the sweep: one texel, sizes below one block, odd sizes, sizes that are not

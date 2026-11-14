@@ -256,3 +256,25 @@ fn a_clip_larger_than_the_gpu_allows_is_an_error_value() {
         assert!(rows.iter().all(Row::exact), "{rows:?}");
     }
 }
+
+/// A reserved-mode BC7 block (HAP R from a hostile or broken writer) is shown without an error on
+/// any GPU; what it looks like is the GPU's. The definition says transparent black, which is what
+/// the CPU decoder gives; this test records what this GPU gives, and holds it to the definition
+/// only on the adapters the family has measured as doing so.
+#[test]
+fn reserved_bc7_blocks_are_shown_and_their_value_is_the_gpus() {
+    let Some((g, presenter)) = gpu() else { return };
+    let scratch = Scratch::new("exact-bc7-reserved");
+    let clip = routed(&scratch.file("reserved.mov", &support::reserved_bc7(16, 8)));
+    let frame = clip.open().unwrap().decode(0).unwrap();
+    // As stored, so the GPU's own answer is read, not its product with alpha.
+    let cpu = expected_picture(&frame, AlphaView::Premultiplied).unwrap();
+    assert!(cpu.iter().all(|&b| b == 0), "the CPU decode of a reserved block is transparent black");
+    let mut view = ClipView::new(&g.device);
+    let got = read_texture_rgba(&g.device, &g.queue, &view.show(&g, &presenter, &frame, AlphaView::Premultiplied).unwrap().clone()).unwrap();
+    let adapter = g.adapter.get_info().name;
+    eprintln!("reserved BC7 block on {adapter}: GPU {:?}, CPU [0, 0, 0, 0], max diff {}", &got[..4], diff(&cpu, &got).0);
+    if !adapter.contains("Paravirtual") {
+        assert_eq!(diff(&cpu, &got), (0, 0), "{adapter}: a reserved BC7 block is not transparent black here");
+    }
+}
