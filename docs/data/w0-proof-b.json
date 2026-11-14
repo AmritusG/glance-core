@@ -1,0 +1,113 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.00006925,
+  "display_refresh_hz": 120.0,
+  "presents": 1800,
+  "present_interval": {
+    "count": 1800,
+    "mean_ms": 8.333311620555543,
+    "p50_ms": 8.331667,
+    "p95_ms": 8.510708000000001,
+    "p99_ms": 8.596667,
+    "max_ms": 8.741083999999999
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/glenc_hap1_1920x1080_chunks4.mov",
+      "codec": "HAP",
+      "width": 1920,
+      "height": 1080,
+      "frames": 90,
+      "clip_fps": 30.0,
+      "has_alpha": false,
+      "alpha_view": "None",
+      "cadence": {
+        "shown": 451,
+        "skipped": 0
+      },
+      "shown_fps": 30.066527859529717,
+      "fetch": {
+        "count": 451,
+        "mean_ms": 0.008863423503325947,
+        "p50_ms": 0.008291999999999999,
+        "p95_ms": 0.014459,
+        "p99_ms": 0.021167,
+        "max_ms": 0.028291
+      },
+      "show": {
+        "count": 451,
+        "mean_ms": 0.49436399556541005,
+        "p50_ms": 0.503917,
+        "p95_ms": 0.682166,
+        "p99_ms": 0.7494999999999999,
+        "max_ms": 0.852875
+      },
+      "cache_hits": 1916,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 487,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 29,
+        "max_diff": 1,
+        "mean_diff": 0.10297453703703703,
+        "mean_rgba": [
+          26.944981674382717,
+          15.951054205246914,
+          40.46236014660494,
+          255.0
+        ]
+      },
+      "error": null
+    },
+    {
+      "path": "<testfiles>/hap-testclips/std_film_h264_audio_DXV High Quality With Alpha [00.00.00-00.10.00].mov",
+      "codec": "DXV High Quality With Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 251,
+      "clip_fps": 25.0,
+      "has_alpha": true,
+      "alpha_view": "Premultiplied",
+      "cadence": {
+        "shown": 376,
+        "skipped": 0
+      },
+      "shown_fps": 25.066550942756482,
+      "fetch": {
+        "count": 376,
+        "mean_ms": 0.008402372340425526,
+        "p50_ms": 0.007417,
+        "p95_ms": 0.015708,
+        "p99_ms": 0.023958999999999998,
+        "max_ms": 0.028333
+      },
+      "show": {
+        "count": 376,
+        "mean_ms": 0.8824806037234045,
+        "p50_ms": 0.9123749999999999,
+        "p95_ms": 1.1876250000000002,
+        "p99_ms": 1.311041,
+        "max_ms": 1.429167
+      },
+      "cache_hits": 1916,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 407,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 148,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          17.369238040123456,
+          23.066650752314814,
+          31.47185619212963,
+          255.0
+        ]
+      },
+      "error": null
+    }
+  ]
+}

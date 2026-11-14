@@ -1,0 +1,103 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.000020666,
+  "display_refresh_hz": 120.0,
+  "presents": 1800,
+  "present_interval": {
+    "count": 1800,
+    "mean_ms": 8.33329585666667,
+    "p50_ms": 8.331041,
+    "p95_ms": 8.479917,
+    "p99_ms": 8.559249999999999,
+    "max_ms": 8.721167
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/_master_hapm_3840x2160.mov",
+      "codec": "ap4h",
+      "width": 3840,
+      "height": 2160,
+      "frames": 90,
+      "clip_fps": 30.0,
+      "has_alpha": true,
+      "alpha_view": "Premultiplied",
+      "cadence": {
+        "shown": 451,
+        "skipped": 0
+      },
+      "shown_fps": 30.06662524287485,
+      "fetch": {
+        "count": 451,
+        "mean_ms": 0.004691108647450108,
+        "p50_ms": 0.004625,
+        "p95_ms": 0.007292,
+        "p99_ms": 0.009583,
+        "max_ms": 0.011625
+      },
+      "show": {
+        "count": 451,
+        "mean_ms": 0.4580942039911306,
+        "p50_ms": 0.334708,
+        "p95_ms": 1.0986660000000001,
+        "p99_ms": 1.682834,
+        "max_ms": 2.147375
+      },
+      "cache_hits": 1906,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 487,
+      "worker_errors": 0,
+      "picture_vs_cpu": null,
+      "error": null
+    },
+    {
+      "path": "<testfiles>/YCG6-DXV3_DXV Normal Quality With Alpha.mov",
+      "codec": "DXV Normal Quality With Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 300,
+      "clip_fps": 30.0,
+      "has_alpha": true,
+      "alpha_view": "Premultiplied",
+      "cadence": {
+        "shown": 451,
+        "skipped": 0
+      },
+      "shown_fps": 30.06662524287485,
+      "fetch": {
+        "count": 451,
+        "mean_ms": 0.006829075388026613,
+        "p50_ms": 0.00625,
+        "p95_ms": 0.011416,
+        "p99_ms": 0.021625000000000002,
+        "max_ms": 0.029750000000000002
+      },
+      "show": {
+        "count": 451,
+        "mean_ms": 0.5953918869179601,
+        "p50_ms": 0.58675,
+        "p95_ms": 0.9775420000000001,
+        "p99_ms": 1.080959,
+        "max_ms": 1.2145000000000001
+      },
+      "cache_hits": 1906,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 487,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 179,
+        "max_diff": 1,
+        "mean_diff": 0.20645302854938272,
+        "mean_rgba": [
+          17.157096836419754,
+          9.561080729166667,
+          27.55895061728395,
+          255.0
+        ]
+      },
+      "error": null
+    }
+  ]
+}
