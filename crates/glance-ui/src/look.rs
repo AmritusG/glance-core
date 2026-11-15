@@ -93,8 +93,9 @@ pub const SCRUB_TRACK: f32 = 4.0;
 pub const SCRUB_KNOB: f32 = 20.0;
 pub const MINI_TRACK: f32 = 3.0;
 pub const MINI_KNOB: f32 = 12.0;
-/// The unfilled track: white 20 %; the knob: white.
-pub const TRACK_WHITE: f32 = 0.2;
+/// The unfilled track: white 10 % over the bar (grey 44, measured on Swift Glance's scrubber in
+/// its window capture, docs/data/c3-look/stats.txt); the knob: white.
+pub const TRACK_WHITE: f32 = 0.1;
 
 // --- "Not supported" overlay (PlayerScreen.swift:20-35) ---
 

@@ -15,7 +15,7 @@ How to use it:
 - The numbers in the items (sizes, limits, timings) are the Swift apps' and are the pass criteria.
 
 - Items changed by Amrit's answers of 2026-11-14 (in `docs/01-RESEARCH.md` §9) carry that date and his words. "Fixed — differs from Swift on purpose" means the Rust app does the correct thing where the Swift app has a quirk; the Swift behaviour stays written in the item.
-- Ticks made in a core wave say which wave and which backend: **C1, Metal** = proven on Metal on the core's home machine, evidence in `docs/04-C1-RESULTS.md`; **C2, macOS** = proven on macOS (CoreAudio, Metal) on the core's home machine, evidence in `docs/05-C2-RESULTS.md`. A Glance item ticked **core half** has its rule in the core (glance-playback / glance-audio) proven; the key, button or label that drives it is Glance G1's. The Windows / Direct3D 12 half of a core item is proven at the Windows milestone (C4).
+- Ticks made in a core wave say which wave and which backend: **C1, Metal** = proven on Metal on the core's home machine, evidence in `docs/04-C1-RESULTS.md`; **C2, macOS** = proven on macOS (CoreAudio, Metal) on the core's home machine, evidence in `docs/05-C2-RESULTS.md`; **C3, macOS** = proven on the installed, notarised sample app (`com.amritus.glancecore.sample`) or by the core's tests on macOS, evidence in `docs/06-C3-RESULTS.md`. A Glance item ticked **core half** has its rule in the core (glance-playback / glance-audio) proven; the key, button or label that drives it is Glance G1's. The Windows / Direct3D 12 half of a core item is proven at the Windows milestone (C4).
 
 Counts: core 35, Glance 94, CueGlance 95, GlEnc 114, MaCrate 127.
 
@@ -36,7 +36,7 @@ Counts: core 35, Glance 94, CueGlance 95, GlEnc 114, MaCrate 127.
 ### Alpha and background
 - [x] Frames are decoded as stored; nothing un-premultiplies or premultiplies on decode. — **C1, Metal:** the picture read as Premultiplied is the stored texel, equal to DXVKit's reference RGBA by hash (64 vector frames) and to the CPU decode everywhere else.
 - [x] DXV clips with alpha (DXT5, YG10, legacy DXT5) get a per-clip "Alpha Type": Premultiplied (default) / Straight. Straight multiplies colour by alpha in the present pass; the blend is `ONE, ONE_MINUS_SRC_ALPHA`. — **C1, Metal:** Straight is `round(colour * alpha / 255)` in whole code values, max 0 against the same arithmetic on the CPU, for every variant and size; the wrong Alpha Type is caught (`a_flipped_bit_and_the_wrong_alpha_type_are_caught`); the blend over the checkerboard within 1 of the model.
-- [ ] HAP alpha (Hap5, HapM) is straight, shown as stated ("Alpha Type: Straight (HAP)", no switch). Native codecs that state their alpha mode (ProRes 4444, HEVC with alpha) follow the format description. — HAP half met in C1 on Metal (Hap5, HapM, HAP R and alpha-only HapA are read straight, max 0; HapA is shown as white at its alpha, as Swift Glance shows it). Native half open: DXVKit Plus does not report the format description's alpha mode yet (its brief, "API gaps"); until then such clips get the choice.
+- [x] HAP alpha (Hap5, HapM) is straight, shown as stated ("Alpha Type: Straight (HAP)", no switch). Native codecs that state their alpha mode (ProRes 4444, HEVC with alpha) follow the format description. — HAP half met in C1 on Metal (Hap5, HapM, HAP R and alpha-only HapA are read straight, max 0; HapA is shown as white at its alpha, as Swift Glance shows it). Native half **C3, macOS:** `alpha_rule` reads `MediaInfo::alpha` (DXVKit Plus's format-description reading): the ProRes 4444 fixture is `Stated(Straight)`, opaque native clips have none (`a_native_clip_with_alpha_is_read_as_its_format_states`). Windows: with DXVKit Plus's Windows backend (C4).
 - [x] The Alpha Type hint ("looks premultiplied" / "looks straight" / "can't tell") uses Glance's probe: first + middle frame, share of pixels with 8 < alpha < 200 whose max(R,G,B) > alpha + 24; ≤ 0.5 % premultiplied, ≥ 3 % straight, else or < 500 samples can't tell. The hint never changes the setting. — **C1:** samples, exceeding and the hint equal Swift Glance's own probe on all 12 fixture clips and all 51 of Amrit's DXV clips with alpha (`swift_parity.rs`).
 - [x] A clip's choice is remembered by content, not path: `clipKey` = SHA-256 of byte size, frame count, size and first + last packets, byte-identical to Glance's, so choices made in the Swift apps still apply. — **C1:** `glance_media::clip_key` equals Swift Glance's `clipKey` on 35 fixture movies and 75 of Amrit's DXV clips (every DXV file there), and gives no key where Swift gives none; the byte layout is recomputed in `the_clip_key_is_the_documented_bytes`.
 - [x] Checkerboard: 8 pt squares, greys 0.85 and 0.65, in window points scaled by the display's scale factor; Black is the other mode; opaque clips look the same in both. — **C1, Metal:** `the_checkerboard_is_8_point_squares_only_under_the_picture` at 1x and 2x display scale (values 217 and 166, 8 and 16 pixels, black bars beside the picture). Which square is the lighter one at the picture's corner is a look detail for Glance G2 (Swift: the bottom-left cell is the darker one; here the top-left cell is the lighter one).
@@ -51,17 +51,17 @@ Counts: core 35, Glance 94, CueGlance 95, GlEnc 114, MaCrate 127.
 - [ ] No clip frame is skipped at 1x on a 60 Hz or 120 Hz display for 1080p and 2160p HAP and DXV on the reference machines (W0: 0 skipped, `docs/03-W0-RESULTS.md`). — **C2, macOS, 120 Hz: met** — 0 skipped in all 30 runs, 1080p and 2160p HAP and DXV, with and without sound (`docs/05-C2-RESULTS.md` §1). **60 Hz: not met as stated** — not run on a 60 Hz display (Amrit 2026-11-15: "Simulate at 120 Hz"); at a 60 Hz cadence on the 120 Hz display 26 of 30 runs had 0 skipped, 4 runs of the first pass skipped 1–3 frames of 30 fps clips when two presents in a row came late (the window's presents were bursty on this machine today with Blender open, the C1 build alike). Not covered: DXV 2160p and HAP 1080p *with sound* (no such clips).
 
 ### Settings, identity, release
-- [ ] Each Rust app carries its Swift twin's bundle id (`com.amritus.glance`, `com.amritus.cueglance`, `com.amritus.glenc`, `com.amritus.crate`) and reads and writes the same preference keys in the same store on macOS (the `UserDefaults` domain of that id), with the same value encodings, so settings survive the swap in both directions.
-- [ ] On Windows the same keys live in one documented per-user location per app.
-- [ ] macOS builds are universal, arm64 + x86_64 (Amrit 2026-11-14: "Intel too"; the Swift apps build for the host only). The core compiles for `x86_64-apple-darwin` in CI from C1.
-- [ ] macOS: Developer ID signed, hardened runtime, notarised, stapled, DMG; the release goes to the app's existing public releases repo as `v<version>` with the DMG and its `.sha256`; exactly one LaunchServices record after install.
+- [ ] Each Rust app carries its Swift twin's bundle id (`com.amritus.glance`, `com.amritus.cueglance`, `com.amritus.glenc`, `com.amritus.crate`) and reads and writes the same preference keys in the same store on macOS (the `UserDefaults` domain of that id), with the same value encodings, so settings survive the swap in both directions. — **C3, macOS, core half:** `glance-settings` over the domain of a bundle id; Swift Glance's own settings code and the Rust store read each other's writes, every family value shape included (`swift_glance_and_the_rust_store_read_each_others_settings`, throw-away domain; `docs/06-C3-RESULTS.md` §1). The bundle id and the real-domain check are each app's swap step.
+- [ ] On Windows the same keys live in one documented per-user location per app. — Written in C3: `FileStore`, `%APPDATA%\Amritus\<App>\preferences.json`, every type kept (tested on macOS); run at C4.
+- [x] macOS builds are universal, arm64 + x86_64 (Amrit 2026-11-14: "Intel too"; the Swift apps build for the host only). The core compiles for `x86_64-apple-darwin` in CI from C1. — **C3, macOS:** the kit's `bundle.sh` builds both and `lipo`s them; the sample is `Mach-O universal (x86_64 arm64)`, minos 14.0, its Intel slice runs under Rosetta 2 (`docs/06-C3-RESULTS.md` §5). Each app's release uses the kit.
+- [ ] macOS: Developer ID signed, hardened runtime, notarised, stapled, DMG; the release goes to the app's existing public releases repo as `v<version>` with the DMG and its `.sha256`; exactly one LaunchServices record after install. — **C3, macOS, core half:** the kit did all of it but publishing on the sample: app and DMG Accepted and stapled, `.sha256` written, one LaunchServices record after install (`docs/06-C3-RESULTS.md` §5). Publishing is each app's release.
 - [ ] Windows: Windows 11 only (Amrit 2026-11-14: "11 only"); the installer says so on Windows 10.
 - [ ] Windows: signed installer — Microsoft Artifact Signing, Public Trust, organisation validation as Creativeations (Amrit 2026-11-14: "I have a buisness, Creativeations. Registered since 2010 and still active."); SmartScreen does not block a fresh download once reputation exists.
 - [ ] ProRes on Windows: not supported until Apple's ProRes Program Office answers (Amrit 2026-11-14: "How do I proceed to get a yes from them?" — he writes to them as Creativeations); the app says so plainly ("ProRes 422 in MOV is not supported" with the reason), on open and wherever ProRes is offered as an output. macOS keeps Apple's own codec.
 - [ ] No FFmpeg, libav, GStreamer or libmpv is linked or bundled; every dependency's licence is MIT / BSD / Apache-2.0 / Zlib / ISC (or approved by Amrit by name), enforced by `cargo deny` in every app repo.
 - [ ] No crash on any input: the never-crash lints hold in every crate; a GPU without BC texture support gets a clear message.
-- [ ] The app's look matches the Swift app side by side (Amrit's eyes): layout, spacing, colours, fonts, icons — "keep each app's current look".
-- [ ] Menus, shortcuts and wording match the Swift app item for item unless an item in the app's list says otherwise.
+- [ ] The app's look matches the Swift app side by side (Amrit's eyes): layout, spacing, colours, fonts, icons — "keep each app's current look". — C3: Glance's numbers in `glance_ui::look`; captures side by side in `docs/data/c3-look/` for G2; bar and scrub row measured equal to Swift's (heights, greys); the title-bar chrome differs (`docs/06-C3-RESULTS.md` §3–§4).
+- [ ] Menus, shortcuts and wording match the Swift app item for item unless an item in the app's list says otherwise. — **C3 core half (Glance):** `glance_ui::menu::GlanceMenu` with Swift Glance's items and shortcuts (`the_items_and_shortcuts_are_swift_glances`), `dialog::default_handler` with its words (`the_words_are_swift_glances`).
 - [ ] Each app's own test suite covers its list; the Swift app's exactness and timing fixtures are reused where the licence allows.
 
 
@@ -71,16 +71,16 @@ Detail and sources: `docs/research/glance.md`.
 
 ### Identity and packaging
 - [ ] App is named `Glance`; version string shown to the OS equals the release version in every version field.
-- [ ] macOS build runs on macOS 14 or later.
-- [ ] One process, one window: opening a second file while running reuses the window and never opens another.
-- [ ] Quitting: closing the window quits the app.
+- [ ] macOS build runs on macOS 14 or later. — **C3 core half:** the kit builds for 14.0 (`minos 14.0`); run on 27 only.
+- [ ] One process, one window: opening a second file while running reuses the window and never opens another. — **C3, macOS, core half:** one pid, one window across a cold launch and two opens from Finder's `open` (`docs/06-C3-RESULTS.md` §2).
+- [ ] Quitting: closing the window quits the app. — C3 core half: `run_shell` ends on `CloseRequested` (code; not measured).
 
 ### Opening files
-- [ ] File ▸ `Open…` (⌘O / Ctrl+O) opens one movie file; folders cannot be chosen.
+- [ ] File ▸ `Open…` (⌘O / Ctrl+O) opens one movie file; folders cannot be chosen. — C3 core half: the menu item and shortcut, `dialog::open_movie` (one file; rfd filters by extension, standing in for `public.movie`).
 - [ ] Dropping files on the video area opens the first one; any file type is accepted and routed.
-- [ ] A file passed by the OS ("Open with", double-click, drop on the app icon) opens in the existing window; with several files the last one wins.
+- [ ] A file passed by the OS ("Open with", double-click, drop on the app icon) opens in the existing window; with several files the last one wins. — **C3, macOS, core half:** cold launch and while running, the last of two wins (`docs/06-C3-RESULTS.md` §2; `open -a`, the Apple Event Finder sends).
 - [ ] The OS file association covers `.mov`, `.mp4` / MPEG-4, `.avi` and generic movie types, role viewer.
-- [ ] Menu item `Set Glance as Default for .mov Files…` exists and reports success, "already the default", or failure with manual instructions.
+- [ ] Menu item `Set Glance as Default for .mov Files…` exists and reports success, "already the default", or failure with manual instructions. — C3 core half: the item, Swift's words, `is_default_for` / `set_default_for` (the OS's answer proven on a throw-away type, §6); the `.mov` switch is G2's rehearsal.
 - [ ] First launch asks once whether to become the default for `.mov`; never asks again after an answer, or if already the default.
 - [ ] Opened files are added to the OS recent-documents list.
 - [ ] Opening a new file while the previous one is still loading shows only the new one.
@@ -148,9 +148,9 @@ Detail and sources: `docs/research/glance.md`.
 - [x] A 1-frame clip shows its frame. — **C2:** `a_one_frame_clip_shows_its_frame` (wall clock looping and not; audio clock looping); the frame is requested on the first tick (Swift needed an explicit seek to frame 0).
 - [x] On the system-codec path, seeking to frame N shows frame N at 23.976, 25, 29.97, 30, 60 fps and on jittered timing (the 8 `frames_*` fixtures, 40 of 40 each). — **C2, macOS:** the same 8 fixtures (copied from Glance a9dc601), 40 of 40 each, shuffled (`swift_glances_frame_timing_fixtures_land_on_frame_n`).
 - [x] On the system-codec path the loop wraps onto frame 0 exactly. — **C2, macOS:** frame 39 2 µs before the clip's end, frame 0 2 µs after, on all 8 fixtures (same test).
-- [ ] Time label `M:SS.mmm`, frame number label, both updating at about 20 Hz, also while a slider is held.
+- [ ] Time label `M:SS.mmm`, frame number label, both updating at about 20 Hz, also while a slider is held. — C3 core half: `bar::time_label` (`%d:%06.3f`, tested); the row is drawn every refresh, a held slider included.
 - [ ] Esc quits only when: not full screen, no dialog, a file is open, no "not supported" message, and playing. Otherwise Esc keeps its normal meaning.
-- [ ] `F` and the bar button toggle full screen; the OS's own full-screen shortcut also works.
+- [ ] `F` and the bar button toggle full screen; the OS's own full-screen shortcut also works. — C3 core half: `Host::toggle_fullscreen` (the system's full screen), View ▸ Enter Full Screen (⌃⌘F) in the menu.
 
 ### Audio
 - [x] DXV and HAP clips with an audio track play it in sync; the video frame follows the audio position (round to nearest frame). — **C2, macOS:** nearest frame to the sound heard when the picture is shown (`Clip::nearest_frame`; tie to the later frame, as Swift's `rounded()`); A/V samples on DXV and HAP with PCM and AAC within half a frame, means −2.3 … +2.7 ms (`docs/05-C2-RESULTS.md` §2; method and its limits there).
@@ -159,32 +159,32 @@ Detail and sources: `docs/research/glance.md`.
 - [x] Audio loops with the video; seek and frame step move audio to the same position. — **C2:** loop on / off in lockstep (`set_looping`), seek and step send the frame's real start to the sound (`seek_step_restart_and_scrub_follow_swift_glance`); measured audio loops: 3000.43 and 4999.74 ms mean periods for 3.000 / 5.000 s clips, 0 skipped.
 - [ ] `M` and the speaker button mute without stopping the clock; unmute restores the previous level. — **C2 core half:** mute is separate from the volume and both are a gain only (`volume_and_mute_never_move_the_clock`; every measured audio run played muted on the audio clock). Key and button: G1.
 - [ ] Volume: slider 0…1, `-` / `=` and ↑ / ↓ and ⌘↑ / ⌘↓ step 0.1, clamped; the level carries over to the next clip in the session. — **C2 core half:** gain clamped to 0…1, NaN = 0 (`gain_is_volume_clamped_and_mute_is_zero`). Keys, slider and carry-over: G1.
-- [ ] Speaker icon changes at muted / zero, < 0.33, < 0.66, else.
+- [x] Speaker icon changes at muted / zero, < 0.33, < 0.66, else. — **C3:** `Icon::speaker` (`the_speaker_icon_follows_swifts_thresholds`); the icons themselves are a look item.
 - [x] Malformed audio formats (0 or > 64 channels, non-finite or ≤ 0 sample rate) are rejected and video still plays. — **C2:** `malformed_formats_are_rejected_with_swifts_words` (Swift's words; the state is "failed (invalid audio format: …)" and the clock is the wall clock, as for any `AudioError`).
 
 ### Folder navigation and media keys
 - [ ] `[` / `]`, ⌘← / ⌘→ and the bar buttons step through the movie files of the current clip's folder in natural (Finder) order, wrapping at both ends.
 - [ ] Hidden files are skipped; the buttons are dimmed and disabled when there is no sibling.
-- [ ] OS media keys: play / pause, previous, next act on Glance; the OS "now playing" surface shows file name, duration, position and can seek.
+- [ ] OS media keys: play / pause, previous, next act on Glance; the OS "now playing" surface shows file name, duration, position and can seek. — C3: `glance_platform::MediaKeys` registers Swift's commands and publishes Now Playing (registered on the sample); a key press reaching the app was not proven by hand.
 
 ### Window and readouts
-- [ ] Default content size 960 × 616; View ▸ Default Window Size (⌘0) restores and centres it.
-- [ ] Minimum content size 500 × 180.
-- [ ] On each clip open the width snaps to the clip's aspect at the current height, clamped to [500, 95 % of the screen width]; the height never changes.
+- [ ] Default content size 960 × 616; View ▸ Default Window Size (⌘0) restores and centres it. — C3 core half: content 960 × 616 (measured: outer 960 × 648 with the 32-pt title bar); Swift's 616 includes its 28-pt title bar over the content — a look decision for G2 (`docs/06-C3-RESULTS.md` §3).
+- [ ] Minimum content size 500 × 180. — C3 core half: the window's minimum inner size; a 9:16 clip opens at 500 (measured).
+- [ ] On each clip open the width snaps to the clip's aspect at the current height, clamped to [500, 95 % of the screen width]; the height never changes. — **C3, macOS (core half):** `window::fit_width` (Swift's cases) and measured 540 / 500 / 960 for 1:1 / 9:16 / 16:9 clips, height kept (`docs/06-C3-RESULTS.md` §3). The screen width is winit's monitor width (Swift: `visibleFrame`; differs with the Dock at a side). The call on open is G1's.
 - [ ] Video is aspect-fit with black bars; no stretch.
-- [ ] Title `<file name>  [<codec label>]  [LOOP]`; codec labels exactly as in section 2.1.
-- [ ] Info line `W×H · NNfps · M:SS` (fps and duration formats as in 2.1) in the title area and at the right of the bar; the bar copy truncates first.
-- [ ] Transport bar is 40 pt high, scrub row 36 pt, dark grey; all controls have the tooltips listed in 2.6.
+- [ ] Title `<file name>  [<codec label>]  [LOOP]`; codec labels exactly as in section 2.1. — C3 core half: `bar::window_title` / `title_suffix` (tested); the codec labels are G1's.
+- [ ] Info line `W×H · NNfps · M:SS` (fps and duration formats as in 2.1) in the title area and at the right of the bar; the bar copy truncates first. — **C3 core half:** `bar::info_line` (tested), `Host::set_subtitle` (`NSWindow.subtitle`), the bar's readout truncating.
+- [x] Transport bar is 40 pt high, scrub row 36 pt, dark grey; all controls have the tooltips listed in 2.6. — **C3, macOS:** measured on the sample next to Swift Glance: bar 39 + 1 pt hairline, scrub row 36 pt, greys 20 / 34 equal (`docs/06-C3-RESULTS.md` §4); the tooltips are Swift's strings in `glance_ui::bar`.
 
 ### Settings
-- [ ] Exactly three persisted values: background mode, per-clip Alpha Type list, default-prompt-shown flag.
-- [ ] Volume, mute, loop and last file are not persisted.
+- [x] Exactly three persisted values: background mode, per-clip Alpha Type list, default-prompt-shown flag. — **C3, macOS:** `GlanceSettings`, the three keys and encodings, round-tripped with Swift Glance's code (`docs/06-C3-RESULTS.md` §1).
+- [ ] Volume, mute, loop and last file are not persisted. — C3 core half: `GlanceSettings` has no such keys; the app is G1's.
 
 ### Release
-- [ ] Build refuses to proceed when the two version fields differ.
-- [ ] Release artifact is signed, notarised and stapled; a checksum file is published beside it.
+- [x] Build refuses to proceed when the two version fields differ. — **C3:** the kit's `bundle.sh` refuses (exit 1, `docs/data/c3-sample/version-mismatch.txt`).
+- [ ] Release artifact is signed, notarised and stapled; a checksum file is published beside it. — C3 core half: the kit, proven on the sample (§5); publishing is G3's.
 - [ ] Release is a GitHub Release on `AmritusG/glance-releases`, tag `v<version>`, title `Glance <version>`, body = that version's notes file.
-- [ ] After release exactly one registered copy of the app remains on the build machine.
+- [ ] After release exactly one registered copy of the app remains on the build machine. — C3 core half: `ls-cleanup.sh` (one record after install, §5).
 - [ ] No auto-updater.
 
 

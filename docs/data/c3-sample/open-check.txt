@@ -1,0 +1,22 @@
+== 1. cold launch: open -a <app> tiles_dxt1.mov
+pid 28758
+windows of pid 28758: 1 ["960x648"]
+== 2. while running: open -a <app> tiles_hapy.mov
+pids now: 28758 
+windows of pid 28758: 1 ["960x648"]
+== 3. two files at once: open -a <app> tiles_h264.mp4 tiles_dxt1.mov
+pids now: 28758 
+windows of pid 28758: 1 ["960x648"]
+== event log
+{"args_file":null,"background":"black","event":"launch","pid":28758,"unix_ms":1794764929590}
+{"event":"os-open","paths":["<repo>/tests/fixtures/tiles_dxt1.mov"],"pid":28758,"unix_ms":1794764929622}
+{"alpha":"premultiplied","alpha_rule":"Opaque","audio":"None { reason: \"no audio track\" }","codec":"DXV3 Normal Quality","event":"open","path":"<repo>/tests/fixtures/tiles_dxt1.mov","pid":28758,"remembered":null,"source":"os","unix_ms":1794764929623}
+{"event":"media-keys","pid":28758,"registered":true,"unix_ms":1794764929626}
+{"event":"shown","frame":0,"path":"<repo>/tests/fixtures/tiles_dxt1.mov","pid":28758,"unix_ms":1794764929629}
+{"event":"os-open","paths":["<repo>/tests/fixtures/tiles_hapy.mov"],"pid":28758,"unix_ms":1794764933736}
+{"alpha":"premultiplied","alpha_rule":"Opaque","audio":"None { reason: \"no audio track\" }","codec":"HAP Q","event":"open","path":"<repo>/tests/fixtures/tiles_hapy.mov","pid":28758,"remembered":null,"source":"os","unix_ms":1794764933737}
+{"event":"shown","frame":0,"path":"<repo>/tests/fixtures/tiles_hapy.mov","pid":28758,"unix_ms":1794764933738}
+{"event":"os-open","paths":["<repo>/tests/fixtures/tiles_h264.mp4","<repo>/tests/fixtures/tiles_dxt1.mov"],"pid":28758,"unix_ms":1794764937077}
+{"alpha":"premultiplied","alpha_rule":"Opaque","audio":"None { reason: \"no audio track\" }","codec":"DXV3 Normal Quality","event":"open","path":"<repo>/tests/fixtures/tiles_dxt1.mov","pid":28758,"remembered":null,"source":"os","unix_ms":1794764937078}
+{"event":"shown","frame":0,"path":"<repo>/tests/fixtures/tiles_dxt1.mov","pid":28758,"unix_ms":1794764937079}
+quit

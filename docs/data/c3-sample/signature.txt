@@ -1,0 +1,11 @@
+# codesign -d --verbose=2 /Applications/Glance Sample.app (masked)
+Identifier=com.amritus.glancecore.sample
+Format=app bundle with Mach-O universal (x86_64 arm64)
+CodeDirectory v=20500 size=28393 flags=0x10000(runtime) hashes=876+7 location=embedded
+Timestamp=15 Nov 2026 at 18:47:11
+Notarization Ticket=stapled
+TeamIdentifier=<team>
+Runtime Version=27.2.0
+# entitlements
+com.apple.security.files.bookmarks.app-scope
+com.apple.security.files.user-selected.read-only

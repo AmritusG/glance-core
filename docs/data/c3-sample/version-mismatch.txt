@@ -1,0 +1,6 @@
+==> toolchain: rustc 1.100.0 (0ef1bc386 2026-11-09)
+==> cargo build --release --target aarch64-apple-darwin -p glance-sample
+==> cargo build --release --target x86_64-apple-darwin -p glance-sample
+==> assembling <scratch>/kit-bad/Glance Sample.app
+kit: CFBundleVersion (0.0.1) != CFBundleShortVersionString (0.3.0): set both to the release version
+exit 1

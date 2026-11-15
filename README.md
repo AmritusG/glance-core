@@ -11,6 +11,22 @@ cargo build --release
 ./target/release/glance-proof verify clip.mov a-folder/        # the render harness, no window
 ```
 
+## What 0.3.0 adds (core wave C3, "the shell")
+
+- **Settings in the Swift apps' own store** (`glance-settings` over `glance-platform`): the
+  `UserDefaults` domain of the app's bundle id, Swift's keys, encodings and read rules — Swift
+  Glance's own code and the Rust store read each other's writes.
+- **The OS around the window** (`glance-platform`, the one crate with `unsafe`): files from Finder
+  at cold launch and while running into one window, the "Set as Default" flow, media keys and Now
+  Playing, recents; Windows single instance, settings folder and media controls written for C4.
+- **Glance's look and shell in egui** (`glance-ui`): the system font, the transport bar and scrub
+  row measured equal to Swift Glance's, the menus (muda) and dialogs (rfd) with Swift's items and
+  words, the window-fit rule, `run_shell`.
+- **A packaging kit** (`tools/package/`): universal build, Developer ID signing, notarisation,
+  staple, DMG + `.sha256`, exactly one LaunchServices record — proven on `glance-sample`.
+- The output device changing rate mid-clip rebuilds the sound at the new rate; native clips read
+  their stated alpha; egui's bundled fonts are gone. Numbers: `docs/06-C3-RESULTS.md`.
+
 ## What 0.2.0 adds (core wave C2, "time and sound")
 
 - **Sound and the clock.** `glance-audio` plays a clip's first audio track (PCM, and AAC through

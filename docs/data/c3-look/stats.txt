@@ -1,0 +1,17 @@
+glance-sample_DXT5-DXV3_default.png 960x648 pt
+    band from bottom:   39.0 pt  rgb (20, 20, 20)  (strip share 96%)
+    band from bottom:    1.0 pt  rgb (34, 34, 34)  (strip share 100%)
+    band from bottom:   16.0 pt  rgb (20, 20, 20)  (strip share 100%)
+    band from bottom:    4.0 pt  rgb (44, 44, 44)  (strip share 45%)
+    band from bottom:   16.0 pt  rgb (20, 20, 20)  (strip share 95%)
+    band from bottom:  539.5 pt  rgb (0, 0, 0)  (strip share 73%)
+    band from bottom:    0.5 pt  rgb (18, 18, 18)  (strip share 45%)
+    band from bottom:   32.0 pt  rgb (35, 35, 35)  (strip share 100%)
+swift-glance_DXT5-DXV3_default.png 911x616 pt
+    band from bottom:   39.0 pt  rgb (20, 20, 20)  (strip share 95%)
+    band from bottom:    1.0 pt  rgb (34, 34, 34)  (strip share 100%)
+    band from bottom:   16.0 pt  rgb (20, 20, 20)  (strip share 100%)
+    band from bottom:    4.0 pt  rgb (44, 44, 44)  (strip share 45%)
+    band from bottom:   16.0 pt  rgb (20, 20, 20)  (strip share 94%)
+    band from bottom:  512.0 pt  rgb (0, 0, 0)  (strip share 73%)
+    band from bottom:   28.0 pt  rgb (46, 46, 46)  (strip share 100%)

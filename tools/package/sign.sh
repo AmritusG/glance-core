@@ -13,5 +13,5 @@ case "$target" in
     *)
         codesign --force --options runtime --timestamp --entitlements "$ENTITLEMENTS" --sign "$id" "$target" 2>&1 | kit_mask
         codesign --verify --deep --strict --verbose=2 "$target" 2>&1 | kit_mask
-        codesign -d --verbose=2 "$target" 2>&1 | grep -E "^(Identifier|Format|flags|Runtime|Timestamp|TeamIdentifier)=" | kit_mask ;;
+        codesign -d --verbose=2 "$target" 2>&1 | grep -E "^(Identifier|Format|CodeDirectory|Runtime Version|Timestamp|TeamIdentifier)" | kit_mask ;;
 esac

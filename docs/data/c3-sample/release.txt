@@ -1,0 +1,44 @@
+==> toolchain: rustc 1.100.0 (0ef1bc386 2026-11-09)
+==> cargo build --release --target aarch64-apple-darwin -p glance-sample
+    Finished `release` profile [optimized + debuginfo] target(s) in 2.25s
+==> cargo build --release --target x86_64-apple-darwin -p glance-sample
+    Finished `release` profile [optimized + debuginfo] target(s) in 2.09s
+==> assembling <scratch>/kit/Glance Sample.app
+==> <scratch>/kit/Glance Sample.app: version 0.3.0, x86_64 arm64, minos 14.0
+<scratch>/kit/Glance Sample.app: replacing existing signature
+<scratch>/kit/Glance Sample.app: valid on disk
+<scratch>/kit/Glance Sample.app: satisfies its Designated Requirement
+Identifier=com.amritus.glancecore.sample
+Format=app bundle with Mach-O universal (x86_64 arm64)
+Timestamp=15 Nov 2026 at 18:47:11
+TeamIdentifier=<team>
+==> notarytool submit Glance Sample.zip (profile amritus-notary)
+    submission 24f683ab-9d10-4b59-84b9-4c44e5b2169b: Accepted
+==> stapler staple
+Processing: <scratch>/kit/Glance Sample.app
+Processing: <scratch>/kit/Glance Sample.app
+The staple and validate action worked!
+Processing: <scratch>/kit/Glance Sample.app
+The validate action worked!
+<scratch>/kit/Glance Sample.app: accepted
+source=Notarized Developer ID
+==> hdiutil create Glance Sample-v0.3.0.dmg
+hdiutil: WARNING: 'hdiutil create -volname -format ...' is deprecated. Please use 'diskutil image create from/blank --volumeName --format ...' instead.
+==> notarytool submit Glance Sample-v0.3.0.dmg (profile amritus-notary)
+    submission 25444721-800f-42c3-9b54-6adb0e40e074: Accepted
+==> stapler staple
+Processing: <scratch>/kit/Glance Sample-v0.3.0.dmg
+Processing: <scratch>/kit/Glance Sample-v0.3.0.dmg
+The staple and validate action worked!
+Processing: <scratch>/kit/Glance Sample-v0.3.0.dmg
+The validate action worked!
+<scratch>/kit/Glance Sample-v0.3.0.dmg: accepted
+source=Notarized Developer ID
+==> <scratch>/kit/Glance Sample-v0.3.0.dmg (11632812 bytes), sha256 2b4a5c889cdf0d303eb8b97fdbaec235b6e06977843c2288370d7e3a0712adff
+==> LaunchServices records for com.amritus.glancecore.sample before:
+    /Applications/Glance Sample.app
+    <scratch>/kit/Glance Sample.app
+    unregistered build product: <scratch>/kit/Glance Sample.app
+==> LaunchServices records for com.amritus.glancecore.sample after:
+    /Applications/Glance Sample.app
+==> OK: exactly one record (/Applications/Glance Sample.app)

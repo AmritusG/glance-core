@@ -14,6 +14,9 @@ came from somewhere else, with its licence.
 | `crates/glance-proof/src/hapq.rs` (`swift_ycocg`) | Swift Glance `Sources/GlanceCore/HAPHQDecoder.swift` `hapYCoCgToRGB`, written again in Rust for the measurement | MIT (as above) |
 | `tools/swift-crosstest/Sources/xtest/main.swift` (`matroskaCodec`, `unsupportedMessage`, the routing order) | Swift Glance `Sources/Glance/AVPlaybackController.swift:84-123` and `Sources/Glance/PlayerModel.swift:209-229`, copied because the app target cannot be imported by a package; the rest of the program only calls GlanceCore | MIT (as above) |
 | `crates/glance-ui` (the egui host on a winit loop, existing device handed to egui-wgpu) | the pattern of Loombda-rs `loombda-editor` (Amrit Rosell); no code copied | Amrit's own |
+| `crates/glance-ui/src/{look,bar,menu,dialog,window}.rs` (sizes, colours, tooltips, menu items and shortcuts, alert words, the fit rule), `crates/glance-settings` (the keys, encodings, cap and newest-line rule), `crates/glance-platform/src/macos.rs` (the media commands, the default-handler and open-file flows) | Swift Glance @ a9dc601: `Sources/Glance/{TransportBar,ScrubBar,PlayerScreen,GlanceApp,DefaultHandlerControl,NowPlayingController,AlphaTypeMemory,PlayerModel}.swift`, `Sources/GlancePlayback/ClipTitle.swift`, written again in Rust | MIT (as above) |
+| `tools/swift-settings/harness.swift` (`AlphaTypeMemory`, the background and prompt-flag lines) | Swift Glance @ a9dc601 `Sources/Glance/AlphaTypeMemory.swift:10-26`, `PlayerModel.swift:63-71`, `DefaultHandlerControl.swift:25,43-50`, copied for the round-trip test | MIT (as above) |
+| `tools/package/ls-cleanup.sh`, the order and checks of `tools/package/*.sh` | Swift Glance @ a9dc601 `scripts/{ls-cleanup,build,sign,notarize,make-dmg,install-from-dmg}.sh` (and Cowork's `ls-cleanup.sh`), made project-agnostic | MIT (as above) |
 
 No decoder, demuxer or encoder is in this repository: they are DXVKit Plus's, a dependency
 pinned by tag (`Cargo.toml`).
@@ -35,8 +38,8 @@ No third-party media, and none of Amrit's footage, is in this repository. The si
 ## Dependencies
 
 Every dependency is permissive (MIT, Apache-2.0, BSD-2/3, Zlib, ISC, MIT-0), enforced by
-`cargo deny check` (`deny.toml`), with two crate-scoped exceptions: `unicode-ident`
-(Unicode-3.0; Unicode's data tables, build time only) and `epaint_default_fonts` (egui's built-in
-fonts: Ubuntu Light under the Ubuntu Font Licence 1.0, Noto Emoji under the SIL Open Font License
-1.1) until the shell wave gives the apps the system font. FFmpeg, libmpv and GStreamer bindings
-are banned, and so are the MPL-2.0 demuxers.
+`cargo deny check` (`deny.toml`), with one crate-scoped exception: `unicode-ident` (Unicode-3.0;
+Unicode's data tables, build time only). egui's built-in fonts (`epaint_default_fonts`, the second
+exception until C3) are no longer linked: the apps draw with the system font, read from the OS at
+run time and never bundled. FFmpeg, libmpv and GStreamer bindings are banned, and so are the
+MPL-2.0 demuxers.

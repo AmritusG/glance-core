@@ -1,0 +1,8 @@
+== Intel slice under Rosetta 2 (the settings toggle, twice: back where it was)
+checkerboard
+exit 0
+black
+exit 0
+== arm64
+checkerboard
+black

@@ -1,0 +1,13 @@
+==> Gatekeeper on the DMG's app (/Volumes/Glance Sample 0.3.0)
+/Volumes/Glance Sample 0.3.0/Glance Sample.app: accepted
+source=Notarized Developer ID
+==> installed /Applications/Glance Sample.app (0.3.0)
+/Applications/Glance Sample.app: accepted
+source=Notarized Developer ID
+Processing: /Applications/Glance Sample.app
+The validate action worked!
+==> LaunchServices records for com.amritus.glancecore.sample before:
+    /Applications/Glance Sample.app
+==> LaunchServices records for com.amritus.glancecore.sample after:
+    /Applications/Glance Sample.app
+==> OK: exactly one record (/Applications/Glance Sample.app)

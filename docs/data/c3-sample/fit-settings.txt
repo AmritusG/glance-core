@@ -1,0 +1,9 @@
+== window fit (window id, outer size; content = outer - 32-pt title bar)
+512x512: 16809 540x648
+540x960: 16809 500x648
+DXT5-DXV3 1920x1080: 16809 960x648
+== settings: the app's own domain
+defaults wrote checkerboard; the app read at launch: "background":"checkerboard"
+the app writes: black; defaults reads back: black
+== LaunchServices records for com.amritus.glancecore.sample after the launches
+path:                       /Applications/Glance Sample.app (0x11e90)

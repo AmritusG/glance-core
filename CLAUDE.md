@@ -7,7 +7,7 @@ Glance, CueGlance, GlEnc, MaCrate, later GlancEhr — each live in their own rep
 Read first: `docs/00-ROADMAP.md` (crates, waves, pins), `docs/01-RESEARCH.md` (what the Swift apps
 and the existing Rust code do, with sources), `docs/02-PARITY.md` (the gate each Rust app must pass
 before it replaces its Swift twin), `CHECKPOINT.md` (where the work stands). Measured results per wave: `docs/03-W0-RESULTS.md`,
-`docs/04-C1-RESULTS.md`, `docs/05-C2-RESULTS.md`.
+`docs/04-C1-RESULTS.md`, `docs/05-C2-RESULTS.md`, `docs/06-C3-RESULTS.md`.
 
 ## Layout
 
@@ -17,10 +17,15 @@ before it replaces its Swift twin), `CHECKPOINT.md` (where the work stands). Mea
 | `glance-gpu` | decoded frame → picture (as-stored RGBA from DXVKit Plus's exact block path, then the Alpha Type pass); the device; the 0-difference render harness (`verify`). |
 | `glance-playback` | the frame clock: audio master (nearest frame to the sound heard), the 0.25 s wall-clock fallback, Glance's transport rules (seek / step / restart / scrub / loop / end of clip) on DXVKit Plus's transport; a clip's decoded frame behind it (DXVKit Plus cache); timing statistics. |
 | `glance-audio` | a clip's first audio track on the output device (cpal; DXVKit Plus decodes, rubato resamples once to the device rate), volume / mute as a gain, the position heard (CoreAudio timestamps). |
-| `glance-ui` | the egui host (winit + egui-winit + egui-wgpu, no eframe), the video widget, the checkerboard; `headless`: the same widget drawn offscreen, for tests. |
-| `glance-proof` | the proof window (W0), and `verify` / `hapq` / `gpu` without a window. Not a product. |
+| `glance-ui` | the egui host (winit + egui-winit + egui-wgpu, no eframe), the video widget, the checkerboard; the shell: system font, Glance's look and icons, transport bar, scrub row, menus (muda), dialogs (rfd), window rules, `run_shell`; `headless`: the same widget drawn offscreen, for tests. |
+| `glance-platform` | the one crate with `unsafe` (own lints, `// SAFETY:` on every block): macOS preferences domain, open-file events, default handler, media keys, recents, subtitle; Windows single instance, settings folder, media controls, menu bar. |
+| `glance-settings` | typed settings in the app's store (its `UserDefaults` domain; `%APPDATA%` JSON on Windows) with the Swift apps' keys, encodings and read rules. |
+| `glance-sample` | the shell proven in a bundled, notarised app, bundle id `com.amritus.glancecore.sample` (throw-away). Not a product. |
+| `glance-proof` | the proof window (W0), and `verify` / `hapq` / `scrub` / `reroute` / `gpu` without a window. Not a product. |
 
-Planned crates (library-db, arena-client, encode, settings) are in the roadmap; a crate is
+`tools/package/`: the packaging kit (universal build, sign, notarise, DMG, `ls-cleanup`), slots in an `app.conf`.
+
+Planned crates (library-db, arena-client, encode) are in the roadmap; a crate is
 created in the wave that fills it, never as an empty stub.
 
 ## Rules
@@ -33,7 +38,7 @@ created in the wave that fills it, never as an empty stub.
    Zlib / ISC first; anything else needs Amrit's yes. No GPL / LGPL / MPL code or dependency.
 3. **`unsafe` is forbidden in this workspace** (`[workspace.lints]`). Media FFI lives in DXVKit
    Plus's island crates; the app-shell FFI the roadmap names (preferences, open-file events,
-   drag-out) will live in ONE island crate here, `glance-platform`, with its own lints table and a
+   drag-out) live in ONE island crate here, `glance-platform`, with its own lints table and a
    `// SAFETY:` comment on every block. The never-crash lints (`unwrap`, `expect`, `panic`,
    `todo`, `unreachable` denied) apply to all non-test code: every failure is a value.
 4. **Other repos are read-only.** `.ref/` holds clones for reading (gitignored). Work for another

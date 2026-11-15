@@ -1,6 +1,6 @@
 # glance-core CHECKPOINT
 
-Wave: c3-shell (open). Brief: ~/claude-handoffs/glance-core_2026-11-15_c3-shell_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1). Previous wave: c2-time-and-sound (closed, tag v0.2.0; its checkpoint is in git history at 2d29f8e).
+Wave: c3-shell (closing). Brief: ~/claude-handoffs/glance-core_2026-11-15_c3-shell_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1). Previous wave: c2-time-and-sound (closed, tag v0.2.0; its checkpoint is in git history at 2d29f8e).
 
 ## DONE
 - SCOPE 1 read: the brief; roadmap (C3 row, crates, §3); parity Core "Settings, identity, release" and Glance "Identity and packaging", "Opening files", "Transport", "Audio", "Folder navigation and media keys", "Window and readouts", "Settings", "Release"; `docs/research/glance.md` (whole); Swift Glance a9dc601 `GlanceApp.swift`, `TransportBar.swift`, `ScrubBar.swift`, `PlayerScreen.swift`, `DefaultHandlerControl.swift`, `NowPlayingController.swift`, `AlphaTypeMemory.swift`, `PlayerModel.swift` (settings), `Info.plist`, `scripts/{build,sign,notarize,make-dmg,ls-cleanup,install-from-dmg}.sh`, `entitlements.plist`; settings sections of `docs/research/{cueglance,glenc,macrate}.md` (store design); cpal 0.18.2 CoreAudio stream monitors (`macos/mod.rs`, `macos/device.rs`, `error.rs`); winit 0.30.13 macOS app delegate (`app_state.rs`, `event_loop.rs`, `platform/macos.rs`); epaint 0.36.2 font data (variation coords); loombda-rs `release-app.sh` (prior art).
@@ -15,13 +15,21 @@ Wave: c3-shell (open). Brief: ~/claude-handoffs/glance-core_2026-11-15_c3-shell_
 - IMPLEMENT 3: glance-ui `look` (Swift's numbers), `icons` (13 SF Symbols drawn as vectors), `bar` (transport bar, scrub row, Alpha Type control, not-supported overlay, Swift's text formatters), `menu` (muda, Swift's items and shortcuts; Space and A bare), `dialog` (rfd; Swift's words), `window` (fit rule), `run_shell` (menu bar, min size, platform + menu events, drops, title / subtitle / fit / default size / full screen). Unit tests for text, menus, words, fit, speaker thresholds, fonts.
 - IMPLEMENT 4/5 (code): `tools/package/` kit (bundle universal, sign, notarize, dmg, ls-cleanup, install, release; slots in `app.conf`); `crates/glance-sample` (bundle id `com.amritus.glancecore.sample`, movie types rank Alternate, its own throw-away type Owner; event log `~/Library/Logs/com.amritus.glancecore.sample/events.jsonl`). Workspace version 0.3.0. Smoke run of the bare binary: open → frame 0 shown.
 
+- BUILD + TEST 2 (final notarised build, `docs/06-C3-RESULTS.md`): kit `release.sh` + `install.sh` — universal, hardened runtime, app `24f683ab…` and DMG `25444721…` Accepted + stapled, `.sha256`, one LaunchServices record (`docs/data/c3-sample/{release,install,signature}.txt`); Intel slice runs under Rosetta (`rosetta.txt`); Finder opens cold and while running into one window / one pid, last of two wins (`open-check.txt`); fit 540 / 500 / 960, settings read + write in its domain (`fit-settings.txt`); set-default answer on the throw-away type (`set-default.txt`); version mismatch refused (`version-mismatch.txt`).
+- BUILD + TEST 3: reroute measured (6b above).
+- BUILD + TEST 4: look captures `docs/data/c3-look/` (Swift Glance built under `com.amritus.glancecore.swiftref`, unregistered + domain deleted after); bands equal for bar and scrub row (`stats.txt`); scrub track corrected to white 10 % from the measurement; title-bar chrome differs (results §3–§4).
+- Gates: fmt, clippy `-D warnings`, `GLANCE_REQUIRE_GPU=1 cargo test --workspace --release` 66 passed 0 failed, `cargo deny check` ok, `cargo build --release`; iOS check clean.
+- BUILD + TEST 5: parity — 6 new ticks (33 total), core halves annotated in the named sections.
+- Docs: `docs/06-C3-RESULTS.md`, roadmap, README, CLAUDE.md, ATTRIBUTION, `tools/package/README.md`, handoff draft `docs/handoffs/c3-shell.md`.
+
 ## NEXT
-- Package, sign, notarise, staple, DMG, install the sample; open-file (cold, running), one window, settings, one LS record; screenshots vs Swift Glance; full gates; docs, parity, handoff, verifier, tag v0.3.0.
+- Verifier on CHECKPOINT + handoff; commit, push, CI green; tag `v0.3.0`; mailbox handoff. Then nothing queued here: Glance G1 (glance-rs) starts on v0.3.0.
 
 ## STATE
 - Test media (read-only): `<testfiles>` (174 movie files).
 - Pins: DXVKit Plus `v0.11.0` (29fa9f5); wgpu 30.0.x, egui 0.36.2, winit 0.30.13; rustc 1.99.1 (Homebrew), 1.100.0 (rustup stable, CI and the Intel build).
-- Throw-away bundle id for the sample app and the Swift settings harness: `com.amritus.glancecore.sample`. Never `com.amritus.glance`.
+- Throw-away bundle id for the sample app and the Swift settings harness: `com.amritus.glancecore.sample`. Never `com.amritus.glance`. The sample stays installed at `/Applications/Glance Sample.app` (removal in the handoff).
+- Kit staging: the session scratchpad (`KIT_STAGE_DIR`); notary profile `amritus-notary`.
 - Gates: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --release -- -D warnings`, `cargo test --workspace --release`, `cargo deny check`, `cargo build --release`.
 
 ## OPEN
