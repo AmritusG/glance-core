@@ -67,6 +67,21 @@ fn the_committed_fixtures_route_as_their_content_says() {
     }
 }
 
+/// A native clip's Alpha Type is what its format description states (Swift Glance's
+/// `AlphaType.probeAVFoundation`): ProRes 4444 with alpha is stated, opaque native clips have none.
+#[cfg(target_os = "macos")]
+#[test]
+fn a_native_clip_with_alpha_is_read_as_its_format_states() {
+    let info = |name: &str| route(&fixtures().join(name)).unwrap().info;
+    let p4444 = info("tiles_prores4444.mov");
+    eprintln!("tiles_prores4444.mov: has_alpha {} stated {:?}", p4444.has_alpha, p4444.alpha);
+    assert!(p4444.has_alpha);
+    assert!(matches!(alpha_rule(&p4444), AlphaRule::Stated(_)), "{:?}", p4444.alpha);
+    for name in ["tiles_h264.mp4", "tiles_prores422.mov"] {
+        assert_eq!(alpha_rule(&info(name)), AlphaRule::Opaque, "{name}");
+    }
+}
+
 #[test]
 fn what_nothing_plays_gets_swift_glances_line() {
     let scratch = Scratch::new("messages");

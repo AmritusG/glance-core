@@ -26,7 +26,10 @@ pub struct Stage {
 impl Stage {
     pub fn new(gpu: &Gpu) -> Stage {
         let ctx = egui::Context::default();
-        crate::apply_look(&ctx);
+        // The system font is always there on the systems the apps run on; without it the stage draws
+        // no text (a picture-only screen is unaffected).
+        let _ = crate::fonts::install(&ctx);
+        crate::look::apply(&ctx);
         let options = RendererOptions { dithering: false, ..Default::default() };
         Stage { gpu: gpu.clone(), ctx, renderer: RwLock::new(Renderer::new(&gpu.device, SCREEN_FORMAT, options)), slot: None, checker: None }
     }
@@ -58,7 +61,7 @@ impl Stage {
         let mut raw = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, points)), ..Default::default() };
         raw.viewports.entry(egui::ViewportId::ROOT).or_default().native_pixels_per_point = Some(pixels_per_point);
         let Stage { gpu, ctx, renderer, .. } = self;
-        let mut host = Host { gpu, renderer, last_interval: None, refresh_millihertz: None };
+        let mut host = Host { gpu, renderer, last_interval: None, refresh_millihertz: None, window: None, quit: None };
         let mut out = ctx.run_ui(raw, |root| ui(root, &mut host));
         // Applied in full, then cleared: egui 0.36 panics when a `TexturesDelta` is dropped unapplied.
         let mut delta = std::mem::take(&mut out.textures_delta);

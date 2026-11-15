@@ -1,0 +1,40 @@
+[package]
+name = "glance-platform"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+description = "The Glance family's one island of OS calls: preferences, open-file events, default handler, media keys, recents (macOS); single instance, settings location, media transport controls (Windows)."
+
+# The one crate in the workspace allowed `unsafe` (CLAUDE.md rule 3): its own lints table, the
+# workspace's never-crash lints repeated, and a `// SAFETY:` comment on every unsafe block.
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+unimplemented = "deny"
+todo = "deny"
+unreachable = "deny"
+dbg_macro = "warn"
+undocumented_unsafe_blocks = "deny"
+
+[target.'cfg(any(target_os = "macos", windows))'.dependencies]
+raw-window-handle = { workspace = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6.3"
+block2 = "0.6.2"
+objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSArray", "NSData", "NSDictionary", "NSString", "NSUserDefaults", "NSURL", "NSValue", "NSBundle", "NSError", "NSObject", "NSEnumerator", "block2"] }
+objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSWorkspace", "NSDocumentController", "NSApplication", "NSResponder", "NSView", "NSWindow", "block2", "objc2-uniform-type-identifiers"] }
+objc2-uniform-type-identifiers = { version = "0.3.2", default-features = false, features = ["std", "UTType"] }
+objc2-media-player = { version = "0.3.2", default-features = false, features = ["std", "block2", "MPRemoteCommandCenter", "MPRemoteCommand", "MPRemoteCommandEvent", "MPNowPlayingInfoCenter", "MPMediaItem"] }
+
+[target.'cfg(windows)'.dependencies]
+muda = { workspace = true }
+windows = { version = "0.62.2", features = ["Foundation", "Media", "Win32_Foundation", "Win32_Security", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_IO", "Win32_System_WinRT"] }

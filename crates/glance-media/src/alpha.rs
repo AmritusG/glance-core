@@ -4,7 +4,7 @@
 //! made in the Swift apps still applies to the same clip in the Rust ones.
 
 use crate::route::{Clip, Route, first_dxv_packet};
-use crate::{MediaInfo, SourceKind};
+use crate::{MediaInfo, StatedAlpha};
 use dxvkit_plus_core::container::Codec;
 use sha2::{Digest, Sha256};
 use std::path::Path;
@@ -28,6 +28,15 @@ impl AlphaView {
             AlphaView::Straight => "straight",
         }
     }
+
+    /// The Alpha Type a stored word names (`AlphaType(rawValue:)`); anything else is `None`.
+    pub fn from_stored_name(name: &str) -> Option<AlphaView> {
+        match name {
+            "premultiplied" => Some(AlphaView::Premultiplied),
+            "straight" => Some(AlphaView::Straight),
+            _ => None,
+        }
+    }
 }
 
 /// What a clip's file says about its alpha, which decides whether the viewer offers the switch.
@@ -35,20 +44,25 @@ impl AlphaView {
 pub enum AlphaRule {
     /// No alpha: nothing to choose.
     Opaque,
-    /// The format fixes it (HAP alpha is straight — Glance 0.18, Amrit 2026-10-10).
+    /// The format fixes it: HAP alpha is straight (Glance 0.18, Amrit 2026-10-10); a native clip
+    /// with alpha is read as its format description states (ProRes 4444, HEVC with alpha).
     Stated(AlphaView),
     /// The file does not say (DXV, DXVKit spec 8.5): the user's per-clip choice, default
-    /// [`AlphaView::Premultiplied`]. Native codecs with alpha land here too until DXVKit Plus
-    /// reports the format description's alpha mode (Glance reads it as stated).
+    /// [`AlphaView::Premultiplied`].
     Choosable,
 }
 
-/// The alpha rule of a probed clip.
+/// The alpha rule of a probed clip, from the alpha the clip states (`MediaInfo::alpha`, DXVKit Plus
+/// 0.9.0): none is opaque; HAP, PNG, LMBD and native clips whose format description says straight
+/// or says nothing are straight (Swift Glance's `AlphaType.probeAVFoundation`); native clips whose
+/// format description says premultiplied are premultiplied; DXV alpha is unstated, the user's
+/// choice.
 pub fn alpha_rule(info: &MediaInfo) -> AlphaRule {
-    match (info.has_alpha, info.kind) {
-        (false, _) => AlphaRule::Opaque,
-        (true, SourceKind::Hap) => AlphaRule::Stated(AlphaView::Straight),
-        (true, _) => AlphaRule::Choosable,
+    match info.alpha {
+        StatedAlpha::None => AlphaRule::Opaque,
+        StatedAlpha::Straight => AlphaRule::Stated(AlphaView::Straight),
+        StatedAlpha::Premultiplied => AlphaRule::Stated(AlphaView::Premultiplied),
+        StatedAlpha::Unstated => AlphaRule::Choosable,
     }
 }
 

@@ -13,6 +13,8 @@ workspace = true
 
 [dependencies]
 glance-gpu = { workspace = true }
+glance-media = { workspace = true }
+glance-platform = { workspace = true }
 wgpu = { workspace = true }
 egui = { workspace = true }
 egui-wgpu = { workspace = true }
@@ -20,5 +22,8 @@ egui-winit = { workspace = true }
 winit = { workspace = true }
 pollster = { workspace = true }
 
+[target.'cfg(any(target_os = "macos", windows))'.dependencies]
+muda = { workspace = true }
+rfd = { workspace = true }
+
 [dev-dependencies]
-glance-media = { workspace = true }

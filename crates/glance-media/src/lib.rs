@@ -40,7 +40,7 @@ pub use dxvkit_plus_core::audio::{AudioBlock, AudioCodec, AudioInfo, AudioReader
 pub use dxvkit_plus_core::backend::NativeFrame;
 pub use dxvkit_plus_core::bc;
 pub use dxvkit_plus_core::cache::{self, CacheSettings, CacheStats, Player};
-pub use dxvkit_plus_core::source::{Decoded, FrameSource, MediaInfo, PixelFormat, Plane, Shading, SourceKind};
+pub use dxvkit_plus_core::source::{Decoded, FrameSource, MediaInfo, PixelFormat, Plane, Shading, SourceKind, StatedAlpha};
 pub use dxvkit_plus_core::time::{FrameRate, TICKS_PER_SECOND, Tick};
 pub use dxvkit_plus_core::timing::{AudioTiming, FrameTiming, MediaTime};
 pub use dxvkit_plus_core::transport;
@@ -92,11 +92,14 @@ mod tests {
     #[test]
     fn dxv_alpha_is_the_users_choice_and_hap_alpha_is_straight() {
         assert_eq!(AlphaView::default(), AlphaView::Premultiplied);
-        let with_alpha = |kind, codec| MediaInfo { has_alpha: true, ..info(kind, codec) };
-        assert_eq!(alpha_rule(&with_alpha(SourceKind::Dxv, "DXD3")), AlphaRule::Choosable);
-        assert_eq!(alpha_rule(&with_alpha(SourceKind::Hap, "HapM")), AlphaRule::Stated(AlphaView::Straight));
-        assert_eq!(alpha_rule(&with_alpha(SourceKind::Hap, "Hap5")), AlphaRule::Stated(AlphaView::Straight));
+        let with_alpha = |kind, codec, alpha| MediaInfo { has_alpha: true, alpha, ..info(kind, codec) };
+        assert_eq!(alpha_rule(&with_alpha(SourceKind::Dxv, "DXD3", StatedAlpha::Unstated)), AlphaRule::Choosable);
+        assert_eq!(alpha_rule(&with_alpha(SourceKind::Hap, "HapM", StatedAlpha::Straight)), AlphaRule::Stated(AlphaView::Straight));
+        assert_eq!(alpha_rule(&with_alpha(SourceKind::Hap, "Hap5", StatedAlpha::Straight)), AlphaRule::Stated(AlphaView::Straight));
         assert_eq!(alpha_rule(&info(SourceKind::Dxv, "DXD3")), AlphaRule::Opaque);
+        // Native clips: as the format description states (Swift's `probeAVFoundation`).
+        assert_eq!(alpha_rule(&with_alpha(SourceKind::Native, "ap4h", StatedAlpha::Straight)), AlphaRule::Stated(AlphaView::Straight));
+        assert_eq!(alpha_rule(&with_alpha(SourceKind::Native, "hvc1", StatedAlpha::Premultiplied)), AlphaRule::Stated(AlphaView::Premultiplied));
     }
 
     #[test]

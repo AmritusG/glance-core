@@ -64,6 +64,11 @@ pub trait AudioMaster {
     fn describe(&self) -> Option<AudioDescription> {
         None
     }
+    /// Follow the output device (glance-audio's `AudioClock::follow_device`): `Ok(true)` when the
+    /// sound was rebuilt on a new device format, `Err` when no sound is left.
+    fn follow_device(&mut self) -> Result<bool, String> {
+        Ok(false)
+    }
 }
 
 /// The sound as it plays (for reports).
@@ -74,6 +79,11 @@ pub struct AudioDescription {
     /// cpal's playback minus callback instant, ns, and the last callback's buffer, frames.
     pub reported_delay_nanos: u64,
     pub buffer_frames: u64,
+    /// Streams rebuilt on a new device format, under- / overruns on the current stream, and the
+    /// frames its callback has played.
+    pub reroutes: u32,
+    pub xruns: u64,
+    pub rendered_frames: u64,
 }
 
 impl AudioMaster for AudioClock {
@@ -112,7 +122,11 @@ impl AudioMaster for AudioClock {
     }
     fn describe(&self) -> Option<AudioDescription> {
         let (reported_delay_nanos, buffer_frames) = self.reported_latency();
-        Some(AudioDescription { track: self.track(), device: self.device(), reported_delay_nanos, buffer_frames })
+        let (reroutes, xruns, rendered_frames) = self.device_counts();
+        Some(AudioDescription { track: self.track(), device: self.device(), reported_delay_nanos, buffer_frames, reroutes, xruns, rendered_frames })
+    }
+    fn follow_device(&mut self) -> Result<bool, String> {
+        AudioClock::follow_device(self).map(|r| r.is_some()).map_err(|e| e.to_string())
     }
 }
 
@@ -252,6 +266,13 @@ impl Clock {
     pub fn tick(&mut self, now: Instant) -> u32 {
         if self.paused {
             return self.current;
+        }
+        // A new output device format: the sound is rebuilt at the position heard and primes again,
+        // so the quarter-second grace starts over.
+        match self.audio.as_mut().map(|a| a.follow_device()) {
+            Some(Ok(true)) => self.last_audio_ok = now,
+            Some(Err(reason)) => self.fall_back(format!("audio device lost: {reason}")),
+            Some(Ok(false)) | None => {}
         }
         if self.starting {
             self.starting = false;
@@ -623,6 +644,8 @@ mod tests {
         end: Option<Tick>,
         seeks: Vec<MediaTime>,
         gain: (f32, bool),
+        /// What the next `follow_device` answers (then back to "nothing changed").
+        follow: Option<Result<bool, String>>,
     }
 
     struct Fake(Rc<RefCell<Script>>);
@@ -662,6 +685,9 @@ mod tests {
         }
         fn end(&self) -> Option<Tick> {
             self.0.borrow().end
+        }
+        fn follow_device(&mut self) -> Result<bool, String> {
+            self.0.borrow_mut().follow.take().unwrap_or(Ok(false))
         }
     }
 
@@ -725,6 +751,28 @@ mod tests {
         assert!(!a.borrow().playing, "the dead sound is stopped");
         // (Measured from the re-anchor tick, so a little past it again.)
         assert_eq!(c.tick(t0 + secs(0.26 + 10.0 / 30.0) + Duration::from_micros(5)), 13);
+    }
+
+    #[test]
+    fn a_sound_rebuilt_on_a_new_device_gets_the_quarter_second_again_and_a_lost_one_falls_back() {
+        let (mut c, a, t0) = with_audio(300);
+        a.borrow_mut().position = Some(at(3.0 / 30.0));
+        assert_eq!(c.tick(t0), 3);
+        // The device's rate changes 0.2 s later: the sound is rebuilt and primes again. The grace
+        // runs from the rebuild, not from the last position heard.
+        a.borrow_mut().position = None;
+        assert_eq!(c.tick(t0 + secs(0.1)), 3);
+        a.borrow_mut().follow = Some(Ok(true));
+        assert_eq!(c.tick(t0 + secs(0.2)), 3);
+        assert_eq!(c.tick(t0 + secs(0.4)), 3);
+        assert_eq!(c.master(), Master::Audio, "0.2 s after the rebuild: still the sound's clock");
+        a.borrow_mut().position = Some(at(4.0 / 30.0));
+        assert_eq!(c.tick(t0 + secs(0.42)), 4);
+        // No sound left after a device change: the wall clock at once, from the frame on screen.
+        a.borrow_mut().follow = Some(Err("no audio output device".into()));
+        assert_eq!(c.tick(t0 + secs(0.43)), 4);
+        assert_eq!(c.master(), Master::Wall);
+        assert_eq!(c.audio_state(), &AudioState::Failed { reason: "audio device lost: no audio output device".into() });
     }
 
     #[test]

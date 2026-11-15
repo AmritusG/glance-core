@@ -4,6 +4,7 @@
 //! glance-proof <clip>... [--seconds 10] [--warmup 1] [--out results.json] [--log frames.csv]
 //!               [--mute] [--no-audio] [--pace N] [--no-loop]
 //! glance-proof scrub [--seconds 10] [--out report.json] <clip>
+//! glance-proof reroute [--seconds 10] [--switch-at 4] [--to 48000] [--no-follow] [--out r.json] <clip>
 //! glance-proof media <file or folder>...
 //! glance-proof verify [--every N] [--root <folder>] [--out report.json] <file or folder>...
 //! glance-proof hapq [--every N] [--out report.json] <HAP Q clip>...
@@ -16,7 +17,8 @@
 //! for unattended measurements), `--no-audio` plays the picture on the wall clock, `--pace N`
 //! takes a new frame only every N-th display refresh (N = 2 on a 120 Hz display is a 60 Hz
 //! cadence), `--no-loop` stops at the last frame. `scrub` drags a clip's scrubber to a new random
-//! frame every 8 ms without a window and times each request.
+//! frame every 8 ms without a window and times each request. `reroute` changes the output device's
+//! rate while a clip's sound plays and measures the sound's speed before and after ([`reroute`]).
 //! `verify` runs the 0-difference render harness without a window ([`verify`]); `hapq` measures
 //! the Rust family's HAP Q picture against Swift Glance's convention ([`hapq`]); `gpu` prints the
 //! adapter the family's device is on, as JSON.
@@ -37,6 +39,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
+mod reroute;
 mod scrub;
 
 struct Args {
@@ -581,8 +584,9 @@ fn main() -> std::process::ExitCode {
         }
         return std::process::ExitCode::SUCCESS;
     }
-    if all.first().map(String::as_str) == Some("scrub") {
-        return match scrub::run(all.get(1..).unwrap_or_default()) {
+    if let Some(name @ ("scrub" | "reroute")) = all.first().map(String::as_str) {
+        let rest = all.get(1..).unwrap_or_default();
+        return match if name == "scrub" { scrub::run(rest) } else { reroute::run(rest) } {
             Ok(()) => std::process::ExitCode::SUCCESS,
             Err(e) => {
                 eprintln!("glance-proof: {e}");

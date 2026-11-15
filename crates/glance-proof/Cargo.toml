@@ -16,6 +16,8 @@ glance-media = { workspace = true }
 glance-gpu = { workspace = true }
 glance-playback = { workspace = true }
 glance-ui = { workspace = true }
+glance-audio = { workspace = true }
+cpal = { workspace = true }
 egui = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

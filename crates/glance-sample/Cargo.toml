@@ -1,0 +1,24 @@
+[package]
+name = "glance-sample"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+description = "The core's shell proven in one bundled app under a throw-away bundle id (com.amritus.glancecore.sample). Not a product, not published."
+
+[lints]
+workspace = true
+
+# macOS and Windows only (the app has a window shell there; iOS is GlancEhr's).
+[target.'cfg(any(target_os = "macos", windows))'.dependencies]
+glance-media = { workspace = true }
+glance-gpu = { workspace = true }
+glance-playback = { workspace = true }
+glance-ui = { workspace = true }
+glance-settings = { workspace = true }
+glance-platform = { workspace = true }
+egui = { workspace = true }
+serde_json = { workspace = true }

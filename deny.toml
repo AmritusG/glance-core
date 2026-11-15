@@ -23,17 +23,14 @@ allow = [
 ]
 confidence-threshold = 0.93
 unused-allowed-license = "allow"
-# Two crate-scoped exceptions, not global allowances; nothing else may use these licences.
+# One crate-scoped exception, not a global allowance; nothing else may use this licence.
 # - `unicode-ident` (via proc-macro2, a build-time dependency of serde's derive): Unicode's data
 #   tables under Unicode-3.0, permissive and OSI-approved. DXVKit Plus carries the same exception.
-# - `epaint_default_fonts`: the fonts egui draws its text with (Ubuntu Light under the Ubuntu Font
-#   Licence 1.0, Noto Emoji under the SIL Open Font License 1.1; Hack and emoji-icon-font are MIT).
-#   Font files, not code; both licences allow bundling in an application. In the tree since W0
-#   (found by this gate in C1). It goes when the shell wave (C3) gives the apps the system font,
-#   as the Swift apps have. Needs Amrit's yes to stay until then: docs/handoffs/c1-exact-picture.md.
+# (egui's built-in fonts, `epaint_default_fonts` under OFL-1.1 / Ubuntu-font-1.0, were the second
+# exception from C1; since C3 egui is built without them and the apps draw with the system font,
+# read from the OS at run time: crates/glance-ui/src/fonts.rs.)
 exceptions = [
     { name = "unicode-ident", allow = ["Unicode-3.0"] },
-    { name = "epaint_default_fonts", allow = ["OFL-1.1", "Ubuntu-font-1.0"] },
 ]
 # Our own crates are unpublished (publish = false) and MIT.
 private = { ignore = true }

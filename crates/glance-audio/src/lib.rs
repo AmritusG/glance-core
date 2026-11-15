@@ -20,6 +20,15 @@
 //!   first frame after a start or seek is heard there is no position (`None`) — the caller holds the
 //!   frame, and falls back to the wall clock after 0.25 s (glance-playback).
 //!
+//! The output device can change under a playing clip: the user picks another output, or the
+//! device's own rate changes (Audio MIDI Setup, another app). The clock follows it
+//! ([`AudioClock::follow_device`]): when cpal reports the route changed or the stream invalid, or
+//! the default output's rate or channel count differs from the stream's, the stream is rebuilt on
+//! the default output at its new rate, the track re-read and resampled once to that rate, and play
+//! resumes at the position heard — so the speed stays right (C3; Swift's `AVAudioEngine` re-runs
+//! its graph on `AVAudioEngineConfigurationChange`). Buffer under- and overruns are counted, never
+//! a failure.
+//!
 //! An undecodable or malformed track is an [`AudioError`] that the player maps to Swift's
 //! `.failed(reason:)` ([`AudioError::state`]) while the picture plays on the wall clock.
 #![forbid(unsafe_code)]
@@ -201,6 +210,27 @@ pub fn heard_nanos(info: &cpal::OutputCallbackInfo, frames: usize, rate: u32) ->
     u64::try_from(playback.saturating_sub(buffer)).unwrap_or(u64::MAX)
 }
 
+/// What a cpal stream error means for the clock.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum StreamError {
+    /// A buffer under- or overrun: counted, the sound plays on.
+    Overrun,
+    /// The default output moved (cpal's DefaultOutput unit follows it), the stream's format no
+    /// longer holds, or its device went away: rebuilt on the default output.
+    Reroute,
+    /// Anything else: the sound is lost (the picture falls back to the wall clock).
+    Fatal,
+}
+
+/// cpal's error kinds as the clock reads them.
+pub fn stream_error(kind: cpal::ErrorKind) -> StreamError {
+    match kind {
+        cpal::ErrorKind::Xrun => StreamError::Overrun,
+        cpal::ErrorKind::DeviceChanged | cpal::ErrorKind::StreamInvalidated | cpal::ErrorKind::DeviceNotAvailable => StreamError::Reroute,
+        _ => StreamError::Fatal,
+    }
+}
+
 /// No seek waiting for the callback.
 const NO_SEEK: u64 = u64::MAX;
 
@@ -222,6 +252,12 @@ struct Shared {
     unprimed: AtomicBool,
     failed: AtomicBool,
     error: Mutex<Option<String>>,
+    /// cpal reported the route changed or the stream invalid: rebuild on the default output.
+    reroute: AtomicBool,
+    /// Buffer under- / overruns cpal reported (never a failure).
+    xruns: AtomicU64,
+    /// Frames the callback has played (all buffers while playing): the speed measure.
+    rendered: AtomicU64,
     /// Seqlock over the anchor (the callback writes, the clock reads).
     seq: AtomicU64,
     /// The frame a playing callback started with, and when it is heard.
@@ -264,6 +300,7 @@ impl Shared {
             }
         }
         self.cursor.store(cursor, SeqCst);
+        self.rendered.fetch_add(frames as u64, SeqCst);
         self.seq.fetch_add(1, SeqCst);
         self.anchor_frame.store(start, SeqCst);
         self.anchor_nanos.store(heard, SeqCst);
@@ -303,6 +340,24 @@ pub fn default_output() -> Result<(cpal::Device, DeviceFormat), AudioError> {
     Ok((device, DeviceFormat { rate: config.sample_rate(), channels: config.channels() }))
 }
 
+/// Reads the track again for a rebuilt stream (the decoded track is not kept beside its
+/// resampled copy).
+pub type Reread = Box<dyn Fn() -> Result<Pcm, AudioError> + Send>;
+
+/// How often the default output's format is compared with the stream's.
+pub const DEVICE_POLL: std::time::Duration = std::time::Duration::from_millis(250);
+
+/// A stream rebuilt on another device format ([`AudioClock::follow_device`]).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Reroute {
+    pub from: DeviceFormat,
+    pub to: DeviceFormat,
+    /// What triggered it: cpal's report, or the polled format.
+    pub why: String,
+    /// Re-reading, resampling and restarting took this long.
+    pub took: std::time::Duration,
+}
+
 /// A clip's first audio track playing on the output device: the audio-master clock.
 pub struct AudioClock {
     stream: cpal::Stream,
@@ -315,6 +370,9 @@ pub struct AudioClock {
     paused_at: u64,
     volume: f32,
     muted: bool,
+    reread: Reread,
+    last_poll: std::time::Instant,
+    reroutes: u32,
 }
 
 impl std::fmt::Debug for AudioClock {
@@ -339,16 +397,39 @@ impl AudioClock {
         if tracks.is_empty() {
             return Err(AudioError::NoAudioTrack);
         }
-        let mut reader = glance_media::open_audio(path, 0)?;
-        let pcm = decode_track(&mut reader)?;
+        let path = path.to_path_buf();
+        let reread: Reread = Box::new(move || decode_track(&mut glance_media::open_audio(&path, 0)?));
+        let pcm = reread()?;
         let (device, format) = default_output()?;
-        Self::start(pcm, &device, format, loops)
+        Self::start(pcm, &device, format, loops, reread)
     }
 
-    /// A decoded track on `device` (`format` is the device's own).
-    pub fn start(pcm: Pcm, device: &cpal::Device, format: DeviceFormat, loops: bool) -> Result<AudioClock, AudioError> {
-        validate_format(f64::from(format.rate), i64::from(format.channels))?;
+    /// A decoded track on `device` (`format` is the device's own); `reread` gives the track again
+    /// when the stream is rebuilt on another device format.
+    pub fn start(pcm: Pcm, device: &cpal::Device, format: DeviceFormat, loops: bool, reread: Reread) -> Result<AudioClock, AudioError> {
         let track = TrackFormat { rate: pcm.rate, channels: pcm.channels, frames: pcm.frames() };
+        let timing = pcm.timing.clone();
+        let (stream, shared) = Self::stream(pcm, device, format, loops)?;
+        Ok(AudioClock {
+            stream,
+            shared,
+            device: format,
+            track,
+            timing,
+            playing: false,
+            paused_at: 0,
+            volume: 1.0,
+            muted: false,
+            reread,
+            last_poll: std::time::Instant::now(),
+            reroutes: 0,
+        })
+    }
+
+    /// The track resampled to `format`'s rate and a running (silent until played) stream on
+    /// `device` that plays it.
+    fn stream(pcm: Pcm, device: &cpal::Device, format: DeviceFormat, loops: bool) -> Result<(cpal::Stream, Arc<Shared>), AudioError> {
+        validate_format(f64::from(format.rate), i64::from(format.channels))?;
         let samples = resample(pcm.samples, pcm.channels, pcm.rate, format.rate)?;
         let channels = pcm.channels as usize;
         let len = (samples.len() / channels.max(1)) as u64;
@@ -364,6 +445,9 @@ impl AudioClock {
             unprimed: AtomicBool::new(true),
             failed: AtomicBool::new(false),
             error: Mutex::new(None),
+            reroute: AtomicBool::new(false),
+            xruns: AtomicU64::new(0),
+            rendered: AtomicU64::new(0),
             seq: AtomicU64::new(0),
             anchor_frame: AtomicU64::new(0),
             anchor_nanos: AtomicU64::new(0),
@@ -386,16 +470,72 @@ impl AudioClock {
                     render.render(out, out_channels, heard_nanos(info, frames, rate));
                 },
                 move |e: cpal::Error| {
-                    failure.failed.store(true, SeqCst);
+                    let what = stream_error(e.kind());
+                    if what == StreamError::Overrun {
+                        failure.xruns.fetch_add(1, SeqCst);
+                        return;
+                    }
                     if let Ok(mut slot) = failure.error.lock() {
                         *slot = Some(e.to_string());
+                    }
+                    match what {
+                        StreamError::Reroute => failure.reroute.store(true, SeqCst),
+                        _ => failure.failed.store(true, SeqCst),
                     }
                 },
                 None,
             )
             .map_err(|e| AudioError::Unreadable(format!("output stream: {e}")))?;
         stream.play().map_err(|e| AudioError::Unreadable(format!("engine start failed: {e}")))?;
-        Ok(AudioClock { stream, shared, device: format, track, timing: pcm.timing, playing: false, paused_at: 0, volume: 1.0, muted: false })
+        Ok((stream, shared))
+    }
+
+    /// Follow the output device: when cpal reported the route changed or the stream invalid, or
+    /// (checked every [`DEVICE_POLL`]) the default output's rate or channel count is not the
+    /// stream's, rebuild the stream on the default output at its own format, the track re-read and
+    /// resampled once, at the position heard, playing or paused as it was, with the same volume,
+    /// mute and loop. `Ok(None)`: nothing changed. An error means no sound is left (the caller
+    /// falls back to the wall clock).
+    pub fn follow_device(&mut self) -> Result<Option<Reroute>, AudioError> {
+        let reported = self.shared.reroute.swap(false, SeqCst);
+        let now = std::time::Instant::now();
+        if !reported && now.saturating_duration_since(self.last_poll) < DEVICE_POLL {
+            return Ok(None);
+        }
+        self.last_poll = now;
+        let (device, format) = default_output()?;
+        if !reported && format == self.device {
+            return Ok(None);
+        }
+        let why = if reported {
+            self.shared.error.lock().ok().and_then(|e| e.clone()).unwrap_or_else(|| "the route changed".into())
+        } else {
+            format!("the default output is now {} Hz, {} ch", format.rate, format.channels)
+        };
+        let started = std::time::Instant::now();
+        // Where the sound is (in track frames), before the old stream goes.
+        let at = self.to_source(self.position_frame().unwrap_or(self.paused_at));
+        let was_playing = self.playing;
+        let pcm = (self.reread)()?;
+        let (stream, shared) = Self::stream(pcm, &device, format, self.shared.loops.load(SeqCst))?;
+        let from = self.device;
+        self.stream = stream;
+        self.shared = shared;
+        self.device = format;
+        self.paused_at = self.to_device(at).min(self.shared.len.saturating_sub(1));
+        self.playing = false;
+        self.apply_gain();
+        if was_playing {
+            self.play();
+        }
+        self.reroutes = self.reroutes.saturating_add(1);
+        Ok(Some(Reroute { from, to: format, why, took: started.elapsed() }))
+    }
+
+    /// Streams rebuilt so far, buffer under- / overruns cpal reported on the current stream, and
+    /// the frames its callback has played.
+    pub fn device_counts(&self) -> (u32, u64, u64) {
+        (self.reroutes, self.shared.xruns.load(SeqCst), self.shared.rendered.load(SeqCst))
     }
 
     /// What the viewer shows while this clock plays.
@@ -585,6 +725,18 @@ mod tests {
             assert_eq!(e.state(), AudioState::Failed { reason: format!("invalid audio format: {why}") });
         }
         assert_eq!(AudioError::NoAudioTrack.state(), AudioState::None { reason: "no audio track".into() });
+    }
+
+    #[test]
+    fn an_overrun_plays_on_a_moved_device_reroutes_anything_else_is_lost() {
+        // C2 treated every cpal error as fatal, an xrun included.
+        assert_eq!(stream_error(cpal::ErrorKind::Xrun), StreamError::Overrun);
+        for k in [cpal::ErrorKind::DeviceChanged, cpal::ErrorKind::StreamInvalidated, cpal::ErrorKind::DeviceNotAvailable] {
+            assert_eq!(stream_error(k), StreamError::Reroute, "{k:?}");
+        }
+        for k in [cpal::ErrorKind::BackendError, cpal::ErrorKind::PermissionDenied, cpal::ErrorKind::HostUnavailable] {
+            assert_eq!(stream_error(k), StreamError::Fatal, "{k:?}");
+        }
     }
 
     #[test]
