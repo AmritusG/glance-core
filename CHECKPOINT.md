@@ -11,8 +11,13 @@ Wave: v031-g1-fixes (patch, tag v0.3.1). Brief: ~/claude-handoffs/glance-core_20
 - BUILD + TEST 3: folder tests (`crates/glance-platform/tests/folder.rs`): Finder order on 22 names (digit runs past 2^64 compare modulo 2^64 — recorded), dot file + `chflags hidden` skipped, type test with macOS 27.0.1's set recorded.
 - Docs: parity (Space, A, folder navigation, hidden files, alerts), roadmap, README "What 0.3.1 fixes", CLAUDE.md, kit README; handoff `docs/handoffs/v031-g1-fixes.md`.
 
+- Verifier: 35 confirmed / 4 unproven / 2 wrong on the draft; corrected in d96e6b7 (alert without a button is an error, the kit refuses a bad STAGE_DIR before creating it, UTType sources, CLAUDE.md row); gates re-run (71 passed 0 failed); sample re-released from d96e6b7 (DMG sha256 b944c934…5d36), installed (one record), keys / alert / STAGE_DIR re-measured: same results.
+
+- Tag `v0.3.1` on the commit that closes this checkpoint, after its CI run; note for glance-rs `~/claude-handoffs/glance-rs_2026-11-15_note-from-glance-core-v031.md`; handoff `docs/handoffs/v031-g1-fixes.md`, mailbox copy `~/claude-handoffs/glance-core_2026-11-15_v031-g1-fixes-result.md`.
+- **Wave closed.**
+
 ## NEXT
-- Verifier on the handoff, then the closing commit, tag `v0.3.1` on it after its CI run, push; note for glance-rs `~/claude-handoffs/glance-rs_2026-11-15_note-from-glance-core-v031.md`; mailbox copy `~/claude-handoffs/glance-core_2026-11-15_v031-g1-fixes-result.md`.
+- Nothing queued in this repo. glance-rs G1b bumps its pin to v0.3.1, deletes its folder stand-in and its STAGE_DIR workaround, and makes Esc quit (Amrit 2026-11-15); it will send glance-core a one-line request to change the Esc line of `docs/02-PARITY.md`. Deferred as before: every Windows run (C4), Windows TaskDialog with Swift's button names (C4 manifest).
 
 ## STATE
 - Test media (read-only): `<testfiles>` (174 movie files).

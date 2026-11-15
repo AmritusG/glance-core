@@ -1,11 +1,11 @@
-app: /Applications/Glance Sample.app (0.3.1) pid 99557
+app: /Applications/Glance Sample.app (0.3.1) pid 16705
 == before the menu click:
-owner=Glance Sample pid=99557 layer=0 size=960x648
+owner=Glance Sample pid=16705 layer=0 size=960x648
 == alert up (after 4500 ms):
-owner=Glance Sample pid=99557 layer=8 size=270x200
-owner=Glance Sample pid=99557 layer=0 size=960x648
+owner=Glance Sample pid=16705 layer=8 size=260x192
+owner=Glance Sample pid=16705 layer=0 size=960x648
 == the alert as Accessibility sees it (glance-sample's windows):
 , Glance Sample, dialog, standard window
 Glance Sample is already the default for its sample files., , Glance Sample
-== after kill -9 99557:
+== after kill -9 16705:
 glance-sample running: none

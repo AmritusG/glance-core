@@ -2,9 +2,9 @@ project:    glance-core
 pass:       v031-g1-fixes
 STATUS:     COMPLETE
 parent:     ae8930d
-result:     a56690a 435920b (fixes, test), closing commit tagged v0.3.1
+result:     a56690a 435920b d96e6b7 + the closing commit, tagged v0.3.1
 session:    glance-core Claude Code, 2026-11-15
-written_at: 2026-11-15T21:30Z
+written_at: @WRITTEN@
 
 # glance-core v0.3.1: the four things Glance G1 found (handoff)
 
@@ -27,6 +27,7 @@ Test clips: the repo's own fixtures `tests/fixtures/tiles_dxt5.mov` (DXV3 alpha)
 | rfd on Windows without `common-controls-v6` uses `MessageBoxW` | rfd 0.18.0 `src/backend/win_cid/message_dialog.rs:9-23, 204-210` |
 | `localizedStandardCompare:` "compares strings as sorted by the Finder … uses the current locale … may be changed in future releases" | Apple, `NSString.localizedStandardCompare(_:)` |
 | Swift's folder scan: `contentsOfDirectory(…, options: [.skipsHiddenFiles])`, `UTType(filenameExtension: ext.lowercased())` conforming to `.movie` / `.quickTimeMovie` / `.mpeg4Movie`, sorted by `localizedStandardCompare` of the name | `.ref/glance` a9dc601 `Sources/Glance/PlayerModel.swift:233-268` |
+| `UTType.conforms(to:)`: "true if the type directly or indirectly conforms to type, or if it's equal to type"; `UTType(filenameExtension:)`: may give a **dynamic** type for an unknown extension (which conforms to nothing of ours), `nil` for invalid input; "you can't always derive the type of a file system item based solely on its filename extension" (Swift does exactly that; kept) | Apple, `UTType.conforms(to:)`, `UTType.init(filenameExtension:conformingTo:)` |
 | `StrCmpLogicalW`: digits by value, not case-sensitive, returns −1 / 0 / 1; "can change from release to release"; Shlwapi.dll 5.5+ | Microsoft Learn, `StrCmpLogicalW` |
 | `TaskDialogIndirect` needs Comctl32.dll **version 6** (an app gets it from its manifest) | Microsoft Learn, `TaskDialogIndirect` (Requirements) |
 | No source documents `localizedStandardCompare` on digit runs past 64 bits; a 2003 report saw overflowing numbers sort below all others (32-bit then) | web search 2026-11-15: earthlingsoft.net "unnatural order" (2003), Directory Opus forum (a different product, 2^64 limit) |
@@ -84,7 +85,7 @@ No contradiction with the brief.
 ## MEASURED (GREEN, v0.3.1 notarised, installed from the kit's default STAGE_DIR)
 
 - **Release** (`release.txt`, `KIT_STAGE_DIR` unset): universal, signed, app and DMG Accepted +
-  stapled, DMG sha256 `f2338422…136d`; ls-cleanup: "unregistered build product:
+  stapled, DMG sha256 `b944c934…5d36` (built from d96e6b7); ls-cleanup: "unregistered build product:
   /private/var/folders/…/Glance Sample.app" → **exactly one record**, exit 0.
 - **Install** (`install.txt`): Gatekeeper accepted (Notarized Developer ID) on the DMG's app and
   the installed copy, staple valid, **exactly one record**, exit 0.
@@ -93,7 +94,7 @@ No contradiction with the brief.
   `l` ×2 control → 2 window presses (keys the menu does not own still reach the window); A on the
   opaque clip → **no menu command, no alpha change** (the disabled item does not take it; the
   window gets the A and does nothing with it, as Swift's view).
-- **Alert** (`green-alert.txt`): `owner=Glance Sample pid=99557 layer=8 270x200` — a window of the
+- **Alert** (`green-alert.txt`): `owner=Glance Sample pid=16705 layer=8 260x192` — a window of the
   app's pid; Accessibility reads it as "dialog" with its text; after `kill -9` **no alert left**.
 - **STAGE_DIR, the RED script again** (`green-stage.txt`): the staged copy is now "unregistered
   build product", one record, exit 0.
@@ -115,19 +116,27 @@ No contradiction with the brief.
 ## DEVIATIONS / FOR AMRIT
 
 - None needing a decision. Windows two-button alerts read OK / Cancel until C4's manifest (above).
-- The released app was built from a56690a; 435920b changed only a test, so the installed build is
-  the v0.3.1 code.
+- Verifier (cc-kit) on the draft: 35 confirmed, 4 unproven (local gates it was not allowed to
+  re-run — re-run here, receipts below; tag / note / mailbox copy then still pending), 2 wrong
+  (the UTType docs were not cited — added to READ; the header claimed the tag before it existed —
+  the tag is now made last). Its notes led to two fixes in d96e6b7: an alert stopped without a
+  button was read as the first button (`ask` would have said yes) — now an error; the kit created
+  `STAGE_DIR` before refusing one inside / beside the project — now it refuses first. The CLAUDE.md
+  row gained the new Windows calls. The sample was then released, installed and measured again
+  from d96e6b7 (the numbers above are that run's).
 - For glance-rs: Esc is its own rule (G1b); the parity line "Esc quits only when…" in
   `docs/02-PARITY.md` is unchanged here — G1b will send glance-core a one-line request.
 
 ## RECEIPTS
 
 ```
-$ git log --oneline -3   (before the closing commit)
+$ git log --oneline -4   (before the closing commit)
+d96e6b7 v0.3.1: verifier corrections (alert without a button is an error, kit refuses a bad STAGE_DIR before creating it, docs)
 435920b v0.3.1: the type test asserts what every macOS agrees on, records the rest
 a56690a v0.3.1: bare-key menu shortcuts, in-process alerts, kit STAGE_DIR physical, folder listing (RED runs recorded)
 ae8930d C3: checkpoint closed
 
+(re-run on d96e6b7)
 $ cargo fmt --all --check                                   -> FMT OK (no output)
 $ cargo clippy --workspace --all-targets --release -- -D warnings   -> no warnings
 $ GLANCE_REQUIRE_GPU=1 cargo test --workspace --release      -> 25 test binaries "test result: ok", passed 71 failed 0
@@ -150,7 +159,7 @@ exit 0
 green-keys.txt:  == counts: PlayPause=2 ToggleAlphaType=1 alpha-changes=1 window-keys: Space=0 A=1 L=2
                  (A=1 is the press on the opaque clip, where the item is disabled)
 red-keys.txt:    == counts: PlayPause=0 ToggleAlphaType=0 alpha-changes=0
-green-alert.txt: owner=Glance Sample pid=99557 layer=8 size=270x200 ; after kill -9: (no window)
+green-alert.txt: owner=Glance Sample pid=16705 layer=8 size=260x192 ; after kill -9: (no window)
 red-alert.txt:   owner=UserNotificationCenter pid=92864 layer=8 size=260x192 ; after kill -9: still there
 ```
 
