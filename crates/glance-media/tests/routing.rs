@@ -41,7 +41,8 @@ fn every_dxv_and_hap_variant_routes_by_what_the_file_holds() {
     for (fourcc, packet, label) in [(b"DXD4", &dxt1, "Normal Quality"), (b"DXD3", &legacy5, "Normal Quality With Alpha"), (b"DXDI", &dxt1, "Normal Quality")] {
         let clip = route(&scratch.file("packet-decides.mov", &video_movie(fourcc, 20, 12, std::slice::from_ref(packet)))).unwrap();
         assert_eq!(clip.route, Route::Dxv);
-        assert_eq!(dxv_variant_label(&clip.open().unwrap().decode(0).unwrap()), Some(label));
+        assert_eq!(clip.info.dxv_variant.map(dxv_variant_label), Some(label));
+        clip.open().unwrap().decode(0).unwrap();
     }
 }
 
@@ -91,11 +92,17 @@ fn what_nothing_plays_gets_swift_glances_line() {
     assert_eq!(message(&scratch.file("legacy.mov", &video_movie(b"DXDI", 16, 16, &[vec![0xFF; 3]]))), "DXV1 in MOV is not supported");
     // The container is the extension in upper case; without one, Swift Glance's words.
     let hapy = Kind::HapY.movie(16, 16, 2);
-    // Cut off inside the sample data, the sample tables (written first) whole: the codec can still be named.
+    // Sample tables damaged (the size table claims more samples than it holds), the sample entry
+    // intact: nothing plays it (Swift refuses it too), and the codec can still be named. (A movie cut
+    // off inside its sample data plays its whole samples since DXVKit Plus 0.9.0, as in Swift.)
+    let mut damaged = movie_laid_out(&[Track { fourcc: b"HapY", width: 16, height: 16, samples: &[vec![0; 400], vec![0; 400]] }], true);
+    let stsz = damaged.windows(4).position(|w| w == b"stsz").unwrap() + 4;
+    damaged[stsz + 8..stsz + 12].copy_from_slice(&0x0FFF_FFF0u32.to_be_bytes());
+    assert_eq!(message(&scratch.file("damaged.MoV", &damaged)), "HAP Q in MOV is not supported");
+    assert_eq!(message(&scratch.file("damaged", &damaged)), "HAP Q in this container is not supported");
+    // Negative control: the same movie undamaged plays.
     let whole = movie_laid_out(&[Track { fourcc: b"HapY", width: 16, height: 16, samples: &[vec![0; 400], vec![0; 400]] }], true);
-    let cut = &whole[..whole.len() - 300];
-    assert_eq!(message(&scratch.file("cut.MoV", cut)), "HAP Q in MOV is not supported");
-    assert_eq!(message(&scratch.file("cut", cut)), "HAP Q in this container is not supported");
+    assert_eq!(route(&scratch.file("whole.mov", &whole)).unwrap().route, Route::Hap);
     assert_eq!(message(&scratch.file("no-moov.mp4", &hapy[..hapy.len() / 2])), "MP4 files are not supported");
     assert_eq!(message(&scratch.file("zero.mov", &[])), "MOV files are not supported");
     assert_eq!(message(&scratch.file("zero", &[])), "this container files are not supported");
@@ -117,15 +124,17 @@ fn what_nothing_plays_gets_swift_glances_line() {
     assert_eq!(unsupported_message(&scratch.file("zero.mov", &[])), "MOV files are not supported");
 }
 
-/// Known difference, pinned so a change is noticed: a movie with a DXV track and a HAP track. Swift
-/// Glance plays the DXV track (DXV is tried first); DXVKit Plus's probe takes the HAP track.
-/// Reported to DXVKit Plus (`DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md`).
+/// A movie with a DXV track and a HAP track plays the DXV track, as Swift Glance does (DXV is tried
+/// first; DXVKit Plus's probe takes the first DXV track anywhere since 0.9.0). Up to 0.8.0 it took
+/// the HAP track, a known difference this test pinned.
 #[test]
-fn a_movie_with_a_dxv_and_a_hap_track_plays_the_hap_track() {
+fn a_movie_with_a_dxv_and_a_hap_track_plays_the_dxv_track() {
     let scratch = Scratch::new("two-tracks");
     let (dxv, hap) = (vec![Kind::Dxt1.packet(&Kind::Dxt1.frame_planes(16, 16, 0))], vec![Kind::Hap1.packet(&Kind::Hap1.frame_planes(16, 16, 0))]);
-    let both = movie(&[Track { fourcc: b"DXD3", width: 16, height: 16, samples: &dxv }, Track { fourcc: b"Hap1", width: 16, height: 16, samples: &hap }]);
-    assert_eq!(route(&scratch.file("both.mov", &both)).unwrap().route, Route::Hap);
+    let both = movie(&[Track { fourcc: b"Hap1", width: 16, height: 16, samples: &hap }, Track { fourcc: b"DXD3", width: 16, height: 16, samples: &dxv }]);
+    let clip = route(&scratch.file("both.mov", &both)).unwrap();
+    assert_eq!(clip.route, Route::Dxv);
+    assert_eq!(clip.open().unwrap().decode(0).unwrap().size(), (16, 16));
 }
 
 /// Route a file and, when it routes, open it and decode its first, middle and last frame to RGBA
@@ -249,5 +258,5 @@ fn amrits_test_files_come_back() {
         (files, refused)
     });
     eprintln!("{files} files, {} refused:\n{}", refused.len(), refused.join("\n"));
-    assert_eq!((files, refused.len()), (174, 7));
+    assert_eq!((files, refused.len()), (174, 6));
 }

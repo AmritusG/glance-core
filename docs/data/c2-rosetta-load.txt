@@ -1,0 +1,19 @@
+# C2: the x86_64 glance-proof under Rosetta 2 on <host> (M5 Max), 2026-11-15T13:57:37Z, rustc rustc 1.100.0 (0ef1bc386 2026-11-09)
+## with .cargo/config.toml (MACOSX_DEPLOYMENT_TARGET=14.0): otool LC_BUILD_VERSION
+    minos 14.0
+      sdk 27.2
+## arch -x86_64 glance-proof gpu
+{
+  "adapter": "Apple M5 Max",
+  "backend": "Metal",
+  "bc_textures": true,
+  "device_type": "IntegratedGpu",
+  "driver": "",
+  "max_texture_dimension_2d": 16384
+}
+exit 0
+## negative control: MACOSX_DEPLOYMENT_TARGET=10.12 (rustc's x86_64 default)
+dyld[9810]: Library not loaded: @rpath/libswiftCoreMedia.dylib
+  Referenced from: <F0DAEBB7-1BB5-305C-BC38-907D306F8181> <scratch>/t1012/x86_64-apple-darwin/release/glance-proof
+  Reason: no LC_RPATH's found
+exit 134

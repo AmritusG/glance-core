@@ -43,7 +43,8 @@ impl ClipPlayer {
         let routed = glance_media::route(path)?;
         let source = routed.open()?;
         let cache = cache.clamped();
-        let clip = Clip { frames: routed.info.frames.max(1), rate: routed.info.rate };
+        let timing = source.timing();
+        let clip = if timing.frame_count() > 0 { Clip::from_timing(Arc::new(timing)) } else { Clip::new(1, routed.info.rate) };
         Ok(ClipPlayer {
             player: Player::new(source, cache),
             route: routed.route,

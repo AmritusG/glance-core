@@ -120,7 +120,8 @@ Rust code is compared with that table in `crates/glance-media/tests/swift_parity
   Amrit's own `adv_*` files: all come back (`amrits_test_files_come_back`).
 - Known limits of DXVKit Plus's probe, pinned or stated and briefed to DXVKit Plus: a movie with a
   DXV track and a HAP track plays the HAP track (Swift: the DXV track); a movie named `.png` or
-  `.lmbd` is judged by its name.
+  `.lmbd` is judged by its name. *(C2, 2026-11-15: both fixed by DXVKit Plus 0.9.0 and no longer
+  true; `docs/handoffs/c2-time-and-sound.md`.)*
 
 ## 4b. The proof window on the exact path (a smoke run, not a timing claim)
 

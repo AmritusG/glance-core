@@ -7,7 +7,7 @@
 //! kind, its hint, samples, exceeding. `-` where Swift returns nothing.
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::indexing_slicing)]
 
-use glance_media::{AlphaReport, AlphaRule, Route, alpha_report, clip_key, display_name, first_video_fourcc, route, unsupported_message};
+use glance_media::{AlphaReport, AlphaRule, Route, alpha_report, clip_key, first_video_fourcc, names, route, unsupported_message};
 use sha2::{Digest, Sha256};
 use std::path::Path;
 
@@ -24,14 +24,6 @@ struct Counts {
     unsupported: usize,
 }
 
-/// The one known difference in routing. `adv_trunc_hapm_midframe.mov` is a HAP Q Alpha movie cut
-/// off in the middle of its sample data, its sample tables intact. Swift Glance's HAP demuxer does
-/// not check that the samples are inside the file, so the clip opens and the frames past the cut
-/// fail one by one; DXVKit Plus's demuxer refuses a track with a sample outside the file (as
-/// DXVKit, and so Swift Glance, does for DXV), so the Rust family shows the line instead.
-/// Reported to DXVKit Plus (`DXVKit-Plus_2026-11-14_c1-findings_brief-r2.md`).
-const KNOWN: [(&str, &str, &str); 1] = [("adv_trunc_hapm_midframe.mov", "route", "unsupported")];
-
 /// Every line of `table` against the Rust code on the same file under `root`.
 fn compare(table: &str, root: &Path) -> Counts {
     let mut counts = Counts::default();
@@ -41,8 +33,7 @@ fn compare(table: &str, root: &Path) -> Counts {
         let [name, swift_route, message, fourcc, shown_as, key, kind, look, samples, exceeding] = col[..] else { panic!("malformed line: {row}") };
         let path = root.join(name);
         let mut check = |what: &str, ours: String, swift: &str| {
-            let known = KNOWN.iter().find(|k| k.0 == name && k.1 == what);
-            if known.map_or(ours != swift, |k| ours != k.2 || ours == swift) {
+            if ours != swift {
                 wrong.push(format!("{name}: {what}: Rust {ours:?}, Swift {swift:?}"));
             }
         };
@@ -50,9 +41,9 @@ fn compare(table: &str, root: &Path) -> Counts {
         // HAP R and HAP HDR: Swift Glance does not play them and shows their FourCC; the Rust family plays them.
         let rust_only = matches!(fourcc, "[Hap7]" | "[HapH]");
         let cc = first_video_fourcc(&path);
-        check("FourCC", dash(cc.as_ref().map(|c| format!("[{c}]"))), fourcc);
+        check("FourCC", dash(cc.map(|c| format!("[{}]", String::from_utf8_lossy(&c)))), fourcc);
         if !rust_only {
-            check("name", dash(cc.as_deref().and_then(display_name).map(str::to_string)), shown_as);
+            check("name", dash(cc.and_then(|c| names::codec_name(&c)).map(str::to_string)), shown_as);
             check("message", unsupported_message(&path), message);
         }
         check("clip key", dash(clip_key(&path)), key);
@@ -73,7 +64,7 @@ fn compare(table: &str, root: &Path) -> Counts {
         };
         check("route", ours.into(), expected);
         match &routed {
-            Err(e) if swift_route == "unsupported" || KNOWN.iter().any(|k| k.0 == name) => {
+            Err(e) if swift_route == "unsupported" => {
                 check("shown message", e.message.clone(), message);
                 counts.unsupported += 1;
             }
@@ -115,8 +106,10 @@ fn amrits_test_files_route_key_and_probe_as_in_swift_glance() {
     };
     let counts = compare(include_str!("../../../tests/data/swift-glance-testfiles.tsv"), &root);
     eprintln!("{counts:?}");
-    // 75 DXV keys, 51 DXV clips with alpha measured; 6 files nothing plays, and the known one.
-    assert_eq!(counts, Counts { files: 174, keys: 75, hints: 51, unsupported: 7 });
+    // 75 DXV keys, 51 DXV clips with alpha measured; 6 files nothing plays. (Up to DXVKit Plus
+    // 0.8.0 a seventh, `adv_trunc_hapm_midframe.mov`, was refused here and played by Swift; since
+    // 0.9.0 its whole samples play, as in Swift.)
+    assert_eq!(counts, Counts { files: 174, keys: 75, hints: 51, unsupported: 6 });
 }
 
 /// The key's layout, recomputed here from the bytes: the text `"<size> <frames> <w>x<h>"`, then the

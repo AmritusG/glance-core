@@ -81,15 +81,15 @@ fn file_report(gpu: &Gpu, presenter: &Presenter, stage: &mut Stage, path: &Path,
         Route::Native => "native",
         Route::Lmbd => "lmbd",
     };
-    (report.codec, report.width, report.height, report.frames) = (glance_media::codec_label(&clip.info), clip.info.width, clip.info.height, clip.info.frames);
+    (report.codec, report.width, report.height, report.frames) = (clip.info.codec_name.clone(), clip.info.width, clip.info.height, clip.info.frames);
     match clip_rows(gpu, presenter, &clip, BlockPath::Exact, every) {
         Ok(rows) => report.one_to_one = rows,
         Err(e) => report.error = Some(e),
     }
+    report.variant = clip.info.dxv_variant.map(glance_media::dxv_variant_label);
     // The middle frame, window-scaled, for each Alpha Type the clip is read with.
     let middle = clip.info.frames / 2;
     if let Ok(frame) = clip.open().map_err(|e| e.to_string()).and_then(|mut s| s.decode(middle).map_err(|e| e.to_string())) {
-        report.variant = if clip.route == Route::Dxv { glance_media::dxv_variant_label(&frame) } else { None };
         let mut view = ClipView::new(&gpu.device);
         for alpha in glance_gpu::verify::views(&clip) {
             let Ok(reference) = expected_picture(&frame, alpha) else { continue };

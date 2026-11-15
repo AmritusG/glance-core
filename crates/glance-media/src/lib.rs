@@ -29,7 +29,11 @@ pub use alpha::{
     AlphaLook, AlphaReport, AlphaRule, AlphaView, LOOK_MINIMUM_SAMPLES, LOOK_PREMULTIPLIED_AT_MOST, LOOK_STRAIGHT_AT_LEAST, alpha_look, alpha_look_count,
     alpha_report, alpha_rule, clip_key,
 };
-pub use route::{Clip, NotPlayable, Route, display_name, first_video_fourcc, route, unsupported_message};
+pub use route::{Clip, NotPlayable, Route, route};
+
+pub use dxvkit_plus_core::container::first_video_fourcc;
+pub use dxvkit_plus_core::dxv::Variant as DxvVariant;
+pub use dxvkit_plus_core::names::{self, unsupported_message};
 
 pub use dxvkit_plus_core::MediaError;
 pub use dxvkit_plus_core::backend::NativeFrame;
@@ -53,30 +57,15 @@ pub(crate) fn import_options() -> ImportOptions {
     ImportOptions { backend: platform_backend(), alpha_mode: AlphaMode::Straight, ..Default::default() }
 }
 
-/// The codec's name as the apps show it. HAP is named by its FourCC ([`display_name`], Swift
-/// Glance's names); a DXV track's FourCC does not
-/// say which variant it holds (the packet does), so DXV is named from a decoded frame's planes by
-/// [`dxv_variant_label`].
-pub fn codec_label(info: &MediaInfo) -> String {
-    match (info.kind, info.codec.as_str()) {
-        (SourceKind::Hap, codec) => display_name(codec).unwrap_or(codec).into(),
-        (SourceKind::Dxv, _) => "DXV".into(),
-        (SourceKind::Lmbd, _) => "LMBD".into(),
-        (_, codec) => codec.to_string(),
-    }
-}
-
-/// The DXV variant a decoded DXV frame holds, from its planes (BC1 = Normal Quality, BC3 = Normal
-/// Quality With Alpha, BC4 + BC5 = High Quality, BC5 + BC5 = High Quality With Alpha). `None` for a
-/// frame that is not one of those shapes.
-pub fn dxv_variant_label(frame: &Decoded) -> Option<&'static str> {
-    let Decoded::Planes { planes, .. } = frame else { return None };
-    match planes.iter().map(|p| p.format).collect::<Vec<_>>().as_slice() {
-        [PixelFormat::Bc1] => Some("Normal Quality"),
-        [PixelFormat::Bc3] => Some("Normal Quality With Alpha"),
-        [PixelFormat::Bc4, PixelFormat::Bc5] => Some("High Quality"),
-        [PixelFormat::Bc5, PixelFormat::Bc5] => Some("High Quality With Alpha"),
-        _ => None,
+/// The DXV variant's name as the apps show it (Arena's names; the text is glance-core's, the variant
+/// is `MediaInfo::dxv_variant`, read by DXVKit Plus from the first packet). Legacy DXV (DXV1 / 2) is
+/// named by the same blocks.
+pub fn dxv_variant_label(variant: DxvVariant) -> &'static str {
+    match variant {
+        DxvVariant::Dxt1 | DxvVariant::LegacyDxt1 => "Normal Quality",
+        DxvVariant::Dxt5 | DxvVariant::LegacyDxt5 => "Normal Quality With Alpha",
+        DxvVariant::Ycg6 => "High Quality",
+        DxvVariant::Yg10 => "High Quality With Alpha",
     }
 }
 
@@ -85,12 +74,7 @@ mod tests {
     use super::*;
 
     fn info(kind: SourceKind, codec: &str) -> MediaInfo {
-        MediaInfo { path: String::new(), kind, codec: codec.into(), width: 4, height: 4, frames: 1, rate: FrameRate::FPS_30, has_alpha: false, timecode: None }
-    }
-
-    fn frame(formats: &[PixelFormat]) -> Decoded {
-        let planes = formats.iter().map(|&format| Plane { format, width: 4, height: 4, data: Vec::new() }).collect();
-        Decoded::Planes { index: 0, width: 4, height: 4, shading: Shading::Rgba { opaque: false }, planes }
+        MediaInfo { kind, codec: codec.into(), width: 4, height: 4, frames: 1, rate: FrameRate::FPS_30, ..MediaInfo::default() }
     }
 
     #[test]
@@ -104,20 +88,9 @@ mod tests {
     }
 
     #[test]
-    fn hap_is_named_by_fourcc_and_unknown_codecs_keep_theirs() {
-        assert_eq!(codec_label(&info(SourceKind::Hap, "HapM")), "HAP Q Alpha");
-        assert_eq!(codec_label(&info(SourceKind::Hap, "Hap1")), "HAP");
-        assert_eq!(codec_label(&info(SourceKind::Hap, "HapA")), "HAP Alpha-only");
-        assert_eq!(codec_label(&info(SourceKind::Hap, "Hap7")), "HAP R");
-        assert_eq!(codec_label(&info(SourceKind::Native, "ap4h")), "ap4h");
-        // A DXV FourCC never names the variant.
-        assert_eq!(codec_label(&info(SourceKind::Dxv, "DXD3")), "DXV");
-    }
-
-    #[test]
-    fn a_dxv_variant_is_read_from_the_planes() {
-        assert_eq!(dxv_variant_label(&frame(&[PixelFormat::Bc1])), Some("Normal Quality"));
-        assert_eq!(dxv_variant_label(&frame(&[PixelFormat::Bc5, PixelFormat::Bc5])), Some("High Quality With Alpha"));
-        assert_eq!(dxv_variant_label(&frame(&[PixelFormat::Bc7])), None);
+    fn a_dxv_variant_has_arenas_name() {
+        assert_eq!(dxv_variant_label(DxvVariant::Dxt1), "Normal Quality");
+        assert_eq!(dxv_variant_label(DxvVariant::LegacyDxt5), "Normal Quality With Alpha");
+        assert_eq!(dxv_variant_label(DxvVariant::Yg10), "High Quality With Alpha");
     }
 }

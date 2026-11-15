@@ -404,8 +404,8 @@ checksum = "d8b14ccef22fc6f5a8f4d7d768562a182c04ce9a3b3157b91390b52ddfdf1a76"
 
 [[package]]
 name = "dxvkit-plus-apple"
-version = "0.8.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.8.0#2c29c7b6e1122189d780f99668ce27bf303974ff"
+version = "0.11.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#da3b11f3195d0f1a3b30120db6d9c2ba24d35cdb"
 dependencies = [
  "dxvkit-plus-core",
  "objc2 0.6.5",
@@ -422,8 +422,8 @@ dependencies = [
 
 [[package]]
 name = "dxvkit-plus-core"
-version = "0.8.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.8.0#2c29c7b6e1122189d780f99668ce27bf303974ff"
+version = "0.11.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#da3b11f3195d0f1a3b30120db6d9c2ba24d35cdb"
 dependencies = [
  "png",
  "serde",
@@ -433,8 +433,8 @@ dependencies = [
 
 [[package]]
 name = "dxvkit-plus-wgpu"
-version = "0.8.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.8.0#2c29c7b6e1122189d780f99668ce27bf303974ff"
+version = "0.11.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#da3b11f3195d0f1a3b30120db6d9c2ba24d35cdb"
 dependencies = [
  "bytemuck",
  "dxvkit-plus-core",
@@ -566,7 +566,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e35d6e78f4cebb90e51d543db8fe41528851d6deeef6ef21ebd4bfdc1e784776"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1951,7 +1951,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.12.1",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -2610,7 +2610,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]

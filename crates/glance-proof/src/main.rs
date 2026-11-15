@@ -21,7 +21,7 @@ mod hapq;
 mod verify;
 
 use glance_gpu::{ClipView, Gpu, Presenter};
-use glance_media::{AlphaRule, AlphaView, CacheSettings, Decoded, SourceKind};
+use glance_media::{AlphaRule, AlphaView, CacheSettings, Decoded};
 use glance_playback::{Cadence, ClipPlayer, Samples, Summary};
 use glance_ui::{App, Background, Checker, Host, Picture};
 use std::path::{Path, PathBuf};
@@ -83,6 +83,7 @@ impl Pane {
         let player =
             ClipPlayer::open(path, CacheSettings { capacity: 24, read_ahead: 8, threads: 4 }).map_err(|e| format!("{}: {e} ({})", path.display(), e.cause))?;
         let rule = glance_media::alpha_rule(player.info());
+        let variant = player.info().dxv_variant.map(glance_media::dxv_variant_label);
         let alpha = if let AlphaRule::Stated(a) = rule { a } else { AlphaView::default() };
         Ok(Pane {
             path: path.to_path_buf(),
@@ -93,7 +94,7 @@ impl Pane {
             shown_alpha: None,
             picture: None,
             drawn: None,
-            variant: None,
+            variant,
             cadence: Cadence::default(),
             fetch: Samples::default(),
             show: Samples::default(),
@@ -104,7 +105,7 @@ impl Pane {
     }
 
     fn codec(&self) -> String {
-        let label = glance_media::codec_label(self.player.info());
+        let label = &self.player.info().codec_name;
         self.variant.map_or(label.clone(), |v| format!("{label} {v}"))
     }
 
@@ -115,9 +116,6 @@ impl Pane {
         let fresh = self.cadence.show(shown.index, self.player.info().frames);
         let mut timing = None;
         if fresh {
-            if self.variant.is_none() && self.player.info().kind == SourceKind::Dxv {
-                self.variant = glance_media::dxv_variant_label(&shown.frame);
-            }
             let t = Instant::now();
             let picture = self.view.show(host.gpu, presenter, &shown.frame, self.alpha).map_err(|e| e.to_string())?.clone();
             let took = t.elapsed();
@@ -179,7 +177,7 @@ impl Pane {
                 });
             }
             AlphaRule::Stated(a) => {
-                ui.weak(format!("Alpha Type: {a:?} ({})", glance_media::codec_label(info)));
+                ui.weak(format!("Alpha Type: {a:?} ({})", info.codec_name));
             }
             AlphaRule::Opaque => {
                 ui.weak("No alpha");

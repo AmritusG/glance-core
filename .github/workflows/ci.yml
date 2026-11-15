@@ -3,7 +3,7 @@
 # What runs where (docs/handoffs/c1-exact-picture.md, DIAGNOSE 5):
 # - lint (Linux): rustfmt and cargo deny — no platform code needed.
 # - macos (Apple silicon runner): clippy, the tests, the release build, and cargo check for
-#   Intel macOS and iOS. The GPU tests run when the runner's virtual GPU gives wgpu a Metal
+#   Intel macOS and iOS, and the Intel glance-proof started under Rosetta 2. The GPU tests run when the runner's virtual GPU gives wgpu a Metal
 #   adapter; without one they skip and say so (they are always a local gate on the core's home
 #   machine, where GLANCE_REQUIRE_GPU=1 makes a skip a failure). Tests on Amrit's own media skip:
 #   that media is never on a runner.
@@ -51,10 +51,20 @@ jobs:
         run: ./target/release/glance-proof gpu || echo "no GPU adapter on this runner - the GPU tests skip"
       - name: test
         run: cargo test --workspace --release
-      - name: what this runner's GPU does with a reserved BC7 block (recorded, not a gate)
-        run: cargo test --release -p glance-gpu --test exact reserved_bc7 -- --nocapture 2>&1 | grep -E "reserved BC7|SKIP|test result"
       - name: check x86_64-apple-darwin (universal macOS builds)
         run: cargo check --workspace --target x86_64-apple-darwin
+      # A check cannot see a load failure (DXVKit Plus W2: an Intel binary built for rustc's default
+      # macOS 10.12 does not load). Build the Intel glance-proof and start it under Rosetta 2:
+      # dyld refuses a bad binary before main (exit 134); `gpu` itself may find no adapter (exit 1).
+      - name: the x86_64 binary loads under Rosetta 2
+        run: |
+          softwareupdate --install-rosetta --agree-to-license >/dev/null 2>&1 || true
+          cargo build --release --target x86_64-apple-darwin -p glance-proof
+          otool -l target/x86_64-apple-darwin/release/glance-proof | grep -A4 LC_BUILD_VERSION | grep minos
+          set +e
+          out=$(arch -x86_64 target/x86_64-apple-darwin/release/glance-proof gpu 2>&1); code=$?
+          echo "$out"; echo "exit $code"
+          if [ $code -ge 128 ] || echo "$out" | grep -q "dyld"; then exit 1; fi
       - name: check aarch64-apple-ios (GlancEhr's third target)
         run: cargo check --workspace --target aarch64-apple-ios
 

@@ -24,11 +24,11 @@ use glance_media::{AlphaView, Decoded, MediaError, Shading};
 
 pub use dxvkit_plus_wgpu::{BlockPath, Gpu, GpuError, read_texture_rgba};
 
-/// The family's device: the high-performance adapter (Direct3D 12 on Windows, where a default
-/// request can come back as Vulkan), BC textures where the adapter has them, and the largest 2D
-/// texture the adapter offers up to DXVKit Plus's own limit of 16384 — wgpu's default of 8192 is
-/// smaller than clips people have (a 3840x9626 portrait clip is in the test library). An uncaptured
-/// wgpu error is logged, never a panic.
+/// The family's device: the high-performance adapter, Direct3D 12 on Windows (where a default
+/// request can come back as Vulkan). The device itself is DXVKit Plus's (`Gpu::with_adapter`: BC
+/// textures where the adapter has them, the adapter's largest 2D texture up to 16384, uncaptured
+/// errors logged); DXVKit Plus also refuses a frame larger than the device holds, with the numbers
+/// in the message, before any texture is made.
 pub fn open_gpu() -> Result<Gpu, GpuError> {
     let backends = if cfg!(target_os = "windows") { wgpu::Backends::DX12 } else { wgpu::Backends::PRIMARY };
     let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { backends, ..wgpu::InstanceDescriptor::new_without_display_handle() });
@@ -36,32 +36,7 @@ pub fn open_gpu() -> Result<Gpu, GpuError> {
         instance.request_adapter(&wgpu::RequestAdapterOptions { power_preference: wgpu::PowerPreference::HighPerformance, ..Default::default() }),
     )
     .map_err(|e| GpuError::NoAdapter(e.to_string()))?;
-    let required_features = adapter.features() & (wgpu::Features::TEXTURE_COMPRESSION_BC | wgpu::Features::TIMESTAMP_QUERY);
-    let required_limits =
-        wgpu::Limits { max_texture_dimension_2d: adapter.limits().max_texture_dimension_2d.min(dxvkit_plus_wgpu::MAX_EDGE), ..Default::default() };
-    let (device, queue) =
-        pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor { label: Some("glance"), required_features, required_limits, ..Default::default() }))
-            .map_err(|e| GpuError::Device(e.to_string()))?;
-    device.on_uncaptured_error(std::sync::Arc::new(|e: wgpu::Error| eprintln!("glance-gpu: uncaptured wgpu error: {e}")));
-    Ok(Gpu { instance, adapter, device, queue })
-}
-
-/// A frame the device cannot hold is an error with the numbers in it, not a wgpu validation error.
-fn check_size(device: &wgpu::Device, frame: &Decoded) -> Result<(), GpuError> {
-    let limit = device.limits().max_texture_dimension_2d;
-    let (width, height) = frame.size();
-    let planes = match frame {
-        Decoded::Planes { planes, .. } => planes.as_slice(),
-        Decoded::Native(_) => &[],
-    };
-    let largest = planes.iter().map(|p| p.width.max(p.height)).fold(width.max(height), u32::max);
-    if width == 0 || height == 0 {
-        return Err(GpuError::Invalid(format!("a {width}x{height} frame has no picture")));
-    }
-    if largest > limit {
-        return Err(GpuError::Unsupported(format!("a {width}x{height} clip is larger than this GPU's largest texture ({limit} pixels)")));
-    }
-    Ok(())
+    Gpu::with_adapter(instance, adapter)
 }
 
 /// The present pass's output: premultiplied RGBA, values as shown (no sRGB conversion on write).
@@ -265,7 +240,6 @@ impl ClipView {
 
     /// Upload `frame`, convert it and premultiply it as `alpha` says; returns the picture.
     pub fn show(&mut self, gpu: &Gpu, presenter: &Presenter, frame: &Decoded, alpha: AlphaView) -> Result<&wgpu::Texture, GpuError> {
-        check_size(&gpu.device, frame)?;
         let mut enc = gpu.device.create_command_encoder(&wgpu::CommandEncoderDescriptor { label: Some("glance-show") });
         let stored = match frame {
             Decoded::Planes { .. } => {

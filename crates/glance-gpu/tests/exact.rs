@@ -232,14 +232,29 @@ fn os_codec_fixtures_route_to_the_os_decoder_and_show() {
 }
 
 /// A clip larger than the device's largest texture is an error that says so, not a wgpu validation
-/// error and a blank picture. The family's device asks for the adapter's real limit; this test
-/// uses a device with wgpu's default limit (8192) and a frame 8196 wide.
+/// error and a blank picture (DXVKit Plus's check since v0.9.0). The family's device asks for the
+/// adapter's real limit; this test uses a device with wgpu's default limit (8192) and a frame 8196
+/// wide.
 #[test]
 fn a_clip_larger_than_the_gpu_allows_is_an_error_value() {
     if gpu().is_none() {
         return;
     }
-    let small = Gpu::headless().unwrap(); // DXVKit Plus's default device: wgpu's default limits
+    // A device with wgpu's default limits, made by hand (DXVKit Plus's own devices ask for the
+    // adapter's limit since v0.9.0), as DXVKit Plus's `wgpu/tests/limits.rs` does.
+    let small = {
+        let instance =
+            wgpu::Instance::new(wgpu::InstanceDescriptor { backends: wgpu::Backends::PRIMARY, ..wgpu::InstanceDescriptor::new_without_display_handle() });
+        let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions::default())).unwrap();
+        let required_features = adapter.features() & wgpu::Features::TEXTURE_COMPRESSION_BC;
+        let (device, queue) = pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor {
+            required_features,
+            required_limits: wgpu::Limits::default(),
+            ..Default::default()
+        }))
+        .unwrap();
+        Gpu { instance, adapter, device, queue }
+    };
     let limit = small.device.limits().max_texture_dimension_2d;
     let ours = glance_gpu::open_gpu().unwrap();
     assert!(ours.device.limits().max_texture_dimension_2d >= limit);
@@ -257,12 +272,12 @@ fn a_clip_larger_than_the_gpu_allows_is_an_error_value() {
     }
 }
 
-/// A reserved-mode BC7 block (HAP R from a hostile or broken writer) is shown without an error on
-/// any GPU; what it looks like is the GPU's. The definition says transparent black, which is what
-/// the CPU decoder gives; this test records what this GPU gives, and holds it to the definition
-/// only on the adapters the family has measured as doing so.
+/// A reserved-mode BC7 block (HAP R from a hostile or broken writer) is transparent black on every
+/// GPU on the exact block path: DXVKit Plus decodes BC7 from integer texels there since v0.9.0
+/// (`core::bc7` line for line), as the CPU decoder does. Up to v0.8.0 the GPU's own BC7 decoder gave
+/// its own value (opaque black on CI's paravirtual GPU).
 #[test]
-fn reserved_bc7_blocks_are_shown_and_their_value_is_the_gpus() {
+fn reserved_bc7_blocks_are_transparent_black_on_the_exact_path() {
     let Some((g, presenter)) = gpu() else { return };
     let scratch = Scratch::new("exact-bc7-reserved");
     let clip = routed(&scratch.file("reserved.mov", &support::reserved_bc7(16, 8)));
@@ -274,7 +289,6 @@ fn reserved_bc7_blocks_are_shown_and_their_value_is_the_gpus() {
     let got = read_texture_rgba(&g.device, &g.queue, &view.show(&g, &presenter, &frame, AlphaView::Premultiplied).unwrap().clone()).unwrap();
     let adapter = g.adapter.get_info().name;
     eprintln!("reserved BC7 block on {adapter}: GPU {:?}, CPU [0, 0, 0, 0], max diff {}", &got[..4], diff(&cpu, &got).0);
-    if !adapter.contains("Paravirtual") {
-        assert_eq!(diff(&cpu, &got), (0, 0), "{adapter}: a reserved BC7 block is not transparent black here");
-    }
+    assert_eq!(view.path(), BlockPath::Exact);
+    assert_eq!(diff(&cpu, &got), (0, 0), "{adapter}: a reserved BC7 block is not transparent black on the exact path");
 }

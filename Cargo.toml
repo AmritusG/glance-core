@@ -19,9 +19,9 @@ glance-playback = { path = "crates/glance-playback" }
 glance-ui = { path = "crates/glance-ui" }
 # Decoders, demux, transport and BC upload are DXVKit Plus's (MIT, Amrit's own): the core never
 # carries a second copy of a decoder. Pinned by tag; bumped deliberately (docs/00-ROADMAP.md §4).
-dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.8.0" }
-dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.8.0" }
-dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.8.0" }
+dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.11.0" }
+dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.11.0" }
+dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.11.0" }
 # One wgpu major across DXVKit Plus, loombda-rs and egui 0.36 (which requires wgpu ^30).
 wgpu = "30.0.1"
 egui = "0.36.2"
