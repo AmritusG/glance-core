@@ -145,7 +145,7 @@ Detail and sources: `docs/research/glance.md`.
 - [ ] Restart seeks to frame 0 and keeps the play / pause state. — **C2 core half:** `Clock::restart` (same test). Button: G1.
 - [ ] Scrub slider: dragging pauses, shows each scrubbed frame live, and resumes on release only if it was playing. — **C2 core half:** `Clock::begin_scrub` / `scrub_to` / `end_scrub` (same test). The slider: G1.
 - [x] Scrubbing never builds a backlog: the frame shown is the latest requested, within about one decode time. — **C2, macOS:** 5 clips, 1,200 requests each every 8.33 ms: the latest frame every time; request to frame equals a same-moment decode (2160p DXV HQ p50 4.32 / p99 5.01 ms against 4.32 / 4.99) (`docs/05-C2-RESULTS.md` §4).
-- [x] A 1-frame clip shows its frame. — **C2:** `a_one_frame_clip_shows_its_frame` (wall and audio clock, looping and not); the frame is requested on the first tick (Swift needed an explicit seek to frame 0).
+- [x] A 1-frame clip shows its frame. — **C2:** `a_one_frame_clip_shows_its_frame` (wall clock looping and not; audio clock looping); the frame is requested on the first tick (Swift needed an explicit seek to frame 0).
 - [x] On the system-codec path, seeking to frame N shows frame N at 23.976, 25, 29.97, 30, 60 fps and on jittered timing (the 8 `frames_*` fixtures, 40 of 40 each). — **C2, macOS:** the same 8 fixtures (copied from Glance a9dc601), 40 of 40 each, shuffled (`swift_glances_frame_timing_fixtures_land_on_frame_n`).
 - [x] On the system-codec path the loop wraps onto frame 0 exactly. — **C2, macOS:** frame 39 2 µs before the clip's end, frame 0 2 µs after, on all 8 fixtures (same test).
 - [ ] Time label `M:SS.mmm`, frame number label, both updating at about 20 Hz, also while a slider is held.

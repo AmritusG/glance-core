@@ -64,8 +64,8 @@ Brief: `~/claude-handoffs/glance-core_2026-11-15_c2-time-and-sound_brief.md`. Ma
 - **End of a non-looping clip.** Wall clock: `target = totalFrames - 1; isPaused = true`
   (`FrameClock.swift:337-340`); audio clock: `if result.reachedEOF { isPaused = true }` (`:314`).
   `play()` does not seek back, so Play at the end stays on the last frame on DXV and HAP; only
-  `AVPlaybackController.play()` restarts (`if atEnd || currentFrame >= lastFrame { seek(toFrame: 0) }`,
-  `Glance/AVPlaybackController.swift:166-172`). Amrit 2026-11-14: "fix".
+  `AVPlaybackController.play()` restarts (`if atEnd || (timing.frameCount > 0 && currentFrame >=
+  Int64(timing.lastFrame)) { atEnd = false; seek(toFrame: 0) }`, `Glance/AVPlaybackController.swift:153-160`). Amrit 2026-11-14: "fix".
 - **Gain and mute never move the clock.** `applyGain()` "sets ONLY `playerNode.volume` … does NOT
   touch the sample-time position"; `effectiveGain = muted ? 0 : min(1, max(0, volume))` —
   `AudioClock.swift:266-281`. Mute is separate from volume "so unmute restores the prior level"
@@ -127,7 +127,7 @@ Brief: `~/claude-handoffs/glance-core_2026-11-15_c2-time-and-sound_brief.md`. Ma
 - Gates on the final tree: fmt; clippy `-D warnings`; `GLANCE_REQUIRE_GPU=1 cargo test --workspace
   --release` all passed (RECEIPTS); `cargo deny check` ok; `cargo build --release` ok; CI green
   (RECEIPTS).
-- The rules: 11 clock tests (`crates/glance-playback/src/lib.rs`), `tests/frames.rs` (40 clips / 427
+- The rules: 9 clock tests (`crates/glance-playback/src/lib.rs`; 2 more test the timing helpers), `tests/frames.rs` (40 clips / 427
   frames; Swift's 8 timing fixtures 40 of 40, every frame start, loop onto 0, negative control),
   glance-audio 5 unit + 2 fixture tests.
 - Measured (`docs/05-C2-RESULTS.md`): 0 skipped at 120 Hz in 30 runs; 60 Hz cadence 26 of 30 runs 0,
@@ -138,6 +138,17 @@ Brief: `~/claude-handoffs/glance-core_2026-11-15_c2-time-and-sound_brief.md`. Ma
   a real display not run); Glance "Audio" 5 of 8 ticked, 2 more with their core half proven, the
   speaker icon is UI; Glance "Transport" 4 of 15 ticked, 5 more with their core half proven, the rest
   are keys, labels and window rules (G1 / C3).
+
+- **Verifier** (`cc-kit:verifier` on CHECKPOINT, the results, this handoff and the parity items):
+  62 confirmed, 5 wrong, 8 unproven. All 5 wrong ones are corrected: the seam's pre-fix offset maximum
+  (+39.8 ms, not +32.7), what follows a long present (usually 1–2 ms, not 0.2), a Swift line cite
+  (`AVPlaybackController.swift:153-160`), the clock-test count (9), the 1-frame test's coverage, and a
+  stale gate count. Of the unproven, two are settled by committing their data
+  (`docs/data/c2-runs/diagnose/`: the two YCG6 reruns and the v0.1.0 A/B). Still unproven, said as
+  such: Blender's CPU share and Amrit's quoted answers (this session's record), the coreaudio-api quotes
+  (from search results; the 2009 archive page returned 502), the wrapped-rate file at 96 kHz (DXVKit
+  Plus's behaviour and test, not this repo's), the 2160p clips' encode recipe (only their outputs can
+  be checked), and two process claims (what was read).
 
 ## Deviations, and why
 

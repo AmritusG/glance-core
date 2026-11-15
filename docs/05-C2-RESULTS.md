@@ -41,12 +41,13 @@ Raw: `docs/data/c2-runs/pass1/`, `pass2/`, `pass3-audio/` (`c2-<run>-p<pace>.jso
   DXV, with and without sound (and in the drift runs of section 3 after the fix).
 - **60 Hz cadence: 0 skipped in 26 of 30 runs; pass 1 had 4 runs with 1, 1, 1 and 3 skipped**, all
   30 fps clips (no slack: one new frame per two samples). Pass 2 of the same 13 runs and the 4
-  audio runs of pass 3: 0. Two reruns of the worst one (`YCG6-DXV3.mov`, logged per refresh): 0 and 0.
+  audio runs of pass 3: 0. Two reruns of the worst one (`YCG6-DXV3.mov`, logged per refresh): 0 and 0
+  (`docs/data/c2-runs/diagnose/c2-rerun-dxv1080-ycg6-p2-{1,2}.{json,csv}`).
 - Why a frame can be skipped at all: on this machine today the window's presents come in bursts —
-  p50 8.24–8.33 ms but p95 about 16.7 ms in 65 of the 67 window runs (max 41.1 ms), a 16.7 ms interval usually followed
-  by a 0.2 ms one (`docs/data/c2-runs/pass1` and the CSV logs below). The same with the C1 binary
+  p50 8.24–8.33 ms but p95 about 16.7 ms in 65 of the 67 window runs (max 41.1 ms), a 16.7 ms interval followed by a short
+  one (in the 62 s PCM log: 1–2 ms in 51 %, under 0.5 ms in 31 %, about 8 ms in 15 %) (`docs/data/c2-runs/pass1` and the CSV logs below). The same with the C1 binary
   (tag v0.1.0) run back to back on the same clip (p95 16.67 / 16.65 ms against 16.69 / 16.68 ms for
-  this wave's build), so it is not this wave's code; W0 measured p95 8.5 ms on a quieter machine
+  this wave's build), so it is not this wave's code (`docs/data/c2-runs/diagnose/c2-ab-v010-vs-c2-*.json`); W0 measured p95 8.5 ms on a quieter machine
   (`docs/03-W0-RESULTS.md`). At a 60 Hz cadence two late presents in a row give a 33 ms gap, a whole
   30 fps frame. The frame itself is never the bottleneck: fetch max 0.038 ms (read-ahead), upload +
   conversion + Alpha Type pass p99 at most 3.26 ms (2160p HAP Q Alpha), and the picture read back
@@ -126,7 +127,7 @@ in that half frame when the sound's loop is no longer than the picture (a longer
 the last frame, as Swift does) — **fixed, differs from Swift on purpose** (Amrit's rule for Swift
 quirks: "fix"); test `at_the_loop_seam_the_nearest_frame_is_the_next_loops_frame_0`. After it: 0 skipped
 in the 62 s and 101 s runs and all pass-3 runs, and no offset beyond half a frame (before it the seam
-gave offsets up to +32.7 ms).
+gave offsets up to +39.8 ms: `c2-drift-audio-dxv1080-aac-5s.json`; +32.7 ms on the HAP Q Alpha clip).
 
 ## 4. Seek, step, scrub; gain and mute
 
