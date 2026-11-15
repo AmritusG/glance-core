@@ -24,6 +24,8 @@ pinned by tag (`Cargo.toml`).
 | --- | --- | --- |
 | `tests/fixtures/tiles_*.{mov,mp4}` (16 files, sidecars `*.attribution`) | DXVKit Plus's procedural tile pattern, 128x72, 24 frames; copied unchanged (`cp -p`) from DXVKit Plus v0.8.0 (9bc1977) `tests/fixtures/` | CC0-1.0 |
 | `tests/fixtures/synthetic_hap7.mov`, `tests/fixtures/synthetic_haph.mov` (sidecars) | HAP R and HAP HDR movies written byte by byte by DXVKit Plus; copied unchanged from DXVKit Plus v0.8.0 | CC0-1.0 |
+| `tests/fixtures/frame-timing/frames_*.mov` (8 files, sidecar `ATTRIBUTION`) | Swift Glance's frame-timing fixtures (frame N has luma 5 N; H.264 with B-frames at five rates, jittered H.264 and ProRes 4444); copied unchanged (`cp -p`) from AmritusG/glance @ a9dc601 `Tests/Fixtures/frame-timing` | MIT (Amrit Rosell) |
+| `tests/fixtures/audio_pcm_formats.mov`, `tests/fixtures/audio_aac_priming.mov` (sidecars) | Sound tracks over a HAP picture (every PCM layout; AAC with priming), written byte by byte by DXVKit Plus's `scripts/make-audio-fixtures.py` from its own procedural signals; copied unchanged (`cp -p`) from DXVKit Plus v0.11.0 (29fa9f5) `tests/fixtures/` | CC0-1.0 |
 | `tests/fixtures/dxvkit/` (`vectors.tsv` + 34 streams, sidecars) | DXVKit 1.0.0's test vectors (GlEnc / synthetic / invalid groups) with their reference SHA-256 rows; copied unchanged from DXVKit Plus v0.8.0 | MIT (`LICENSES/DXVKit-MIT.txt`) |
 | `tests/data/swift-glance-*.tsv` | text only: what Swift Glance's own code (GlanceCore @ a9dc601) returns for the fixtures above and for Amrit's test files, by name — routes, messages, FourCCs, clip keys, hint counts, frame hashes; made by `tools/swift-crosstest`. No media | our own |
 

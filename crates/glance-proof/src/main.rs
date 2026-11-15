@@ -2,12 +2,21 @@
 //!
 //! ```sh
 //! glance-proof <clip>... [--seconds 10] [--warmup 1] [--out results.json] [--log frames.csv]
+//!               [--mute] [--no-audio] [--pace N] [--no-loop]
+//! glance-proof scrub [--seconds 10] [--out report.json] <clip>
+//! glance-proof media <file or folder>...
 //! glance-proof verify [--every N] [--root <folder>] [--out report.json] <file or folder>...
 //! glance-proof hapq [--every N] [--out report.json] <HAP Q clip>...
 //! glance-proof gpu
 //! ```
 //! Without a subcommand: clips playing side by side in one egui window through the glance-core
-//! crates (glance-media -> glance-playback -> glance-gpu -> glance-ui), with frame timing logged.
+//! crates (glance-media -> glance-playback / glance-audio -> glance-gpu -> glance-ui), **with their
+//! sound** (the first audio track on the default output device; the picture follows it), with
+//! frame timing logged. `--mute` plays the sound at gain 0 (the clock runs on exactly as audible:
+//! for unattended measurements), `--no-audio` plays the picture on the wall clock, `--pace N`
+//! takes a new frame only every N-th display refresh (N = 2 on a 120 Hz display is a 60 Hz
+//! cadence), `--no-loop` stops at the last frame. `scrub` drags a clip's scrubber to a new random
+//! frame every 8 ms without a window and times each request.
 //! `verify` runs the 0-difference render harness without a window ([`verify`]); `hapq` measures
 //! the Rust family's HAP Q picture against Swift Glance's convention ([`hapq`]); `gpu` prints the
 //! adapter the family's device is on, as JSON.
@@ -22,11 +31,13 @@ mod verify;
 
 use glance_gpu::{ClipView, Gpu, Presenter};
 use glance_media::{AlphaRule, AlphaView, CacheSettings, Decoded};
-use glance_playback::{Cadence, ClipPlayer, Samples, Summary};
+use glance_playback::{AudioState, Cadence, ClipPlayer, Master, Samples, Sound, Summary};
 use glance_ui::{App, Background, Checker, Host, Picture};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
+
+mod scrub;
 
 struct Args {
     clips: Vec<PathBuf>,
@@ -34,10 +45,14 @@ struct Args {
     warmup: f64,
     out: Option<PathBuf>,
     log: Option<PathBuf>,
+    mute: bool,
+    sound: Sound,
+    pace: u32,
+    looping: bool,
 }
 
 fn parse_args() -> Result<Args, String> {
-    let mut args = Args { clips: Vec::new(), seconds: None, warmup: 1.0, out: None, log: None };
+    let mut args = Args { clips: Vec::new(), seconds: None, warmup: 1.0, out: None, log: None, mute: false, sound: Sound::Device, pace: 1, looping: true };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
         let mut value = |name: &str| it.next().ok_or_else(|| format!("{name} needs a value"));
@@ -46,12 +61,19 @@ fn parse_args() -> Result<Args, String> {
             "--warmup" => args.warmup = value("--warmup")?.parse::<f64>().map_err(|e| format!("--warmup: {e}"))?,
             "--out" => args.out = Some(value("--out")?.into()),
             "--log" => args.log = Some(value("--log")?.into()),
+            "--mute" => args.mute = true,
+            "--no-audio" => args.sound = Sound::Off,
+            "--no-loop" => args.looping = false,
+            "--pace" => args.pace = value("--pace")?.parse::<u32>().map_err(|e| format!("--pace: {e}"))?.max(1),
             flag if flag.starts_with("--") => return Err(format!("unknown option {flag}")),
             clip => args.clips.push(clip.into()),
         }
     }
     if args.clips.is_empty() {
-        return Err("usage: glance-proof <clip>... [--seconds N] [--warmup N] [--out results.json] [--log frames.csv]".into());
+        return Err(
+            "usage: glance-proof <clip>... [--seconds N] [--warmup N] [--out results.json] [--log frames.csv] [--mute] [--no-audio] [--pace N] [--no-loop]"
+                .into(),
+        );
     }
     Ok(args)
 }
@@ -76,12 +98,21 @@ struct Pane {
     /// The frame on screen (for the end-of-run picture check).
     last: Option<Arc<Decoded>>,
     error: Option<String>,
+    /// Sound heard minus the shown frame's start, at the moment the picture is shown (ms), on
+    /// the audio clock.
+    av: Vec<f64>,
+    /// When frame 0 came round again (loop wraps), for the loop period.
+    wraps: Vec<Instant>,
+    /// Refreshes since the last new frame was taken (`--pace`).
+    since: u32,
 }
 
 impl Pane {
-    fn open(path: &Path, gpu: &Gpu) -> Result<Pane, String> {
-        let player =
-            ClipPlayer::open(path, CacheSettings { capacity: 24, read_ahead: 8, threads: 4 }).map_err(|e| format!("{}: {e} ({})", path.display(), e.cause))?;
+    fn open(path: &Path, gpu: &Gpu, args: &Args) -> Result<Pane, String> {
+        let mut player = ClipPlayer::open_with(path, CacheSettings { capacity: 24, read_ahead: 8, threads: 4 }, args.sound)
+            .map_err(|e| format!("{}: {e} ({})", path.display(), e.cause))?;
+        player.clock_mut().set_muted(args.mute);
+        player.clock_mut().set_looping(args.looping);
         let rule = glance_media::alpha_rule(player.info());
         let variant = player.info().dxv_variant.map(glance_media::dxv_variant_label);
         let alpha = if let AlphaRule::Stated(a) = rule { a } else { AlphaView::default() };
@@ -101,6 +132,9 @@ impl Pane {
             index: 0,
             last: None,
             error: None,
+            av: Vec::new(),
+            wraps: Vec::new(),
+            since: 0,
         })
     }
 
@@ -109,10 +143,28 @@ impl Pane {
         self.variant.map_or(label.clone(), |v| format!("{label} {v}"))
     }
 
-    /// Put the frame for `now` on the GPU; returns (fetch ms, show ms) when a new frame went up.
-    fn advance(&mut self, now: Instant, presenter: &Presenter, host: &mut Host<'_>) -> Result<Option<(f64, f64)>, String> {
-        let shown = self.player.frame_at(now).map_err(|e| e.to_string())?;
+    /// Put the frame for the moment `shown_at` (when this refresh reaches the screen) on the GPU;
+    /// returns (fetch ms, show ms) when a new frame went up. With `pace` N only every N-th refresh
+    /// asks the clock.
+    fn advance(&mut self, shown_at: Instant, pace: u32, presenter: &Presenter, host: &mut Host<'_>) -> Result<Option<(f64, f64)>, String> {
+        self.since = self.since.saturating_add(1);
+        if self.since < pace && self.last.is_some() {
+            return Ok(None);
+        }
+        self.since = 0;
+        let shown = self.player.frame_at(shown_at).map_err(|e| e.to_string())?;
+        if shown.index < self.index {
+            self.wraps.push(shown_at);
+        }
         self.index = shown.index;
+        let clock = self.player.clock();
+        if clock.master() == Master::Audio
+            && !clock.is_paused()
+            && let Some(heard) = clock.audio_position(shown_at)
+        {
+            let start = glance_playback::seconds(glance_playback::ticks(clock.time_of_frame(shown.index)));
+            self.av.push((glance_playback::seconds(heard) - start) * 1000.0);
+        }
         let fresh = self.cadence.show(shown.index, self.player.info().frames);
         let mut timing = None;
         if fresh {
@@ -210,6 +262,7 @@ struct Proof {
     /// CSV rows, written at the end (no file I/O while playing).
     rows: Vec<String>,
     finished: bool,
+    pace: u32,
 }
 
 /// The shown picture (GPU read-back) against the CPU decode of the same frame, in code values.
@@ -244,6 +297,46 @@ struct ClipReport {
     worker_errors: u64,
     picture_vs_cpu: Option<PictureCheck>,
     error: Option<String>,
+    /// The clock that drove the picture at the end, and the sound's state.
+    master: Master,
+    audio_state: String,
+    audio: Option<AudioReport>,
+    /// Sound heard minus the shown frame's start at the moment of showing, ms (audio clock).
+    av_offset_ms: Option<Signed>,
+    /// Time between two wraps onto frame 0, ms, and the clip's own length.
+    loop_period_ms: Option<Signed>,
+    clip_length_ms: f64,
+}
+
+/// The output device and the track, and what the heard time is built from.
+#[derive(serde::Serialize)]
+struct AudioReport {
+    track_rate: u32,
+    track_channels: u32,
+    device_rate: u32,
+    device_channels: u16,
+    /// cpal's playback minus callback instant (buffer + device latency + safety offset), ms.
+    cpal_reported_delay_ms: f64,
+    buffer_frames: u64,
+}
+
+/// A signed distribution.
+#[derive(serde::Serialize)]
+struct Signed {
+    count: usize,
+    mean: f64,
+    min: f64,
+    p05: f64,
+    p50: f64,
+    p95: f64,
+    max: f64,
+}
+
+fn signed(v: &[f64]) -> Option<Signed> {
+    let mut s = v.to_vec();
+    s.sort_by(f64::total_cmp);
+    let at = |p: f64| s.get(((p * s.len() as f64).ceil() as usize).clamp(1, s.len()).saturating_sub(1)).copied().unwrap_or(f64::NAN);
+    Some(Signed { count: s.len(), mean: s.iter().sum::<f64>() / s.len() as f64, min: *s.first()?, p05: at(0.05), p50: at(0.5), p95: at(0.95), max: *s.last()? })
 }
 
 #[derive(serde::Serialize)]
@@ -286,6 +379,25 @@ impl Proof {
                     worker_errors: cache.worker_errors,
                     picture_vs_cpu: p.check_picture(gpu),
                     error: p.error.clone(),
+                    master: p.player.clock().master(),
+                    audio_state: match p.player.clock().audio_state() {
+                        AudioState::Playing { sample_rate, channels } => format!("playing ({sample_rate} Hz, {channels} ch)"),
+                        AudioState::None { reason } => format!("none ({reason})"),
+                        AudioState::Failed { reason } => format!("failed ({reason})"),
+                    },
+                    audio: p.player.clock().audio_description().map(|a| AudioReport {
+                        track_rate: a.track.rate,
+                        track_channels: a.track.channels,
+                        device_rate: a.device.rate,
+                        device_channels: a.device.channels,
+                        cpal_reported_delay_ms: a.reported_delay_nanos as f64 / 1e6,
+                        buffer_frames: a.buffer_frames,
+                    }),
+                    av_offset_ms: signed(&p.av),
+                    loop_period_ms: signed(&p.wraps.windows(2).map(|w| (w[1] - w[0]).as_secs_f64() * 1000.0).collect::<Vec<_>>()),
+                    clip_length_ms: glance_playback::seconds(glance_playback::ticks(
+                        p.player.clock().clip().timing.as_deref().map_or(glance_media::MediaTime::new(0, 1), |t| t.end_time()),
+                    )) * 1000.0,
                 }
             })
             .collect();
@@ -328,6 +440,7 @@ impl App for Proof {
             self.rows.clear();
             for pane in &mut self.panes {
                 (pane.cadence, pane.fetch, pane.show) = Default::default();
+                (pane.av, pane.wraps) = Default::default();
             }
         } else if self.measured_from.is_some()
             && let Some(d) = host.last_interval
@@ -335,8 +448,12 @@ impl App for Proof {
             self.intervals.push(d);
         }
         let mut row = format!("{:.3},{:.3}", (now - self.started).as_secs_f64() * 1000.0, host.last_interval.map_or(0.0, |d| d.as_secs_f64() * 1000.0));
+        // This refresh reaches the screen about one refresh from now (FIFO, the frame drawn now is
+        // presented at the next vertical blank; up to two with a frame queued).
+        let refresh = self.refresh_millihertz.filter(|&m| m > 0).map_or(Duration::from_micros(8_333), |m| Duration::from_secs_f64(1000.0 / f64::from(m)));
+        let shown_at = now + refresh;
         for pane in &mut self.panes {
-            match pane.advance(now, &self.presenter, host) {
+            match pane.advance(shown_at, self.pace, &self.presenter, host) {
                 Ok(Some((fetch, show))) => row.push_str(&format!(",{},{fetch:.3},{show:.3}", pane.index)),
                 Ok(None) => row.push_str(&format!(",{},,", pane.index)),
                 Err(e) => {
@@ -350,7 +467,7 @@ impl App for Proof {
         let elapsed = self.started.elapsed().as_secs_f64();
         let fps = host.last_interval.map_or(0.0, |d| 1.0 / d.as_secs_f64().max(1e-9));
         ui.horizontal(|ui| {
-            ui.label(format!("glance-core W0 proof  ·  {elapsed:.1} s  ·  window {fps:.1} fps  ·  Background"));
+            ui.label(format!("glance-core proof  ·  {elapsed:.1} s  ·  window {fps:.1} fps  ·  Background"));
             ui.selectable_value(&mut self.background, Background::Black, "Black");
             ui.selectable_value(&mut self.background, Background::Checkerboard, "Checkerboard");
         });
@@ -430,6 +547,33 @@ fn main() -> std::process::ExitCode {
             }
         };
     }
+    if all.first().map(String::as_str) == Some("media") {
+        for path in verify::movies(&all.iter().skip(1).map(PathBuf::from).collect::<Vec<_>>()) {
+            let line = match glance_media::route(&path) {
+                Ok(c) => serde_json::json!({
+                    "file": path.file_name().map(|n| n.to_string_lossy().into_owned()),
+                    "route": format!("{:?}", c.route),
+                    "codec": c.info.codec_name,
+                    "variant": c.info.dxv_variant.map(glance_media::dxv_variant_label),
+                    "width": c.info.width, "height": c.info.height,
+                    "fps": c.info.rate.as_f64(), "frames": c.info.frames,
+                    "audio": c.info.audio.iter().map(|a| serde_json::json!({"codec": a.codec_name, "channels": a.channels, "rate": a.sample_rate, "frames": a.frames, "error": a.error})).collect::<Vec<_>>(),
+                }),
+                Err(e) => serde_json::json!({"file": path.file_name().map(|n| n.to_string_lossy().into_owned()), "error": e.message}),
+            };
+            println!("{line}");
+        }
+        return std::process::ExitCode::SUCCESS;
+    }
+    if all.first().map(String::as_str) == Some("scrub") {
+        return match scrub::run(all.get(1..).unwrap_or_default()) {
+            Ok(()) => std::process::ExitCode::SUCCESS,
+            Err(e) => {
+                eprintln!("glance-proof: {e}");
+                std::process::ExitCode::FAILURE
+            }
+        };
+    }
     if let Some(name @ ("verify" | "hapq")) = all.first().map(String::as_str) {
         return match tool(name, all.get(1..).unwrap_or_default()) {
             Ok(()) => std::process::ExitCode::SUCCESS,
@@ -446,8 +590,8 @@ fn main() -> std::process::ExitCode {
             return std::process::ExitCode::from(2);
         }
     };
-    let result = glance_ui::run("glance-core W0 proof", (1600.0, 620.0), |gpu| {
-        let panes = args.clips.iter().map(|c| Pane::open(c, gpu)).collect::<Result<Vec<_>, _>>()?;
+    let result = glance_ui::run("glance-core proof", (1600.0, 620.0), |gpu| {
+        let panes = args.clips.iter().map(|c| Pane::open(c, gpu, &args)).collect::<Result<Vec<_>, _>>()?;
         Ok(Proof {
             panes,
             presenter: Presenter::new(&gpu.device),
@@ -463,6 +607,7 @@ fn main() -> std::process::ExitCode {
             refresh_millihertz: None,
             rows: Vec::new(),
             finished: false,
+            pace: args.pace,
         })
     });
     match result {

@@ -1,0 +1,7 @@
+asset: tests/fixtures/frame-timing/frames_*.mov (8 files)
+title: Swift Glance's frame-timing fixtures — frame N has luma 5 N
+author: Amrit Rosell — our own procedural frames
+source: Swift Glance (AmritusG/glance @ a9dc601) Tests/Fixtures/frame-timing; H.264 with GOP 12 and B-frames at 23.976 / 25 / 29.97 / 30 / 60 fps, jittered 25 fps H.264 (a frame 1 tick early / late every 10), jittered 30 fps ProRes 4444 (Glance's AVFrameExactTests.swift doc comment)
+license: MIT (Glance's licence, Copyright (c) 2026 Amrit Rosell)
+added: 2026-11-15
+notes: Copied unchanged (cp -p) for the parity items "the OS-decoder path takes each frame's real start" and "seeking to frame N shows frame N … 40 of 40 each" (docs/02-PARITY.md).

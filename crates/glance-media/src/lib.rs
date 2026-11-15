@@ -36,11 +36,13 @@ pub use dxvkit_plus_core::dxv::Variant as DxvVariant;
 pub use dxvkit_plus_core::names::{self, unsupported_message};
 
 pub use dxvkit_plus_core::MediaError;
+pub use dxvkit_plus_core::audio::{AudioBlock, AudioCodec, AudioInfo, AudioReader};
 pub use dxvkit_plus_core::backend::NativeFrame;
 pub use dxvkit_plus_core::bc;
 pub use dxvkit_plus_core::cache::{self, CacheSettings, CacheStats, Player};
 pub use dxvkit_plus_core::source::{Decoded, FrameSource, MediaInfo, PixelFormat, Plane, Shading, SourceKind};
 pub use dxvkit_plus_core::time::{FrameRate, TICKS_PER_SECOND, Tick};
+pub use dxvkit_plus_core::timing::{AudioTiming, FrameTiming, MediaTime};
 pub use dxvkit_plus_core::transport;
 
 #[cfg(target_os = "macos")]
@@ -55,6 +57,16 @@ fn platform_backend() -> Option<std::sync::Arc<dyn dxvkit_plus_core::backend::Ba
 
 pub(crate) fn import_options() -> ImportOptions {
     ImportOptions { backend: platform_backend(), alpha_mode: AlphaMode::Straight, ..Default::default() }
+}
+
+/// A reader for audio track `index` of the movie at `path` (Swift Glance plays the first: index 0),
+/// decoded by DXVKit Plus with this platform's backend (AAC through AudioToolbox on macOS; PCM
+/// everywhere). An undecodable track (FLAC, MP3, AAC without a backend) is `Unsupported` naming its
+/// codec, a damaged one `Corrupt`; neither touches the picture.
+pub fn open_audio(path: &std::path::Path, index: u32) -> Result<AudioReader, MediaError> {
+    let movie = dxvkit_plus_core::container::Movie::open(path)?;
+    let backend = platform_backend();
+    AudioReader::open(&movie, index, backend.as_deref())
 }
 
 /// The DXV variant's name as the apps show it (Arena's names; the text is glance-core's, the variant

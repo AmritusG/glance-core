@@ -13,4 +13,9 @@ workspace = true
 
 [dependencies]
 glance-media = { workspace = true }
+glance-audio = { workspace = true }
 serde = { workspace = true }
+
+[dev-dependencies]
+# The frame-exact tests read native (YUV) frames back through the GPU.
+glance-gpu = { workspace = true }
