@@ -145,8 +145,16 @@ No contradiction with the brief.
 - Universal, hardened, app and DMG notarised (Accepted) and stapled, `.sha256`, one LaunchServices
   record; version mismatch refused (§5).
 - Reroute: speed 0.9988 / 0.9996 after a 44.1 → 48 / 96 kHz change (resolution ±0.2 %), one rebuild of 12–43 ms (§7).
-- Native alpha stated (§8). Gates: 66 tests passed, 0 failed, GPU required (§9). Parity: 6 new
-  ticks, the rest of the named sections annotated with core halves (`docs/02-PARITY.md`).
+- Native alpha stated (§8; the test asserts `Stated(_)` and prints Straight; HEVC with alpha not
+  covered by a fixture). Gates: 66 tests passed, 0 failed, GPU required (§9). Parity: 5 new ticks,
+  the rest of the named sections annotated with core halves (`docs/02-PARITY.md`).
+- Verifier (cc-kit): 26 confirmed, 2 unproven, 6 wrong at ed5ab5b; the wrong ones corrected in the
+  next commit (a tick that was G1's, the 96 kHz blocked-call figure, the icon count, stale
+  checkpoint lines, the tag status, this observation's evidence). Unproven and stated: the sample's
+  playback is evidenced by its log (open, frame 0 shown) and the captures, not by a measured run;
+  the online search for muda / winit conflicts is described, not recorded.
+- Tag `v0.3.0`: made on the commit after the verifier's corrections, once CI is green on it (the
+  mailbox copy's RECEIPTS show it).
 
 ## Deviations and findings
 
@@ -160,8 +168,9 @@ No contradiction with the brief.
   outer 960 × 648 vs 911 × 616 on a 16:9 clip. Left for the G2 look review with the numbers.
 - The fit uses winit's monitor width; Swift uses `visibleFrame` (they differ with the Dock at a side).
 - Swift Glance's reference build (throw-away id, ad-hoc signed, from the scratchpad) opened no window
-  when cold-launched with a file through `open -a`; launched directly it did. Not investigated
-  (not this repo's; may be the reference build's setup).
+  when cold-launched with a file through `open -a` (its windows were listed 0 × 0, off screen);
+  launched directly it did. Observed in the session, no data file kept; not investigated (not this
+  repo's; may be the reference build's setup).
 - Notary profile `amritus-notary` used (Glance's `NotaryBuilds` absent).
 - DMG 11.6 MB (Glance 0.18.1: 1.06 MB): the release profile keeps `debug = 1`; stripping is a
   decision for each app's release.

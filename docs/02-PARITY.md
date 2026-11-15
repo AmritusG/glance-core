@@ -177,7 +177,7 @@ Detail and sources: `docs/research/glance.md`.
 - [x] Transport bar is 40 pt high, scrub row 36 pt, dark grey; all controls have the tooltips listed in 2.6. — **C3, macOS:** measured on the sample next to Swift Glance: bar 39 + 1 pt hairline, scrub row 36 pt, greys 20 / 34 equal (`docs/06-C3-RESULTS.md` §4); the tooltips are Swift's strings in `glance_ui::bar`.
 
 ### Settings
-- [x] Exactly three persisted values: background mode, per-clip Alpha Type list, default-prompt-shown flag. — **C3, macOS:** `GlanceSettings`, the three keys and encodings, round-tripped with Swift Glance's code (`docs/06-C3-RESULTS.md` §1).
+- [ ] Exactly three persisted values: background mode, per-clip Alpha Type list, default-prompt-shown flag. — **C3, macOS, core half:** `GlanceSettings`, the three keys and encodings, round-tripped with Swift Glance's code (`docs/06-C3-RESULTS.md` §1); that the app persists nothing else is G1's.
 - [ ] Volume, mute, loop and last file are not persisted. — C3 core half: `GlanceSettings` has no such keys; the app is G1's.
 
 ### Release

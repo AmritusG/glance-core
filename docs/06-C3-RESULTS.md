@@ -7,7 +7,7 @@ fixtures and, read-only, Amrit's folder `<testfiles>`
 (`_master_hapm_512x512.mov`, `_master_hapm_540x960.mov`, `_master_hapm_3840x2160.mov`,
 `DXT5-DXV3.mov`). Nothing was done under Swift Glance's bundle id: the sample is
 `com.amritus.glancecore.sample`, the Swift reference build for the look captures
-`com.amritus.glancecore.swiftref` (unregistered and its domain deleted after).
+`com.amritus.glancecore.swiftref` (unregistered and its domain deleted after: its plist reads `{}`).
 
 ## 1. Settings in the Swift apps' store
 
@@ -85,8 +85,8 @@ most common colour across each row (`tools/c3-look-stats.py`, `docs/data/c3-look
 
 The scrubber's unfilled track was white 20 % (grey 67) in the first capture; set to white 10 %
 from this measurement. Fonts: the system font read from the OS (SF Pro, weights by `wght`: 400 /
-510 / 590; SF Mono), egui's own fonts no longer linked. Icons: the 13 SF Symbols drawn as vector
-shapes (`glance_ui::icons`; SF Symbols are drawable only through AppKit / SwiftUI) — a look-review
+510 / 590; SF Mono), egui's own fonts no longer linked. Icons: 13 icons standing for the bar's 15 SF Symbols (the speaker's three wave levels are one
+icon with a level), drawn as vector shapes (`glance_ui::icons`; SF Symbols are drawable only through AppKit / SwiftUI) — a look-review
 item. Menus are the OS's (muda); egui draws tooltips and the Alpha Type popup — look-review items.
 
 ## 5. The packaging kit on the sample
@@ -139,8 +139,8 @@ The C2 concern did not reproduce on this path: cpal builds default-device stream
 DefaultOutput unit, which converts from the stream's rate to the device's itself — the speed stayed
 right, at the cost of a second sample-rate conversion. With C3 the stream is rebuilt at the device's
 rate (one conversion, rubato), the position heard kept. The poll costs p50 0.0005 ms, max 0.53 ms
-every 250 ms; at the moment of the switch the device query blocked 134 ms (CoreAudio
-reconfiguring). Found while reading: C2 treated every cpal error as fatal, buffer under-runs
+every 250 ms; at the moment of the switch the call blocked 134 ms (48 kHz run) and 223 ms
+(96 kHz run) while CoreAudio reconfigured (`follow_max_ms` in the JSON). Found while reading: C2 treated every cpal error as fatal, buffer under-runs
 included — now counted, never a failure.
 
 ## 8. Native alpha
