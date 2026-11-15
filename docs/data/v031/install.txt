@@ -1,0 +1,15 @@
+hdiutil: WARNING: 'hdiutil attach -nobrowse -readonly ...' is deprecated. Please use 'diskutil image attach --mountOptions nobrowse --readOnly ...' instead.
+==> Gatekeeper on the DMG's app (/Volumes/Glance Sample 0.3.1)
+/Volumes/Glance Sample 0.3.1/Glance Sample.app: accepted
+source=Notarized Developer ID
+==> installed /Applications/Glance Sample.app (0.3.1)
+/Applications/Glance Sample.app: accepted
+source=Notarized Developer ID
+Processing: /Applications/Glance Sample.app
+The validate action worked!
+==> LaunchServices records for com.amritus.glancecore.sample before:
+    /Applications/Glance Sample.app
+==> LaunchServices records for com.amritus.glancecore.sample after:
+    /Applications/Glance Sample.app
+==> OK: exactly one record (/Applications/Glance Sample.app)
+exit 0

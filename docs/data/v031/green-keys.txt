@@ -1,0 +1,18 @@
+app: /Applications/Glance Sample.app (0.3.1)
+pid: 99038
+== DXV alpha clip (tiles_dxt5.mov): Space, Space, A
+== control: l, l (loop off / on; a key the window keeps)
+== opaque clip (tiles_h264.mp4): A
+== events.jsonl lines since launch (menu / alpha / open):
+{"args_file":null,"background":"black","event":"launch","pid":99038,}
+{"alpha":"premultiplied","alpha_rule":"Choosable","audio":"None { reason: \"no audio track\" }","codec":"DXV3 Normal Quality With Alpha","event":"open","path":"<workspace>/glance-core/tests/fixtures/tiles_dxt5.mov","pid":99038,"remembered":null,"source":"os",}
+{"command":"PlayPause","event":"menu","pid":99038,}
+{"command":"PlayPause","event":"menu","pid":99038,}
+{"command":"ToggleAlphaType","event":"menu","pid":99038,}
+{"alpha":"straight","event":"alpha","pid":99038,}
+{"event":"key","key":"L","pid":99038,}
+{"event":"key","key":"L","pid":99038,}
+{"alpha":"premultiplied","alpha_rule":"Opaque","audio":"None { reason: \"no audio track\" }","codec":"H.264","event":"open","path":"<workspace>/glance-core/tests/fixtures/tiles_h264.mp4","pid":99038,"remembered":null,"source":"os",}
+{"event":"key","key":"A","pid":99038,}
+== counts: PlayPause=2 ToggleAlphaType=1 alpha-changes=1 window-keys: Space=0 A=1 L=2
+after: none

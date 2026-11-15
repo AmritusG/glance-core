@@ -61,7 +61,7 @@ Counts: core 35, Glance 94, CueGlance 95, GlEnc 114, MaCrate 127.
 - [ ] No FFmpeg, libav, GStreamer or libmpv is linked or bundled; every dependency's licence is MIT / BSD / Apache-2.0 / Zlib / ISC (or approved by Amrit by name), enforced by `cargo deny` in every app repo.
 - [ ] No crash on any input: the never-crash lints hold in every crate; a GPU without BC texture support gets a clear message.
 - [ ] The app's look matches the Swift app side by side (Amrit's eyes): layout, spacing, colours, fonts, icons — "keep each app's current look". — C3: Glance's numbers in `glance_ui::look`; captures side by side in `docs/data/c3-look/` for G2; bar and scrub row measured equal to Swift's (heights, greys); the title-bar chrome differs (`docs/06-C3-RESULTS.md` §3–§4).
-- [ ] Menus, shortcuts and wording match the Swift app item for item unless an item in the app's list says otherwise. — **C3 core half (Glance):** `glance_ui::menu::GlanceMenu` with Swift Glance's items and shortcuts (`the_items_and_shortcuts_are_swift_glances`), `dialog::default_handler` with its words (`the_words_are_swift_glances`).
+- [ ] Menus, shortcuts and wording match the Swift app item for item unless an item in the app's list says otherwise. — **C3 core half (Glance):** `glance_ui::menu::GlanceMenu` with Swift Glance's items and shortcuts (`the_items_and_shortcuts_are_swift_glances`), `dialog::default_handler` with its words (`the_words_are_swift_glances`); since v0.3.1 the alerts are app-modal `NSAlert`s in the app's own process, as Swift runs them (`glance_platform::alert`; measured: a window of the app's pid, gone when the app is killed, `docs/data/v031/green-alert.txt`).
 - [ ] Each app's own test suite covers its list; the Swift app's exactness and timing fixtures are reused where the licence allows.
 
 
@@ -120,7 +120,7 @@ Detail and sources: `docs/research/glance.md`.
 - [ ] Choosing `Straight` multiplies colour by alpha before compositing; choosing `Premultiplied` draws texels as stored.
 - [ ] A straight file shown as Straight and a premultiplied file shown as Premultiplied both match the reference composite over black and over the checkerboard (≤ 1).
 - [ ] DXT1 and YCG6 are unaffected by the setting.
-- [ ] The control is in the transport bar, in View ▸ Alpha Type, and on the bare `A` key; all three stay in sync.
+- [ ] The control is in the transport bar, in View ▸ Alpha Type, and on the bare `A` key; all three stay in sync. — v0.3.1 core half: the bare `A` reaches View ▸ Toggle Alpha Type (`glance_platform::install_menu_key_monitor`, installed by `run_shell`); measured on the notarised sample: one toggle on a DXV alpha clip, nothing on an opaque clip (item disabled), the window never gets the press (`docs/data/v031/green-keys.txt`).
 - [ ] The choice is remembered per clip by content key (SHA-256 of `"<bytes> <frames> <w>x<h>"` + first packet + last packet) and applied before the first frame is drawn.
 - [ ] A renamed or moved copy keeps its choice; different content at the same path starts at Premultiplied.
 - [ ] At most 2,000 remembered clips; the oldest is dropped first.
@@ -137,7 +137,7 @@ Detail and sources: `docs/research/glance.md`.
 
 ### Transport
 - [ ] Every clip opens playing and looping. — **C2 core half:** a `Clock` starts playing and looping (`ClipPlayer::open`).
-- [ ] Space toggles play / pause exactly once per press.
+- [ ] Space toggles play / pause exactly once per press. — v0.3.1 core half: Space reaches Playback ▸ Play/Pause and only it (v0.3.0 never fired it: winit's view keeps bare keys from AppKit's menu path); measured on the notarised sample: two presses → two PlayPause, 0 Space presses reach the window (`docs/data/v031/green-keys.txt`).
 - [ ] `L` toggles loop; the title shows `[LOOP]` while looping; the bar's loop button is lit.
 - [ ] With loop off, playback stops on the last frame; the next Play restarts from frame 0 on every path. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** Swift Glance restarts only on the AVFoundation path; on DXV and HAP, Play at the end stays on the last frame. — **C2 core half:** one clock for every path; stops on the last frame and Play starts from frame 0 on the wall clock and on the audio clock, also when a shorter sound ended first (`at_the_end_of_a_clip_that_does_not_loop_play_starts_again_from_frame_0`). The `L` key is G1's.
 - [ ] `,` / `.` step exactly one frame back / forward, pause playback, keep audio silent and aligned, and clamp at both ends. — **C2 core half:** `Clock::step` (`seek_step_restart_and_scrub_follow_swift_glance`: pauses the sound too, sends the frame's start to it, clamps at 0 and the last frame). Keys: G1.
@@ -163,8 +163,8 @@ Detail and sources: `docs/research/glance.md`.
 - [x] Malformed audio formats (0 or > 64 channels, non-finite or ≤ 0 sample rate) are rejected and video still plays. — **C2:** `malformed_formats_are_rejected_with_swifts_words` (Swift's words; the state is "failed (invalid audio format: …)" and the clock is the wall clock, as for any `AudioError`).
 
 ### Folder navigation and media keys
-- [ ] `[` / `]`, ⌘← / ⌘→ and the bar buttons step through the movie files of the current clip's folder in natural (Finder) order, wrapping at both ends.
-- [ ] Hidden files are skipped; the buttons are dimmed and disabled when there is no sibling.
+- [ ] `[` / `]`, ⌘← / ⌘→ and the bar buttons step through the movie files of the current clip's folder in natural (Finder) order, wrapping at both ends. — v0.3.1 core half: `glance_platform::movie_files(dir)` is Swift's listing (`localizedStandardCompare`, the OS type test, hidden files skipped; tests in `crates/glance-platform/tests/folder.rs`); Windows: `StrCmpLogicalW`, the extension list, the hidden attribute (compile-checked). The stepping and wrap are G1's.
+- [ ] Hidden files are skipped; the buttons are dimmed and disabled when there is no sibling. — v0.3.1 core half: dot files and `chflags hidden` files left out by `movie_files` (tested).
 - [ ] OS media keys: play / pause, previous, next act on Glance; the OS "now playing" surface shows file name, duration, position and can seek. — C3: `glance_platform::MediaKeys` registers Swift's commands and publishes Now Playing (registered on the sample); a key press reaching the app was not proven by hand.
 
 ### Window and readouts

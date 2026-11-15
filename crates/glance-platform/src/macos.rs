@@ -198,8 +198,9 @@ fn method_is_ours(class: &AnyClass) -> bool {
 /// the view never sees the same press (Swift: "Space lives only in the menu shortcut, or it fires
 /// twice"). Repeats are offered too: a held key repeats the item as AppKit does for Swift Glance.
 ///
-/// Not while a modal window is up (an alert or an open panel keeps its own keys), and only in the
-/// key window's app (local monitors see this app's events only). An app with text fields would
+/// Not while an app-modal window is up (an alert or an open panel keeps its own keys; a sheet would
+/// not be caught — the family shows none), and only in this app (local monitors see this app's
+/// events only). An app with text fields would
 /// need them to take the press first; the family's windows have none.
 ///
 /// Main thread, once the application exists (after winit's `EventLoop::new`). The monitor lives for
@@ -247,7 +248,8 @@ fn offered_to_menu(event: &NSEvent) -> bool {
 /// An app-modal alert in this process (`NSAlert runModal`, Swift Glance's
 /// `DefaultHandlerControl.swift:90-104, 125-147`): the app's icon, `title` in bold, `text` under it
 /// (none when empty), `buttons` left to right as AppKit orders them (the first is the default,
-/// Return). Answers the index of the button chosen. Blocks until then; main thread only.
+/// Return). Answers the index of the button chosen; an alert ended without one (stopped by the
+/// system) is an error, never read as the first button. Blocks until then; main thread only.
 pub fn alert(style: AlertStyle, title: &str, text: &str, buttons: &[&str]) -> Result<usize, PlatformError> {
     let mtm = MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
     let a = NSAlert::new(mtm);
@@ -262,7 +264,10 @@ pub fn alert(style: AlertStyle, title: &str, text: &str, buttons: &[&str]) -> Re
     }
     // AppKit's own app-modal loop; the app stays frontmost behind it.
     let response = a.runModal();
-    Ok(usize::try_from(response - NSAlertFirstButtonReturn).unwrap_or(0))
+    usize::try_from(response - NSAlertFirstButtonReturn)
+        .ok()
+        .filter(|i| *i < buttons.len().max(1))
+        .ok_or_else(|| PlatformError::Os(format!("the alert ended without a button (response {response})")))
 }
 
 // ---------------------------------------------------------------------------------------------

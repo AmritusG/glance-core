@@ -11,6 +11,17 @@ cargo build --release
 ./target/release/glance-proof verify clip.mov a-folder/        # the render harness, no window
 ```
 
+## What 0.3.1 fixes (the four findings of Glance G1)
+
+- Menu shortcuts without a modifier (Space = Play/Pause, A = Toggle Alpha Type) fire, once per
+  press, and the window never gets the same press (`glance_platform::install_menu_key_monitor`).
+- Alerts are app-modal `NSAlert`s in the app's own process, as Swift runs them (v0.3.0's went to
+  UserNotificationCenter and outlived the app); Windows: message boxes owned by the app's window.
+- The packaging kit uses `STAGE_DIR`'s physical path: the default `$TMPDIR` staging leaves exactly
+  one LaunchServices record.
+- `glance_platform::movie_files(dir)`: a folder's movies in Finder's order with the OS's type test,
+  hidden files left out (Windows: `StrCmpLogicalW`). Evidence: `docs/handoffs/v031-g1-fixes.md`.
+
 ## What 0.3.0 adds (core wave C3, "the shell")
 
 - **Settings in the Swift apps' own store** (`glance-settings` over `glance-platform`): the

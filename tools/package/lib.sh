@@ -15,14 +15,14 @@ kit_load() {
         [ -n "${!slot:-}" ] || kit_die "slot $slot is empty in $conf"
     done
     case "$BUNDLE_ID" in *[!A-Za-z0-9.-]*) kit_die "BUNDLE_ID '$BUNDLE_ID' has characters a bundle id cannot";; esac
+    # Never stage inside or beside the project tree (working rule 8).
+    case "$STAGE_DIR/" in "$REPO"/*) kit_die "STAGE_DIR is inside the project ($STAGE_DIR)";; esac
+    [ "$(dirname "$STAGE_DIR")" != "$(dirname "$REPO")" ] || kit_die "STAGE_DIR is beside the project ($STAGE_DIR)"
     # STAGE_DIR as its physical path: LaunchServices records a bundle by its resolved path
     # ($TMPDIR is /var/folders/..., /var a link to /private/var), and ls-cleanup.sh compares
     # records with STAGE_DIR, so a path through a symlink would leave the staged copy registered.
     mkdir -p "$STAGE_DIR" || kit_die "cannot create STAGE_DIR ($STAGE_DIR)"
     STAGE_DIR="$(cd "$STAGE_DIR" && pwd -P)"
-    # Never stage inside or beside the project tree (working rule 8).
-    case "$STAGE_DIR/" in "$REPO"/*) kit_die "STAGE_DIR is inside the project ($STAGE_DIR)";; esac
-    [ "$(dirname "$STAGE_DIR")" != "$(dirname "$REPO")" ] || kit_die "STAGE_DIR is beside the project ($STAGE_DIR)"
     APP="$STAGE_DIR/$APP_NAME.app"
     KEEP="$INSTALL_DIR/$APP_NAME.app"
     DMG="$STAGE_DIR/$APP_NAME-v$VERSION.dmg"

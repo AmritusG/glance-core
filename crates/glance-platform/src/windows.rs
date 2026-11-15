@@ -228,7 +228,8 @@ impl MediaKeys {
 // ---------------------------------------------------------------------------------------------
 // Message boxes
 
-/// A message box owned by this thread's active window (the app's), modal to it: `title` as the
+/// A message box owned by this thread's active window (the app's; none when the app is not active),
+/// modal to it: `title` as the
 /// caption, `text` as the message (the title when empty). One button is OK; two are OK / Cancel and
 /// answer 0 / 1 — MessageBox cannot name its buttons, and TaskDialogIndirect (which can) lives in
 /// comctl32 version 6 only, which an app gets from its manifest: that comes with the Windows
