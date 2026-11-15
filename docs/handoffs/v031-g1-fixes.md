@@ -2,9 +2,9 @@ project:    glance-core
 pass:       v031-g1-fixes
 STATUS:     COMPLETE
 parent:     ae8930d
-result:     a56690a 435920b d96e6b7 + the closing commit, tagged v0.3.1
+result:     a56690a 435920b d96e6b7 871d0f7 (tag v0.3.1 → 871d0f7)
 session:    glance-core Claude Code, 2026-11-15
-written_at: @WRITTEN@
+written_at: 2026-11-15T21:30Z
 
 # glance-core v0.3.1: the four things Glance G1 found (handoff)
 
@@ -161,9 +161,25 @@ green-keys.txt:  == counts: PlayPause=2 ToggleAlphaType=1 alpha-changes=1 window
 red-keys.txt:    == counts: PlayPause=0 ToggleAlphaType=0 alpha-changes=0
 green-alert.txt: owner=Glance Sample pid=16705 layer=8 size=260x192 ; after kill -9: (no window)
 red-alert.txt:   owner=UserNotificationCenter pid=92864 layer=8 size=260x192 ; after kill -9: still there
-```
 
-Raw files (`ls -la docs/data/v031/`) are listed in the mailbox copy's receipts at close.
+$ ls -la docs/data/v031/
+total 72
+drwxr-xr-x  10 <user>  staff   320 15 Nov 22:17 .
+drwxr-xr-x  19 <user>  staff   608 15 Nov 22:04 ..
+-rw-r--r--   1 <user>  staff   497 15 Nov 22:27 green-alert.txt
+-rw-r--r--   1 <user>  staff  1335 15 Nov 22:27 green-keys.txt
+-rw-r--r--   1 <user>  staff   886 15 Nov 22:28 green-stage.txt
+-rw-r--r--   1 <user>  staff   782 15 Nov 22:27 install.txt
+-rw-r--r--   1 <user>  staff   532 15 Nov 22:06 red-alert.txt
+-rw-r--r--   1 <user>  staff   920 15 Nov 22:04 red-keys.txt
+-rw-r--r--   1 <user>  staff  1035 15 Nov 22:05 red-stage.txt
+-rw-r--r--   1 <user>  staff  4821 15 Nov 22:27 release.txt
+
+$ git ls-remote --tags origin v0.3.1 v0.3.1^{}
+328b3457fd0328c53370283e3a3c872018d85eb2	refs/tags/v0.3.1
+871d0f7e279566eb32b8df2b33423b00ae2b2bf1	refs/tags/v0.3.1^{}
+$ gh run view 43763881500   (CI on 871d0f7, the tagged commit) -> success  macos: success  lint: success  windows: success
+```
 
 ## NEXT
 
@@ -172,3 +188,4 @@ Raw files (`ls -la docs/data/v031/`) are listed in the mailbox copy's receipts a
   `STAGE_DIR` workaround in `crates/glance/bundle/app.conf` (back to glance-sample's plain default; note: `~/claude-handoffs/glance-rs_2026-11-15_note-from-glance-core-v031.md`).
 - The sample stays installed at `/Applications/Glance Sample.app` (v0.3.1); remove with
   `rm -r "/Applications/Glance Sample.app"` and `lsregister -u` of that path when no longer wanted.
+END OF HANDOFF v031-g1-fixes sha256:cb9a21e9 14857
