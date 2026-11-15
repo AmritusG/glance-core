@@ -7,7 +7,7 @@ Glance, CueGlance, GlEnc, MaCrate, later GlancEhr — each live in their own rep
 Read first: `docs/00-ROADMAP.md` (crates, waves, pins), `docs/01-RESEARCH.md` (what the Swift apps
 and the existing Rust code do, with sources), `docs/02-PARITY.md` (the gate each Rust app must pass
 before it replaces its Swift twin), `CHECKPOINT.md` (where the work stands). Measured results per wave: `docs/03-W0-RESULTS.md`,
-`docs/04-C1-RESULTS.md`.
+`docs/04-C1-RESULTS.md`, `docs/05-C2-RESULTS.md`.
 
 ## Layout
 
@@ -15,11 +15,12 @@ before it replaces its Swift twin), `CHECKPOINT.md` (where the work stands). Mea
 |---|---|
 | `glance-media` | route a file by content (and say why nothing plays it), open it, the family's alpha rule, the clip key and the Alpha Type hint. A facade over DXVKit Plus. |
 | `glance-gpu` | decoded frame → picture (as-stored RGBA from DXVKit Plus's exact block path, then the Alpha Type pass); the device; the 0-difference render harness (`verify`). |
-| `glance-playback` | a clip on the host clock (DXVKit Plus cache + transport), timing statistics. |
+| `glance-playback` | the frame clock: audio master (nearest frame to the sound heard), the 0.25 s wall-clock fallback, Glance's transport rules (seek / step / restart / scrub / loop / end of clip) on DXVKit Plus's transport; a clip's decoded frame behind it (DXVKit Plus cache); timing statistics. |
+| `glance-audio` | a clip's first audio track on the output device (cpal; DXVKit Plus decodes, rubato resamples once to the device rate), volume / mute as a gain, the position heard (CoreAudio timestamps). |
 | `glance-ui` | the egui host (winit + egui-winit + egui-wgpu, no eframe), the video widget, the checkerboard; `headless`: the same widget drawn offscreen, for tests. |
 | `glance-proof` | the proof window (W0), and `verify` / `hapq` / `gpu` without a window. Not a product. |
 
-Planned crates (audio, library-db, arena-client, encode, settings) are in the roadmap; a crate is
+Planned crates (library-db, arena-client, encode, settings) are in the roadmap; a crate is
 created in the wave that fills it, never as an empty stub.
 
 ## Rules

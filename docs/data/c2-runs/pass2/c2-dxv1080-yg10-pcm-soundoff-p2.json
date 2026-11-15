@@ -1,0 +1,71 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.008166125,
+  "display_refresh_hz": 120.0,
+  "presents": 1777,
+  "present_interval": {
+    "count": 1777,
+    "mean_ms": 8.445765311761399,
+    "p50_ms": 8.316791,
+    "p95_ms": 16.663625,
+    "p99_ms": 16.775584,
+    "max_ms": 24.917459
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/hap-testclips/std_film_h264_audio.mov",
+      "codec": "DXV3 High Quality With Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 751,
+      "clip_fps": 25.0,
+      "has_alpha": true,
+      "alpha_view": "Premultiplied",
+      "cadence": {
+        "shown": 376,
+        "skipped": 0
+      },
+      "shown_fps": 25.05302758967162,
+      "fetch": {
+        "count": 376,
+        "mean_ms": 0.0065978297872340465,
+        "p50_ms": 0.006042,
+        "p95_ms": 0.011125,
+        "p99_ms": 0.014875000000000001,
+        "max_ms": 0.019042000000000003
+      },
+      "show": {
+        "count": 376,
+        "mean_ms": 0.4507620638297874,
+        "p50_ms": 0.427375,
+        "p95_ms": 0.551917,
+        "p99_ms": 1.0779590000000001,
+        "max_ms": 1.2360419999999999
+      },
+      "cache_hits": 937,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 407,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 399,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          29.04041473765432,
+          34.654800829475306,
+          47.35998408564815,
+          255.0
+        ]
+      },
+      "error": null,
+      "master": "wall",
+      "audio_state": "none (sound off)",
+      "audio": null,
+      "av_offset_ms": null,
+      "loop_period_ms": null,
+      "clip_length_ms": 30040.0
+    }
+  ]
+}

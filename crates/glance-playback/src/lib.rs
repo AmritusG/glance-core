@@ -55,6 +55,11 @@ pub trait AudioMaster {
     fn failed(&self) -> Option<String>;
     /// What the viewer shows while it plays.
     fn state(&self) -> AudioState;
+    /// Where the sound's loop ends on the movie timeline; `None` when unknown (the picture then
+    /// holds its last frame until the sound wraps, as Swift does).
+    fn end(&self) -> Option<Tick> {
+        None
+    }
     /// The track, the device, and what the heard time is built from (for reports).
     fn describe(&self) -> Option<AudioDescription> {
         None
@@ -101,6 +106,9 @@ impl AudioMaster for AudioClock {
     }
     fn state(&self) -> AudioState {
         AudioClock::state(self)
+    }
+    fn end(&self) -> Option<Tick> {
+        self.end_ticks()
     }
     fn describe(&self) -> Option<AudioDescription> {
         let (reported_delay_nanos, buffer_frames) = self.reported_latency();
@@ -268,6 +276,9 @@ impl Clock {
             };
             self.last_audio_ok = now;
             self.current = self.clip.nearest_frame(t);
+            if self.is_looping() && self.current == self.last() && self.seam_wraps(t, a.end()) {
+                self.current = 0;
+            }
             if !self.is_looping() && (t >= self.end || a.ended()) {
                 self.current = self.last();
                 self.stop_at_end();
@@ -275,6 +286,21 @@ impl Clock {
             return self.current;
         }
         self.tick_wall(now)
+    }
+
+    /// On the audio clock, the half frame before the loop seam: the frame nearest the sound is the
+    /// next loop's frame 0 (when the sound's loop is no longer than the picture's). Swift clamps to
+    /// the last frame there, so the last frame showed for one and a half frames and frame 0 for half
+    /// a frame — measured: frame 0 skipped once in 20 loops when a present came late (C2). Fixed on
+    /// purpose. A sound longer than the picture still holds the last frame until it wraps (Swift).
+    fn seam_wraps(&self, t: Tick, audio_end: Option<Tick>) -> bool {
+        let last_start = match self.clip.timing.as_deref().filter(|ft| ft.frame_count() > 0) {
+            Some(ft) => glance_audio::ticks(ft.time_of_frame(self.last())),
+            None => self.clip.rate.tick_of(i64::from(self.last())),
+        };
+        let half = Tick(self.end.0.saturating_sub(last_start.0) / 2);
+        let middle = Tick(last_start.0.saturating_add(half.0));
+        t >= middle && audio_end.is_some_and(|e| e.0 <= self.end.0.saturating_add(half.0))
     }
 
     fn tick_wall(&mut self, now: Instant) -> u32 {
@@ -454,7 +480,7 @@ impl ClipPlayer {
         let clip = clip_of(source.as_ref());
         let audio: Result<Box<dyn AudioMaster>, AudioError> = match sound {
             Sound::Device => AudioClock::open(path, &routed.info.audio, true).map(|a| Box::new(a) as Box<dyn AudioMaster>),
-            Sound::Off => Err(AudioError::NoAudioTrack),
+            Sound::Off => Err(AudioError::Off),
         };
         let cache = cache.clamped();
         Ok(ClipPlayer { player: Player::new(source, cache), route: routed.route, clock: Clock::new(clip, audio), read_ahead: cache.read_ahead })
@@ -594,6 +620,7 @@ mod tests {
         ended: bool,
         refuse_play: bool,
         failed: Option<String>,
+        end: Option<Tick>,
         seeks: Vec<MediaTime>,
         gain: (f32, bool),
     }
@@ -632,6 +659,9 @@ mod tests {
         }
         fn state(&self) -> AudioState {
             AudioState::Playing { sample_rate: 48_000, channels: 2 }
+        }
+        fn end(&self) -> Option<Tick> {
+            self.0.borrow().end
         }
     }
 
@@ -812,6 +842,43 @@ mod tests {
         a.borrow_mut().ended = true;
         assert_eq!(c.tick(t0 + secs(0.1)), 29);
         assert!(c.is_paused());
+    }
+
+    #[test]
+    fn at_the_loop_seam_the_nearest_frame_is_the_next_loops_frame_0() {
+        // 10 frames at 30 fps; the sound loops at the same length (1/3 s).
+        let (mut c, a, t0) = with_audio(10);
+        a.borrow_mut().end = Some(at(10.0 / 30.0));
+        a.borrow_mut().position = Some(at(9.0 / 30.0));
+        assert_eq!(c.tick(t0), 9);
+        // Before the last frame's middle: still frame 9; from its middle on: frame 0.
+        a.borrow_mut().position = Some(Tick(at(9.5 / 30.0).0 - 1));
+        assert_eq!(c.tick(t0 + secs(0.01)), 9);
+        a.borrow_mut().position = Some(at(9.5 / 30.0));
+        assert_eq!(c.tick(t0 + secs(0.02)), 0);
+        // A sound longer than the picture: the last frame is held (Swift).
+        a.borrow_mut().end = Some(at(2.0));
+        assert_eq!(c.tick(t0 + secs(0.03)), 9);
+        // Not looping: no wrap, the end rule applies.
+        a.borrow_mut().end = Some(at(10.0 / 30.0));
+        c.set_looping(false);
+        a.borrow_mut().position = Some(at(9.6 / 30.0));
+        assert_eq!(c.tick(t0 + secs(0.04)), 9);
+    }
+
+    #[test]
+    fn a_one_frame_clip_shows_its_frame() {
+        let (mut c, t0) = wall(1);
+        for s in [0.0, 0.01, 0.5, 3.0] {
+            assert_eq!(c.tick(t0 + secs(s)), 0);
+        }
+        c.set_looping(false);
+        c.tick(t0 + secs(4.0));
+        c.play();
+        assert_eq!(c.tick(t0 + secs(5.0)), 0);
+        let (mut c, a, t0) = with_audio(1);
+        a.borrow_mut().position = Some(at(0.7));
+        assert_eq!(c.tick(t0), 0);
     }
 
     #[test]

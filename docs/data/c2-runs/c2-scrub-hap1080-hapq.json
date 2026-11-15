@@ -1,0 +1,28 @@
+{
+  "build": "release",
+  "clip": "<testfiles>/Metric_01_HapM.mov",
+  "codec": "HAP Q Alpha",
+  "width": 1920,
+  "height": 1080,
+  "frames": 201,
+  "requests": 1200,
+  "not_latest": 0,
+  "request_to_frame": {
+    "count": 1200,
+    "mean_ms": 1.5147344074999993,
+    "p50_ms": 1.344125,
+    "p95_ms": 2.65225,
+    "p99_ms": 3.212709,
+    "max_ms": 3.840375
+  },
+  "decode": {
+    "count": 1200,
+    "mean_ms": 1.6911284333333334,
+    "p50_ms": 1.501625,
+    "p95_ms": 2.646959,
+    "p99_ms": 3.039208,
+    "max_ms": 3.723709
+  },
+  "cache_hits": 138,
+  "cache_misses": 1062
+}

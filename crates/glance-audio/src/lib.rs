@@ -51,6 +51,8 @@ pub enum AudioState {
 pub enum AudioError {
     /// The container has no audio track. Not a failure: the clip plays silently.
     NoAudioTrack,
+    /// The player was asked to play without sound (measurements). Not a failure.
+    Off,
     /// The format failed the trust-boundary check.
     InvalidFormat(String),
     /// The track (or the output device) could not be read, decoded or started.
@@ -61,6 +63,7 @@ impl std::fmt::Display for AudioError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             AudioError::NoAudioTrack => f.write_str("no audio track"),
+            AudioError::Off => f.write_str("sound off"),
             AudioError::InvalidFormat(r) => write!(f, "invalid audio format: {r}"),
             AudioError::Unreadable(r) => write!(f, "audio unreadable: {r}"),
         }
@@ -73,7 +76,7 @@ impl AudioError {
     /// The state the viewer shows: `None` for a clip without audio, `Failed` with the reason else.
     pub fn state(&self) -> AudioState {
         match self {
-            AudioError::NoAudioTrack => AudioState::None { reason: self.to_string() },
+            AudioError::NoAudioTrack | AudioError::Off => AudioState::None { reason: self.to_string() },
             _ => AudioState::Failed { reason: self.to_string() },
         }
     }
@@ -521,6 +524,13 @@ impl AudioClock {
     /// A clip that does not loop has played its last audio frame.
     pub fn ended(&self) -> bool {
         !self.shared.loops.load(SeqCst) && self.playing && self.position_frame().is_some_and(|f| f.saturating_add(1) >= self.shared.len)
+    }
+
+    /// Where the sound's loop ends on the movie timeline (its last frame's start plus one frame).
+    pub fn end_ticks(&self) -> Option<Tick> {
+        let last = self.timing.position_of(self.track.frames.checked_sub(1)?)?;
+        let t = ticks(last);
+        Some(Tick(t.0.saturating_add(TICKS_PER_SECOND / i64::from(self.track.rate.max(1)))))
     }
 
     /// The movie time of the sound heard now (Swift's `currentSeconds`, exact through the edit

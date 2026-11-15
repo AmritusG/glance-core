@@ -105,6 +105,7 @@ struct Pane {
     wraps: Vec<Instant>,
     /// Refreshes since the last new frame was taken (`--pace`).
     since: u32,
+    av_taken: bool,
 }
 
 impl Pane {
@@ -135,7 +136,13 @@ impl Pane {
             av: Vec::new(),
             wraps: Vec::new(),
             since: 0,
+            av_taken: false,
         })
+    }
+
+    /// The A/V sample taken this refresh, for the CSV row (empty when none was).
+    fn last_av(&self) -> String {
+        if self.av_taken { self.av.last().map_or_else(String::new, |v| format!("{v:.3}")) } else { String::new() }
     }
 
     fn codec(&self) -> String {
@@ -147,6 +154,7 @@ impl Pane {
     /// returns (fetch ms, show ms) when a new frame went up. With `pace` N only every N-th refresh
     /// asks the clock.
     fn advance(&mut self, shown_at: Instant, pace: u32, presenter: &Presenter, host: &mut Host<'_>) -> Result<Option<(f64, f64)>, String> {
+        self.av_taken = false;
         self.since = self.since.saturating_add(1);
         if self.since < pace && self.last.is_some() {
             return Ok(None);
@@ -163,7 +171,15 @@ impl Pane {
             && let Some(heard) = clock.audio_position(shown_at)
         {
             let start = glance_playback::seconds(glance_playback::ticks(clock.time_of_frame(shown.index)));
-            self.av.push((glance_playback::seconds(heard) - start) * 1000.0);
+            let length = clock.clip().timing.as_deref().map_or(0.0, |t| t.end_time().seconds());
+            // Across the loop seam (frame 0 shown in the half frame before the wrap) compare with
+            // the next loop's frame 0.
+            let mut d = glance_playback::seconds(heard) - start;
+            if d > length / 2.0 {
+                d -= length;
+            }
+            self.av.push(d * 1000.0);
+            self.av_taken = true;
         }
         let fresh = self.cadence.show(shown.index, self.player.info().frames);
         let mut timing = None;
@@ -422,7 +438,7 @@ impl Proof {
             eprintln!("glance-proof: {}: {e}", out.display());
         }
         if let Some(log) = &self.log {
-            let header: String = (0..self.panes.len()).map(|i| format!(",clip{i}_frame,clip{i}_fetch_ms,clip{i}_show_ms")).collect();
+            let header: String = (0..self.panes.len()).map(|i| format!(",clip{i}_frame,clip{i}_fetch_ms,clip{i}_show_ms,clip{i}_av_ms")).collect();
             let body = format!("t_ms,present_interval_ms{header}\n{}\n", self.rows.join("\n"));
             if let Err(e) = std::fs::write(log, body) {
                 eprintln!("glance-proof: {}: {e}", log.display());
@@ -454,11 +470,11 @@ impl App for Proof {
         let shown_at = now + refresh;
         for pane in &mut self.panes {
             match pane.advance(shown_at, self.pace, &self.presenter, host) {
-                Ok(Some((fetch, show))) => row.push_str(&format!(",{},{fetch:.3},{show:.3}", pane.index)),
-                Ok(None) => row.push_str(&format!(",{},,", pane.index)),
+                Ok(Some((fetch, show))) => row.push_str(&format!(",{},{fetch:.3},{show:.3},{}", pane.index, pane.last_av())),
+                Ok(None) => row.push_str(&format!(",{},,,{}", pane.index, pane.last_av())),
                 Err(e) => {
                     pane.error = Some(e);
-                    row.push_str(",,,");
+                    row.push_str(",,,,");
                 }
             }
         }

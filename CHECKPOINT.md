@@ -13,14 +13,24 @@ Wave: c2-time-and-sound (open). Brief: ~/claude-handoffs/glance-core_2026-11-15_
 - 2160p DXV test clips made in the scratchpad (none in Amrit's folder): DXVKit 1.0.0 `dxvtool` (built out of tree) encoding 150 frames of `YCG6-DXV3.mov` decoded and upscaled 2x, YCG6 and DXT1.
 - Gates: fmt, clippy `-D warnings`, `GLANCE_REQUIRE_GPU=1 cargo test --workspace --release` 47 passed 0 failed, `cargo deny check` ok.
 
+- Amrit 2026-11-15: quit Arena ("I've quit Arena, go"); 60 Hz simulated ("Simulate at 120 Hz"); Blender stays open ("Keep Blender open").
+- Measurements (`docs/05-C2-RESULTS.md`, raw `docs/data/c2-runs/`): 120 Hz 0 skipped in 30 runs (1080p / 2160p HAP and DXV, with and without sound); 60 Hz cadence 26 of 30 runs 0, 4 first-pass runs skipped 1–3 (30 fps clips; bursty presents, p95 16.7 ms in 65 of 67 runs, the v0.1.0 build alike); A/V samples within half a frame on PCM and AAC (means −2.3 … +2.7 ms); drift over 19–20 loops within stamping resolution, both clocks; scrub 6,000 of 6,000 latest, request = same-moment decode; FLAC → picture on the wall clock with the reason.
+- Found by measuring and fixed: the audio loop seam (Swift's clamp gave frame 0 half a frame; skipped once in 20 loops) → `seam_wraps`, test `at_the_loop_seam_the_nearest_frame_is_the_next_loops_frame_0`; all audio runs re-measured after it (pass 3): 0 skipped. `--no-audio` now reads "sound off". Test `a_one_frame_clip_shows_its_frame`.
+- Docs: `docs/05-C2-RESULTS.md`; parity (Core Time 4 of 6, Glance Audio 5 of 8 + 2 core halves, Transport 4 + 5 core halves); roadmap, README, CLAUDE.md layout; handoff draft `docs/handoffs/c2-time-and-sound.md`. Workspace version 0.2.0.
+
 ## NEXT
-- Measurements (no-skip 60 / 120 Hz, A/V offset, drift, seek / step / scrub) → `docs/05-C2-RESULTS.md`; parity; handoff; tag v0.2.0.
+- Verifier on this file, the results and the handoff; fix WRONG; CI green; tag v0.2.0; handoff to the mailbox; close.
+- Deferred (not C2's brief, reasons in the handoff): `alpha_rule` from `MediaInfo::alpha`; Apple island under `cfg(ios)`; reserved-BC7 HAP R generation; a device-rate change while playing (reroute) needs the track resampled again; a real 60 Hz display run (Amrit's call).
 
 ## STATE
 - Test media (read-only): `<testfiles>` (174 movie files).
 - Pins: DXVKit Plus `v0.11.0` (29fa9f5); wgpu 30.0.x, egui 0.36.2; rustc 1.99.1 (Homebrew, the build), 1.100.0 (rustup stable, CI and the Intel build: Homebrew's rustc has no x86_64 std).
+- 2160p DXV clips (not in the repo): scratchpad `synth/dxv_{ycg6,dxt1}_3840x2160.mov`, recipe in `docs/05-C2-RESULTS.md` §6. Measurement runner: `tools/c2-measure.sh <scratch> <out>`.
 - Gates: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --release -- -D warnings`, `cargo test --workspace --release`, `cargo deny check`, `cargo build --release`.
 
 ## OPEN
-- Measurements need an idle machine: Arena was running at 15:2x (Amrit's). A true 60 Hz run needs the display set to 60 Hz (ask first).
-- Not done on purpose (outside C2's brief): `alpha_rule` reading `MediaInfo::alpha` for native clips (W2: "can"), the Apple island under `cfg(ios)`, generated HAP R movies with reserved blocks.
+
+## IDEAS
+- Present timestamps from the OS (CAMetalLayer presented time) for the A/V estimate instead of "one refresh after drawing".
+- A camera + microphone A/V check (flash and click clip) to measure the absolute offset.
+- Stream the audio instead of decoding the whole track for very long clips.

@@ -38,9 +38,9 @@ Built = exists after W0. A crate is created in the wave that fills it.
 |---|---|---|---|
 | `glance-media` | **built (W0, C1)** | content routing with the "<codec> in <CONTAINER> is not supported" message, open, platform backend choice, codec names, the Alpha Type rule, `clip_key`, the alpha-look probe; later: `FrameTiming` | `dxvkit-plus-core`, `dxvkit-plus-apple` (macOS), DXVKit Plus's Windows backend when it exists |
 | `glance-gpu` | **built (W0, C1)** | device, a clip's GPU state on DXVKit Plus's exact block path (selectable per view), the Alpha Type pass in whole code values, the 0-difference render harness (`verify`); later: thumbnails (CPU and GPU) | `dxvkit-plus-wgpu`, `wgpu` |
-| `glance-playback` | **built (W0)**, thin | a clip on the host clock, timing statistics; later: the audio-master clock, loop / scrub / step / seek semantics as the Swift apps have them, end-of-clip rules | `glance-media`, `glance-audio` |
+| `glance-playback` | **built (W0, C2)** | the frame clock (audio master with the 0.25 s fallback, the wall clock on DXVKit Plus's transport), loop / scrub / step / seek / restart and end-of-clip rules as Glance has them, a clip's decoded frame behind it, timing statistics | `glance-media`, `glance-audio` |
 | `glance-ui` | **built (W0, C1)**, thin | the egui host (winit + egui-winit + egui-wgpu), the video widget, the checkerboard, a headless stage for tests (`headless`: the same widget drawn offscreen, and the software model of the scaled picture); later: the shared Glance look (colours, spacing, fonts, icons), transport bar, scrub bar, menus (`muda`), dialogs (`rfd`), window-fit rules, a second-screen output window (for GlancEhr) | `glance-gpu`, `egui` |
-| `glance-audio` | planned (core wave C2) | device output (cpal), PCM from `.mov`, AAC through the OS, resampling, volume / mute, the position the video clock follows | `cpal`, DXVKit Plus (audio demux + OS decode — brief) |
+| `glance-audio` | **built (C2)** | device output (cpal) at the device's rate, the first audio track decoded by DXVKit Plus (PCM; AAC through the OS), resampling (rubato), channel mapping, volume / mute, the position heard that the video clock follows | `cpal`, `rubato`, `glance-media` |
 | `glance-platform` | planned (C3) | the one island with `unsafe`: macOS preferences domain (`NSUserDefaults`), open-file events (`NSApplicationDelegate`), default-handler registration, media keys, drag-out; Windows: single instance + file hand-off, registry settings location, media transport controls | `objc2*`, `windows` |
 | `glance-settings` | planned (C3) | typed settings over `glance-platform`'s store, with each app's existing keys and encodings | `glance-platform` |
 | `glance-encode` | planned (GlEnc wave) | GlEnc's policy: job model, naming, trim / crop / resize, frame-rate rules, alpha rules on write | DXVKit Plus encoder crates (brief) |
@@ -86,8 +86,8 @@ is missing comes back as a brief to this repo.
   crates at the same tag). `Cargo.lock` is committed in every app repo. A core change an app needs
   is made in this repo, tagged, then the app bumps its pin in its own commit — the same discipline
   the Swift apps use for Glance and SendEhrKit pins.
-- **The core pins DXVKit Plus by tag** in the workspace `Cargo.toml` (now `v0.8.0`, 9bc1977: the
-  exact block path; W0 ran on `v0.7.1`). Apps never
+- **The core pins DXVKit Plus by tag** in the workspace `Cargo.toml` (now `v0.11.0`, 29fa9f5: audio tracks and real frame
+  starts; C1 ran on `v0.8.0`, W0 on `v0.7.1`). Apps never
   depend on DXVKit Plus directly: one version of the decoders per app, chosen by the core.
 - **One wgpu major** across DXVKit Plus, glance-core, the apps and loombda-rs (now 30.x), and the
   matching egui (now 0.36.2). A bump is made in DXVKit Plus first, then the core, then the apps,
@@ -95,8 +95,10 @@ is missing comes back as a brief to this repo.
 - Toolchain: stable Rust, MSRV 1.95 (edition 2024). `cargo deny` (licences, bans, sources) is a
   gate since C1 (`deny.toml`, modelled on DXVKit Plus's), locally and in CI.
 - **macOS builds are universal** (arm64 + x86_64; Amrit 2026-11-14: "Intel too"): two cargo
-  targets and `lipo`. CI checks `x86_64-apple-darwin` from C1; DXVKit Plus's Apple island must
-  build for it too.
+  targets and `lipo`. CI checks `x86_64-apple-darwin` from C1 and, from C2, builds the Intel
+  `glance-proof` and starts it under Rosetta 2. Binaries are built for macOS 14.0 (the Swift apps'
+  floor; `.cargo/config.toml`, which every app repo copies): rustc's x86_64 default (10.12) does not
+  load DXVKit Plus's Apple island.
 - **CI** (GitHub Actions, `.github/workflows/ci.yml`, every push): fmt, clippy, the tests, `cargo
   deny`, and `cargo check` for `x86_64-apple-darwin`, `aarch64-apple-ios` and
   `x86_64-pc-windows-msvc`. A tag is made only from a green `main`.
@@ -112,7 +114,7 @@ needs something from another repo names the brief it waits for.
 |---|---|---|---|
 | **W0** (done) | recon, plan, proof | HAP + DXV play in an egui window, numbers in `03-W0-RESULTS.md` | — |
 | **C1 — exact picture** (done, `v0.1.0`) | re-pin to DXVKit Plus 0.8.0 and render on its exact block path; the 0-difference render harness (CPU decode vs GPU read-back for every fixture, every variant, every size incl. 1x1 and odd sizes; scaled filter within 1); content routing and the unsupported message; `clipKey` and the alpha-look probe, identical to Glance's; Hap7 / HapH / legacy DXV play (Amrit: add, then prune); `cargo deny`; CI on GitHub. Stills moved to Glance G1 | the core's "Decode and render" and "Alpha and background" parity sections are green on Metal — `docs/04-C1-RESULTS.md` | DXVKit Plus exact path — **done** (v0.8.0) |
-| **C2 — time and sound** | `glance-audio`; the audio-master clock with the 0.25 s fallback; `FrameTiming` for the OS-codec path (edit lists); loop / seek / step / scrub as in Glance; no-skip measurement on an idle machine at 60 and 120 Hz | "Time" parity section green on macOS; A/V offset measured | DXVKit Plus: container timing, then audio (its next two waves) |
+| **C2 — time and sound** (done, `v0.2.0`) | `glance-audio`; the audio-master clock with the 0.25 s fallback; `FrameTiming` for the OS-codec path (edit lists); loop / seek / step / scrub as in Glance; no-skip measurement on an idle machine at 60 and 120 Hz | "Time" parity section green on macOS (4 of 6 ticked; audio on Windows is C4; 60 Hz on a real display not run) — `docs/05-C2-RESULTS.md` | DXVKit Plus: container timing, then audio — **done** (v0.10.0, v0.11.0) |
 | **C3 — shell** | `glance-platform`, `glance-settings`; the shared look (Glance's colours, spacing, fonts, icons side by side with the Swift app); transport bar, scrub bar, menus, dialogs, window-fit rules; open-file events and single window; packaging scripts (sign, notarise, DMG, `ls-cleanup`) as a reusable kit | a bundled, notarised sample app with the same bundle id as a throw-away test id reads and writes a `UserDefaults` domain and opens a file from Finder | — |
 | **C4 — Windows milestone** | see section 7 | the core's whole parity list green on Windows 11 / D3D12 | DXVKit Plus: Windows backend (Media Foundation), after its container timing, audio and API-gap waves; Amrit's Windows PC; the signing account (section 7) |
 

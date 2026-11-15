@@ -1,0 +1,61 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 6.000154625,
+  "display_refresh_hz": 120.0,
+  "presents": 701,
+  "present_interval": {
+    "count": 701,
+    "mean_ms": 8.559436579172612,
+    "p50_ms": 8.295292,
+    "p95_ms": 16.683125,
+    "p99_ms": 24.422292000000002,
+    "max_ms": 24.859917
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/bad-audio-fixtures/bad-audio2.mp4",
+      "codec": "H.264",
+      "width": 1280,
+      "height": 720,
+      "frames": 150,
+      "clip_fps": 30.0,
+      "has_alpha": false,
+      "alpha_view": "None",
+      "cadence": {
+        "shown": 181,
+        "skipped": 0
+      },
+      "shown_fps": 30.165889266562026,
+      "fetch": {
+        "count": 181,
+        "mean_ms": 0.003458839779005521,
+        "p50_ms": 0.003375,
+        "p95_ms": 0.0043749999999999995,
+        "p99_ms": 0.005833,
+        "max_ms": 0.007458
+      },
+      "show": {
+        "count": 181,
+        "mean_ms": 0.1545525138121547,
+        "p50_ms": 0.14175000000000001,
+        "p95_ms": 0.233417,
+        "p99_ms": 0.301417,
+        "max_ms": 0.387167
+      },
+      "cache_hits": 805,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 217,
+      "worker_errors": 0,
+      "picture_vs_cpu": null,
+      "error": null,
+      "master": "wall",
+      "audio_state": "failed (audio unreadable: unsupported: FLAC audio is not decoded)",
+      "audio": null,
+      "av_offset_ms": null,
+      "loop_period_ms": null,
+      "clip_length_ms": 5000.0
+    }
+  ]
+}

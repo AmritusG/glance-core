@@ -1,0 +1,71 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.008699167,
+  "display_refresh_hz": 120.0,
+  "presents": 1738,
+  "present_interval": {
+    "count": 1738,
+    "mean_ms": 8.635337025316463,
+    "p50_ms": 8.298459,
+    "p95_ms": 16.700166999999997,
+    "p99_ms": 24.939209,
+    "max_ms": 25.085709
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/DXT5-DXV3.mov",
+      "codec": "DXV3 Normal Quality With Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 300,
+      "clip_fps": 30.0,
+      "has_alpha": true,
+      "alpha_view": "Premultiplied",
+      "cadence": {
+        "shown": 452,
+        "skipped": 0
+      },
+      "shown_fps": 30.11586780244244,
+      "fetch": {
+        "count": 452,
+        "mean_ms": 0.006338869469026546,
+        "p50_ms": 0.005875,
+        "p95_ms": 0.009667,
+        "p99_ms": 0.012917,
+        "max_ms": 0.022292
+      },
+      "show": {
+        "count": 452,
+        "mean_ms": 0.3557428097345133,
+        "p50_ms": 0.349417,
+        "p95_ms": 0.419583,
+        "p99_ms": 0.46487500000000004,
+        "max_ms": 0.525292
+      },
+      "cache_hits": 1847,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 487,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 180,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          17.085311535493826,
+          9.833113908179012,
+          25.40036747685185,
+          27.343132716049382
+        ]
+      },
+      "error": null,
+      "master": "wall",
+      "audio_state": "none (no audio track)",
+      "audio": null,
+      "av_offset_ms": null,
+      "loop_period_ms": null,
+      "clip_length_ms": 10000.0
+    }
+  ]
+}

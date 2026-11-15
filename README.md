@@ -7,9 +7,19 @@ Start with `CLAUDE.md`, then `docs/00-ROADMAP.md`. State of the work: `CHECKPOIN
 
 ```sh
 cargo build --release
-./target/release/glance-proof clip_hap.mov clip_dxv.mov        # two clips in a window, timing logged
+./target/release/glance-proof clip_hap.mov clip_dxv.mov        # clips in a window, with sound, timing logged
 ./target/release/glance-proof verify clip.mov a-folder/        # the render harness, no window
 ```
+
+## What 0.2.0 adds (core wave C2, "time and sound")
+
+- **Sound and the clock.** `glance-audio` plays a clip's first audio track (PCM, and AAC through
+  the OS) on the output device at its own rate; `glance-playback`'s clock follows the sound heard
+  when the picture is shown (nearest frame), falls back to the wall clock after 0.25 s without it,
+  and has Glance's transport rules (seek, step, restart, scrub, loop, end of clip). Frame n is frame n
+  on every decode path. Numbers: `docs/05-C2-RESULTS.md`.
+- DXVKit Plus pinned at 0.11.0; the workarounds it replaced are gone. Intel macOS binaries load
+  (deployment target 14.0).
 
 ## What 0.1.0 holds (core wave C1, "exact picture")
 

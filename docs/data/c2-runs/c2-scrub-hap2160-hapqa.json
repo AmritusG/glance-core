@@ -1,0 +1,28 @@
+{
+  "build": "release",
+  "clip": "<testfiles>/glenc_hapm_LEAKTEST_4k.mov",
+  "codec": "HAP Q Alpha",
+  "width": 3840,
+  "height": 2160,
+  "frames": 90,
+  "requests": 1200,
+  "not_latest": 0,
+  "request_to_frame": {
+    "count": 1200,
+    "mean_ms": 1.620040302499999,
+    "p50_ms": 1.92625,
+    "p95_ms": 3.15925,
+    "p99_ms": 3.622,
+    "max_ms": 4.610542
+  },
+  "decode": {
+    "count": 1200,
+    "mean_ms": 2.188493723333335,
+    "p50_ms": 2.171667,
+    "p95_ms": 3.234333,
+    "p99_ms": 3.695084,
+    "max_ms": 5.354292
+  },
+  "cache_hits": 307,
+  "cache_misses": 893
+}

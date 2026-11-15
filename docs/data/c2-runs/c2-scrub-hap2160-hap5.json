@@ -1,0 +1,28 @@
+{
+  "build": "release",
+  "clip": "<testfiles>/glenc_hap5_alpha_real_chunks4.mov",
+  "codec": "HAP Alpha",
+  "width": 3840,
+  "height": 2160,
+  "frames": 60,
+  "requests": 1200,
+  "not_latest": 0,
+  "request_to_frame": {
+    "count": 1200,
+    "mean_ms": 0.2649310000000001,
+    "p50_ms": 0.37441599999999997,
+    "p95_ms": 0.515417,
+    "p99_ms": 0.861625,
+    "max_ms": 1.214667
+  },
+  "decode": {
+    "count": 1200,
+    "mean_ms": 0.37866135000000045,
+    "p50_ms": 0.351625,
+    "p95_ms": 0.530125,
+    "p99_ms": 1.119542,
+    "max_ms": 1.869
+  },
+  "cache_hits": 466,
+  "cache_misses": 734
+}

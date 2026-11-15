@@ -1,0 +1,94 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.008314875,
+  "display_refresh_hz": 120.0,
+  "presents": 1785,
+  "present_interval": {
+    "count": 1785,
+    "mean_ms": 8.40797336582633,
+    "p50_ms": 8.291584,
+    "p95_ms": 16.68975,
+    "p99_ms": 16.836666,
+    "max_ms": 24.799875
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/bad-audio-fixtures/good-audio.mov",
+      "codec": "DXV3 High Quality With Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 125,
+      "clip_fps": 25.0,
+      "has_alpha": true,
+      "alpha_view": "Premultiplied",
+      "cadence": {
+        "shown": 376,
+        "skipped": 0
+      },
+      "shown_fps": 25.052779284789626,
+      "fetch": {
+        "count": 376,
+        "mean_ms": 0.006770954787234043,
+        "p50_ms": 0.006167000000000001,
+        "p95_ms": 0.011667,
+        "p99_ms": 0.017124999999999998,
+        "max_ms": 0.02075
+      },
+      "show": {
+        "count": 376,
+        "mean_ms": 0.43081847074468055,
+        "p50_ms": 0.422458,
+        "p95_ms": 0.5175829999999999,
+        "p99_ms": 0.5777920000000001,
+        "max_ms": 0.913083
+      },
+      "cache_hits": 946,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 407,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 24,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          1.8230391589506172,
+          0.26860484182098765,
+          0.1641748649691358,
+          255.0
+        ]
+      },
+      "error": null,
+      "master": "audio",
+      "audio_state": "playing (48000 Hz, 2 ch)",
+      "audio": {
+        "track_rate": 48000,
+        "track_channels": 2,
+        "device_rate": 44100,
+        "device_channels": 2,
+        "cpal_reported_delay_ms": 13.968254,
+        "buffer_frames": 512
+      },
+      "av_offset_ms": {
+        "count": 893,
+        "mean": -0.8450447928331495,
+        "min": -19.9583333333333,
+        "p05": -18.2500000000001,
+        "p50": -1.4374999999997584,
+        "p95": 16.958333333333407,
+        "max": 30.145833333333094
+      },
+      "loop_period_ms": {
+        "count": 2,
+        "mean": 4999.8441875,
+        "min": 4991.6137499999995,
+        "p05": 4991.6137499999995,
+        "p50": 4991.6137499999995,
+        "p95": 5008.074625,
+        "max": 5008.074625
+      },
+      "clip_length_ms": 5000.0
+    }
+  ]
+}

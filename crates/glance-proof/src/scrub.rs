@@ -1,7 +1,8 @@
 //! `glance-proof scrub`: a scrubber dragged to a new random frame every 8.33 ms (a 120 Hz drag)
 //! without a window. Each request is answered with exactly the frame asked for, decoded then —
-//! no queue, so no backlog: the time from request to frame is one decode (or a cache hit). The
-//! same frames are decoded once more, cold, from a second source: "one decode time".
+//! no queue, so no backlog: the time from request to frame is one decode (or a cache hit). Right
+//! after each request the same frame is decoded once more from a second source, with the same
+//! spacing: "one decode time".
 
 use glance_media::CacheSettings;
 use glance_playback::{ClipPlayer, Samples, Sound, Summary};
@@ -21,7 +22,7 @@ struct Report {
     not_latest: usize,
     /// Request to decoded frame, ms.
     request_to_frame: Option<Summary>,
-    /// The same frames decoded cold from a second source, ms.
+    /// The same frame decoded from a second source right after each request (same spacing), ms.
     decode: Option<Summary>,
     cache_hits: u64,
     cache_misses: u64,
@@ -49,7 +50,6 @@ pub fn run(rest: &[String]) -> Result<(), String> {
     let step = Duration::from_secs_f64(1.0 / 120.0);
     let start = Instant::now();
     let mut next = start;
-    let mut asked = Vec::new();
     while start.elapsed().as_secs_f64() < seconds {
         x ^= x << 13;
         x ^= x >> 7;
@@ -59,20 +59,17 @@ pub fn run(rest: &[String]) -> Result<(), String> {
         player.clock_mut().scrub_to(n);
         let shown = player.frame_at(t).map_err(|e| e.to_string())?;
         latency.push(t.elapsed());
+        let c = Instant::now();
+        cold.decode(n).map_err(|e| e.to_string())?;
+        decode.push(c.elapsed());
         requests += 1;
         not_latest += usize::from(shown.index != n);
-        asked.push(n);
         next += step;
         if let Some(wait) = next.checked_duration_since(Instant::now()) {
             std::thread::sleep(wait);
         }
     }
     player.clock_mut().end_scrub();
-    for &n in asked.iter().take(400) {
-        let t = Instant::now();
-        cold.decode(n).map_err(|e| e.to_string())?;
-        decode.push(t.elapsed());
-    }
     let info = player.info();
     let cache = player.cache_stats();
     let report = Report {

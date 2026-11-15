@@ -1,0 +1,28 @@
+{
+  "build": "release",
+  "clip": "<scratchpad>/synth/dxv_ycg6_3840x2160.mov",
+  "codec": "DXV3",
+  "width": 3840,
+  "height": 2160,
+  "frames": 150,
+  "requests": 1200,
+  "not_latest": 0,
+  "request_to_frame": {
+    "count": 1200,
+    "mean_ms": 3.727316005000002,
+    "p50_ms": 4.315833,
+    "p95_ms": 4.908917,
+    "p99_ms": 5.009291,
+    "max_ms": 5.100124999999999
+  },
+  "decode": {
+    "count": 1200,
+    "mean_ms": 4.357926669999999,
+    "p50_ms": 4.3245000000000005,
+    "p95_ms": 4.8738339999999996,
+    "p99_ms": 4.988916000000001,
+    "max_ms": 5.183833
+  },
+  "cache_hits": 184,
+  "cache_misses": 1016
+}

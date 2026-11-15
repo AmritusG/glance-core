@@ -15,7 +15,7 @@ How to use it:
 - The numbers in the items (sizes, limits, timings) are the Swift apps' and are the pass criteria.
 
 - Items changed by Amrit's answers of 2026-11-14 (in `docs/01-RESEARCH.md` §9) carry that date and his words. "Fixed — differs from Swift on purpose" means the Rust app does the correct thing where the Swift app has a quirk; the Swift behaviour stays written in the item.
-- Ticks made in a core wave say which wave and which backend: **C1, Metal** = proven on Metal on the core's home machine, evidence in `docs/04-C1-RESULTS.md`. The Windows / Direct3D 12 half of a core item is proven at the Windows milestone (C4).
+- Ticks made in a core wave say which wave and which backend: **C1, Metal** = proven on Metal on the core's home machine, evidence in `docs/04-C1-RESULTS.md`; **C2, macOS** = proven on macOS (CoreAudio, Metal) on the core's home machine, evidence in `docs/05-C2-RESULTS.md`. A Glance item ticked **core half** has its rule in the core (glance-playback / glance-audio) proven; the key, button or label that drives it is Glance G1's. The Windows / Direct3D 12 half of a core item is proven at the Windows milestone (C4).
 
 Counts: core 35, Glance 94, CueGlance 95, GlEnc 114, MaCrate 127.
 
@@ -43,12 +43,12 @@ Counts: core 35, Glance 94, CueGlance 95, GlEnc 114, MaCrate 127.
 - [ ] Writers write straight alpha (GlEnc, DXV and HAP). — not a C1 item: there is no writer in the core until the GlEnc wave.
 
 ### Time
-- [ ] Frame `n` is exactly frame `n` after any seek, on every decode path (shuffled seeks equal sequential decode).
-- [ ] The OS-decoder path takes each frame's real start from the sample table through the edit list (Glance's `FrameTiming` rule): never seconds rounded to 1/600, never the N / fps grid alone, never the shortest sample duration as the rate.
-- [ ] Rates are exact rationals end to end (23.976 = 24000/1001); no float accumulates in the playhead.
-- [ ] DXV and HAP playback follows the audio clock when the clip has audio (frame = nearest to the audio position), falling back to the wall clock after 0.25 s without audio progress; without audio, a wall clock re-anchored each loop.
-- [ ] Audio in `.mov` plays for at least PCM and AAC on both OSes; an undecodable audio track plays the picture silently and says so.
-- [ ] No clip frame is skipped at 1x on a 60 Hz or 120 Hz display for 1080p and 2160p HAP and DXV on the reference machines (W0: 0 skipped, `docs/03-W0-RESULTS.md`).
+- [x] Frame `n` is exactly frame `n` after any seek, on every decode path (shuffled seeks equal sequential decode). — **C2, macOS:** `shuffled_seeks_equal_sequential_decode_on_every_path` — 40 clips, 427 frames: every DXV and HAP fixture, and H.264, HEVC, ProRes 4444, Motion JPEG through the OS decoder (read back from the GPU) (`docs/05-C2-RESULTS.md` §4).
+- [x] The OS-decoder path takes each frame's real start from the sample table through the edit list (Glance's `FrameTiming` rule): never seconds rounded to 1/600, never the N / fps grid alone, never the shortest sample duration as the rate. — **C2, macOS:** DXVKit Plus's `FrameTiming` (W3, equal to Swift's on 168 files) reaches the clock through `Clip::from_timing` on every path (`glance_playback::clip_of`). On Swift Glance's 8 frame-timing fixtures the clock shows frame N from its real start, 39 of 39 starts each; the grid alone misses 4 on each jittered clip (`swift_glances_frame_timing_fixtures_land_on_frame_n`, `docs/05-C2-RESULTS.md` §4).
+- [x] Rates are exact rationals end to end (23.976 = 24000/1001); no float accumulates in the playhead. — **C2, macOS:** the wall clock is DXVKit Plus's transport (integer ticks, exact rational rate, exact clock deltas); the audio clock is an integer frame count turned into movie time through `AudioTiming::position_of`; frame times are `MediaTime` rationals. 20 loops at 120 Hz: 0 wrong frames (`the_wall_clock_does_not_drift_across_twenty_loops`); measured drift over 19–20 loops within the stamping resolution (`docs/05-C2-RESULTS.md` §3).
+- [x] DXV and HAP playback follows the audio clock when the clip has audio (frame = nearest to the audio position), falling back to the wall clock after 0.25 s without audio progress; without audio, a wall clock re-anchored each loop. — **C2, macOS:** `glance_playback::Clock` (tests `the_audio_master_shows_the_nearest_frame_clamped`, `without_audio_progress_for_a_quarter_second_the_wall_clock_takes_over`, `a_sound_that_cannot_start_or_fails_falls_back_at_once`, `the_wall_clock_does_not_drift_across_twenty_loops`); measured on PCM and AAC clips: every A/V sample within half a frame (`docs/05-C2-RESULTS.md` §2). **Fixed — differs from Swift on purpose:** at the audio loop seam the half frame before the wrap shows the next loop's frame 0 when the sound's loop is no longer than the picture (Swift held the last frame, so frame 0 showed for half a frame and was skipped once in 20 loops; `docs/05-C2-RESULTS.md` §3).
+- [ ] Audio in `.mov` plays for at least PCM and AAC on both OSes; an undecodable audio track plays the picture silently and says so. — macOS half met in **C2**: every PCM layout DXVKit Plus reads and AAC (AudioToolbox) decode and play (`crates/glance-audio/tests/decode.rs`; played on the audio clock in `docs/05-C2-RESULTS.md` §1–§2); FLAC in MP4 plays the picture on the wall clock with "failed (audio unreadable: unsupported: FLAC audio is not decoded)" (`docs/05-C2-RESULTS.md` §5). Windows: PCM builds there; AAC waits for DXVKit Plus's Windows backend; proven at C4.
+- [ ] No clip frame is skipped at 1x on a 60 Hz or 120 Hz display for 1080p and 2160p HAP and DXV on the reference machines (W0: 0 skipped, `docs/03-W0-RESULTS.md`). — **C2, macOS, 120 Hz: met** — 0 skipped in all 30 runs, 1080p and 2160p HAP and DXV, with and without sound (`docs/05-C2-RESULTS.md` §1). **60 Hz: not met as stated** — not run on a 60 Hz display (Amrit 2026-11-15: "Simulate at 120 Hz"); at a 60 Hz cadence on the 120 Hz display 26 of 30 runs had 0 skipped, 4 runs of the first pass skipped 1–3 frames of 30 fps clips when two presents in a row came late (the window's presents were bursty on this machine today with Blender open, the C1 build alike). Not covered: DXV 2160p and HAP 1080p *with sound* (no such clips).
 
 ### Settings, identity, release
 - [ ] Each Rust app carries its Swift twin's bundle id (`com.amritus.glance`, `com.amritus.cueglance`, `com.amritus.glenc`, `com.amritus.crate`) and reads and writes the same preference keys in the same store on macOS (the `UserDefaults` domain of that id), with the same value encodings, so settings survive the swap in both directions.
@@ -136,31 +136,31 @@ Detail and sources: `docs/research/glance.md`.
 - [ ] Switching the background or the Alpha Type redraws the current frame at once, also while paused.
 
 ### Transport
-- [ ] Every clip opens playing and looping.
+- [ ] Every clip opens playing and looping. — **C2 core half:** a `Clock` starts playing and looping (`ClipPlayer::open`).
 - [ ] Space toggles play / pause exactly once per press.
 - [ ] `L` toggles loop; the title shows `[LOOP]` while looping; the bar's loop button is lit.
-- [ ] With loop off, playback stops on the last frame; the next Play restarts from frame 0 on every path. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** Swift Glance restarts only on the AVFoundation path; on DXV and HAP, Play at the end stays on the last frame.
-- [ ] `,` / `.` step exactly one frame back / forward, pause playback, keep audio silent and aligned, and clamp at both ends.
+- [ ] With loop off, playback stops on the last frame; the next Play restarts from frame 0 on every path. **Fixed — differs from Swift on purpose (Amrit 2026-11-14: "fix").** Swift Glance restarts only on the AVFoundation path; on DXV and HAP, Play at the end stays on the last frame. — **C2 core half:** one clock for every path; stops on the last frame and Play starts from frame 0 on the wall clock and on the audio clock, also when a shorter sound ended first (`at_the_end_of_a_clip_that_does_not_loop_play_starts_again_from_frame_0`). The `L` key is G1's.
+- [ ] `,` / `.` step exactly one frame back / forward, pause playback, keep audio silent and aligned, and clamp at both ends. — **C2 core half:** `Clock::step` (`seek_step_restart_and_scrub_follow_swift_glance`: pauses the sound too, sends the frame's start to it, clamps at 0 and the last frame). Keys: G1.
 - [ ] ← / → seek 5 s; with Shift 0.5 s; bar buttons seek 10 s.
-- [ ] Restart seeks to frame 0 and keeps the play / pause state.
-- [ ] Scrub slider: dragging pauses, shows each scrubbed frame live, and resumes on release only if it was playing.
-- [ ] Scrubbing never builds a backlog: the frame shown is the latest requested, within about one decode time.
-- [ ] A 1-frame clip shows its frame.
-- [ ] On the system-codec path, seeking to frame N shows frame N at 23.976, 25, 29.97, 30, 60 fps and on jittered timing (the 8 `frames_*` fixtures, 40 of 40 each).
-- [ ] On the system-codec path the loop wraps onto frame 0 exactly.
+- [ ] Restart seeks to frame 0 and keeps the play / pause state. — **C2 core half:** `Clock::restart` (same test). Button: G1.
+- [ ] Scrub slider: dragging pauses, shows each scrubbed frame live, and resumes on release only if it was playing. — **C2 core half:** `Clock::begin_scrub` / `scrub_to` / `end_scrub` (same test). The slider: G1.
+- [x] Scrubbing never builds a backlog: the frame shown is the latest requested, within about one decode time. — **C2, macOS:** 5 clips, 1,200 requests each every 8.33 ms: the latest frame every time; request to frame equals a same-moment decode (2160p DXV HQ p50 4.32 / p99 5.01 ms against 4.32 / 4.99) (`docs/05-C2-RESULTS.md` §4).
+- [x] A 1-frame clip shows its frame. — **C2:** `a_one_frame_clip_shows_its_frame` (wall and audio clock, looping and not); the frame is requested on the first tick (Swift needed an explicit seek to frame 0).
+- [x] On the system-codec path, seeking to frame N shows frame N at 23.976, 25, 29.97, 30, 60 fps and on jittered timing (the 8 `frames_*` fixtures, 40 of 40 each). — **C2, macOS:** the same 8 fixtures (copied from Glance a9dc601), 40 of 40 each, shuffled (`swift_glances_frame_timing_fixtures_land_on_frame_n`).
+- [x] On the system-codec path the loop wraps onto frame 0 exactly. — **C2, macOS:** frame 39 2 µs before the clip's end, frame 0 2 µs after, on all 8 fixtures (same test).
 - [ ] Time label `M:SS.mmm`, frame number label, both updating at about 20 Hz, also while a slider is held.
 - [ ] Esc quits only when: not full screen, no dialog, a file is open, no "not supported" message, and playing. Otherwise Esc keeps its normal meaning.
 - [ ] `F` and the bar button toggle full screen; the OS's own full-screen shortcut also works.
 
 ### Audio
-- [ ] DXV and HAP clips with an audio track play it in sync; the video frame follows the audio position (round to nearest frame).
-- [ ] Clips without audio play on the wall clock with no drift across loops.
-- [ ] If audio fails to start within 0.25 s, video keeps playing on the wall clock.
-- [ ] Audio loops with the video; seek and frame step move audio to the same position.
-- [ ] `M` and the speaker button mute without stopping the clock; unmute restores the previous level.
-- [ ] Volume: slider 0…1, `-` / `=` and ↑ / ↓ and ⌘↑ / ⌘↓ step 0.1, clamped; the level carries over to the next clip in the session.
+- [x] DXV and HAP clips with an audio track play it in sync; the video frame follows the audio position (round to nearest frame). — **C2, macOS:** nearest frame to the sound heard when the picture is shown (`Clip::nearest_frame`; tie to the later frame, as Swift's `rounded()`); A/V samples on DXV and HAP with PCM and AAC within half a frame, means −2.3 … +2.7 ms (`docs/05-C2-RESULTS.md` §2; method and its limits there).
+- [x] Clips without audio play on the wall clock with no drift across loops. — **C2, macOS:** 20 loops, totals +3.8 / −8.8 ms, within the stamping resolution; 0 wrong frames in the 20-loop clock test (`docs/05-C2-RESULTS.md` §3).
+- [x] If audio fails to start within 0.25 s, video keeps playing on the wall clock. — **C2:** `without_audio_progress_for_a_quarter_second_the_wall_clock_takes_over` (re-anchored at the frame on screen; state "failed (audio failed to start)"), `a_sound_that_cannot_start_or_fails_falls_back_at_once`.
+- [x] Audio loops with the video; seek and frame step move audio to the same position. — **C2:** loop on / off in lockstep (`set_looping`), seek and step send the frame's real start to the sound (`seek_step_restart_and_scrub_follow_swift_glance`); measured audio loops: 3000.43 and 4999.74 ms mean periods for 3.000 / 5.000 s clips, 0 skipped.
+- [ ] `M` and the speaker button mute without stopping the clock; unmute restores the previous level. — **C2 core half:** mute is separate from the volume and both are a gain only (`volume_and_mute_never_move_the_clock`; every measured audio run played muted on the audio clock). Key and button: G1.
+- [ ] Volume: slider 0…1, `-` / `=` and ↑ / ↓ and ⌘↑ / ⌘↓ step 0.1, clamped; the level carries over to the next clip in the session. — **C2 core half:** gain clamped to 0…1, NaN = 0 (`gain_is_volume_clamped_and_mute_is_zero`). Keys, slider and carry-over: G1.
 - [ ] Speaker icon changes at muted / zero, < 0.33, < 0.66, else.
-- [ ] Malformed audio formats (0 or > 64 channels, non-finite or ≤ 0 sample rate) are rejected and video still plays.
+- [x] Malformed audio formats (0 or > 64 channels, non-finite or ≤ 0 sample rate) are rejected and video still plays. — **C2:** `malformed_formats_are_rejected_with_swifts_words` (Swift's words; the state is "failed (invalid audio format: …)" and the clock is the wall clock, as for any `AudioError`).
 
 ### Folder navigation and media keys
 - [ ] `[` / `]`, ⌘← / ⌘→ and the bar buttons step through the movie files of the current clip's folder in natural (Finder) order, wrapping at both ends.
