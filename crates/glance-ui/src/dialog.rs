@@ -1,18 +1,19 @@
-//! Dialogs through rfd (the OS's own panels: `NSOpenPanel` / `NSAlert` on macOS, the common
-//! dialogs on Windows), with Swift Glance's settings and words
-//! (`glance/Sources/Glance/GlanceApp.swift:68-80`, `DefaultHandlerControl.swift:81-149`). Modal,
-//! on the main thread.
+//! Dialogs with Swift Glance's settings and words (`glance/Sources/Glance/GlanceApp.swift:68-80`,
+//! `DefaultHandlerControl.swift:81-149`). Modal, on the main thread.
+//!
+//! The open panel is rfd's (`NSOpenPanel`, the common file dialog on Windows). Alerts are
+//! [`glance_platform::alert`]: on macOS an app-modal `NSAlert` in the app's own process, with its
+//! icon, as Swift runs it (rfd without a parent window hands the alert to UserNotificationCenter,
+//! where it outlives the app; with one it is a sheet); on Windows a message box owned by the app's
+//! window. A failed alert is not shown (the app goes on).
 
-use rfd::{FileDialog, MessageButtons, MessageDialog, MessageDialogResult, MessageLevel};
+use glance_platform::AlertStyle;
+use rfd::FileDialog;
 use std::path::PathBuf;
 
-/// Movie file extensions for the open panel. Swift's panel allows the content types
-/// `public.movie`, `com.apple.quicktime-movie` and `public.mpeg-4`, which the OS resolves to every
-/// movie type it knows; rfd filters by extension, so this list stands in for `public.movie`: the
-/// QuickTime / MPEG-4 family, AVI, Matroska / WebM (shown "not supported" when opened, as Swift
-/// does), MPEG transport / program streams, DV, 3GPP, Flash and Windows Media video.
-pub const MOVIE_EXTENSIONS: [&str; 18] =
-    ["mov", "qt", "mp4", "m4v", "avi", "mkv", "webm", "mk3d", "mpg", "mpeg", "m2v", "mts", "m2ts", "ts", "dv", "3gp", "flv", "wmv"];
+/// Movie file extensions for the open panel (rfd filters by extension; Swift's panel allows
+/// `public.movie`, `com.apple.quicktime-movie` and `public.mpeg-4`, which this list stands in for).
+pub use glance_platform::MOVIE_EXTENSIONS;
 
 /// File ▸ Open…: one movie file, folders not choosable.
 pub fn open_movie() -> Option<PathBuf> {
@@ -21,23 +22,17 @@ pub fn open_movie() -> Option<PathBuf> {
 
 /// An informational alert with one OK button.
 pub fn inform(title: &str, text: &str) {
-    MessageDialog::new().set_level(MessageLevel::Info).set_title(title).set_description(text).set_buttons(MessageButtons::Ok).show();
+    let _ = glance_platform::alert(AlertStyle::Informational, title, text, &["OK"]);
 }
 
 /// A warning alert with one OK button.
 pub fn warn(title: &str, text: &str) {
-    MessageDialog::new().set_level(MessageLevel::Warning).set_title(title).set_description(text).set_buttons(MessageButtons::Ok).show();
+    let _ = glance_platform::alert(AlertStyle::Warning, title, text, &["OK"]);
 }
 
-/// An informational question with two buttons; `true` when the first (`yes`) is chosen.
+/// An informational question with two buttons; `true` when the first (`yes`, the default) is chosen.
 pub fn ask(title: &str, text: &str, yes: &str, no: &str) -> bool {
-    let answer = MessageDialog::new()
-        .set_level(MessageLevel::Info)
-        .set_title(title)
-        .set_description(text)
-        .set_buttons(MessageButtons::OkCancelCustom(yes.into(), no.into()))
-        .show();
-    matches!(answer, MessageDialogResult::Ok) || matches!(answer, MessageDialogResult::Custom(ref c) if c == yes)
+    glance_platform::alert(AlertStyle::Informational, title, text, &[yes, no]) == Ok(0)
 }
 
 /// Swift Glance's words for the default-handler flow, with the app's name in them.

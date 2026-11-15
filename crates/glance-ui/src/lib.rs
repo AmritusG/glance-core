@@ -14,7 +14,7 @@
 //!
 //! The shell (C3): text in the system font ([`fonts`]); Glance's look ([`look`], [`icons`]), its
 //! transport bar, scrub row and messages ([`bar`]); its menus ([`menu`], muda) and dialogs
-//! ([`dialog`], rfd); its window rules ([`window`]). [`run_shell`] opens the one window with a menu
+//! ([`dialog`]); its window rules ([`window`]). [`run_shell`] opens the one window with a menu
 //! bar, a minimum size and the OS's open-file events, and hands the app every [`ShellEvent`] — a
 //! menu command, files sent by the OS, a file dropped on the window, a media key.
 #![forbid(unsafe_code)]
@@ -511,7 +511,9 @@ pub fn run<A: App>(title: &str, size: (f64, f64), make: impl FnOnce(&Gpu) -> Res
 
 /// [`run`] with the shell: a minimum size, and with `open_files` the files the OS sends, delivered
 /// as [`ShellEvent::Platform`] — at cold launch too (they wait for the first frame). Closing the
-/// window ends the app (Swift Glance: `applicationShouldTerminateAfterLastWindowClosed`).
+/// window ends the app (Swift Glance: `applicationShouldTerminateAfterLastWindowClosed`). On macOS
+/// menu shortcuts without a modifier (Space, A) go to the menu, not the window
+/// ([`glance_platform::install_menu_key_monitor`]).
 pub fn run_shell<A: App>(config: ShellConfig, make: impl FnOnce(&Gpu) -> Result<A, String>) -> Result<(), String> {
     let el = EventLoop::<()>::with_user_event().build().map_err(|e| e.to_string())?;
     let proxy: EventLoopProxy<()> = el.create_proxy();
@@ -519,8 +521,11 @@ pub fn run_shell<A: App>(config: ShellConfig, make: impl FnOnce(&Gpu) -> Result<
         let _ = proxy.send_event(());
     });
     #[cfg(target_os = "macos")]
-    if config.open_files {
-        glance_platform::install_open_handler().map_err(|e| e.to_string())?;
+    {
+        if config.open_files {
+            glance_platform::install_open_handler().map_err(|e| e.to_string())?;
+        }
+        glance_platform::install_menu_key_monitor().map_err(|e| e.to_string())?;
     }
     let mut runner = Runner { config, make: Some(make), running: None, error: None };
     el.run_app(&mut runner).map_err(|e| e.to_string())?;

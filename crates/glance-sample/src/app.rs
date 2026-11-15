@@ -294,11 +294,13 @@ impl Sample {
 
     /// Swift's key map (`VideoHostingView.keyDown`): arrows seek 5 s (Shift 0.5 s), up / down
     /// volume, `,` `.` step, `m` mute, `-` `=` volume, `l` loop, `f` full screen, Esc quits while
-    /// playing a file outside full screen. Space and A are menu shortcuts.
+    /// playing a file outside full screen. Space and A are menu shortcuts: the window never gets them.
     fn keys(&mut self, ui: &egui::Ui, host: &mut Host<'_>) {
         let events = ui.input(|i| i.events.clone());
         for e in events {
             let egui::Event::Key { key, pressed: true, modifiers, .. } = e else { continue };
+            // Every press the window gets, so a run can show which keys the menu took instead.
+            log(serde_json::json!({"event": "key", "key": key.name()}));
             if modifiers.command {
                 continue;
             }

@@ -1,10 +1,12 @@
-//! Windows: one instance per app, a second launch's files handed to the first, and the System
-//! Media Transport Controls. Written and compile-checked on the Mac; first run at the Windows
+//! Windows: one instance per app, a second launch's files handed to the first, the System
+//! Media Transport Controls, message boxes and the folder listing. Written and compile-checked on the Mac; first run at the Windows
 //! milestone (C4, docs/00-ROADMAP.md §7).
 
-use crate::{MediaCommand, NowPlaying, PlatformError, PlatformEvent, post};
+use crate::{AlertStyle, MOVIE_EXTENSIONS, MediaCommand, NowPlaying, PlatformError, PlatformEvent, post};
+use std::cmp::Ordering;
 use std::io::Write;
-use std::path::PathBuf;
+use std::os::windows::fs::MetadataExt;
+use std::path::{Path, PathBuf};
 use windows::Foundation::{TimeSpan, TypedEventHandler};
 use windows::Media::{
     MediaPlaybackStatus, MediaPlaybackType, PlaybackPositionChangeRequestedEventArgs, SystemMediaTransportControls, SystemMediaTransportControlsButton,
@@ -17,6 +19,9 @@ use windows::Win32::System::Pipes::{
 };
 use windows::Win32::System::Threading::CreateMutexW;
 use windows::Win32::System::WinRT::ISystemMediaTransportControlsInterop;
+use windows::Win32::UI::Input::KeyboardAndMouse::GetActiveWindow;
+use windows::Win32::UI::Shell::StrCmpLogicalW;
+use windows::Win32::UI::WindowsAndMessaging::{IDOK, MB_ICONINFORMATION, MB_ICONWARNING, MB_OK, MB_OKCANCEL, MESSAGEBOX_STYLE, MessageBoxW};
 use windows::core::{HSTRING, PCWSTR};
 
 fn os(e: windows::core::Error) -> PlatformError {
@@ -218,4 +223,63 @@ impl MediaKeys {
         self.smtc.UpdateTimelineProperties(&timeline)?;
         self.smtc.SetPlaybackStatus(if info.playing { MediaPlaybackStatus::Playing } else { MediaPlaybackStatus::Paused })
     }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Message boxes
+
+/// A message box owned by this thread's active window (the app's), modal to it: `title` as the
+/// caption, `text` as the message (the title when empty). One button is OK; two are OK / Cancel and
+/// answer 0 / 1 — MessageBox cannot name its buttons, and TaskDialogIndirect (which can) lives in
+/// comctl32 version 6 only, which an app gets from its manifest: that comes with the Windows
+/// installer at C4.
+pub fn alert(style: AlertStyle, title: &str, text: &str, buttons: &[&str]) -> Result<usize, PlatformError> {
+    let icon = match style {
+        AlertStyle::Informational => MB_ICONINFORMATION,
+        AlertStyle::Warning => MB_ICONWARNING,
+    };
+    let kind: MESSAGEBOX_STYLE = if buttons.len() > 1 { MB_OKCANCEL } else { MB_OK };
+    let (caption, message) = (wide(title), wide(if text.is_empty() { title } else { text }));
+    // SAFETY: both strings are NUL-terminated UTF-16 buffers that outlive the call; the owner is
+    // this thread's active window or none (both valid for MessageBoxW).
+    let answer = unsafe { MessageBoxW(Some(GetActiveWindow()), PCWSTR(message.as_ptr()), PCWSTR(caption.as_ptr()), kind | icon) };
+    match answer.0 {
+        0 => Err(PlatformError::Os(windows::core::Error::from_thread().message())),
+        a if a == IDOK.0 => Ok(0),
+        _ => Ok(1),
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Folder listing
+
+/// Explorer's order for two names (`StrCmpLogicalW`: digits by value, case ignored; Microsoft notes
+/// it may change between releases).
+pub fn localized_standard_compare(a: &str, b: &str) -> Ordering {
+    let (a, b) = (wide(a), wide(b));
+    // SAFETY: two NUL-terminated UTF-16 buffers that outlive the call.
+    unsafe { StrCmpLogicalW(PCWSTR(a.as_ptr()), PCWSTR(b.as_ptr())) }.cmp(&0)
+}
+
+/// Windows has no type conformance: the extension is one of [`MOVIE_EXTENSIONS`] (any case).
+pub fn conforms_to_movie(ext: &str) -> bool {
+    MOVIE_EXTENSIONS.iter().any(|m| m.eq_ignore_ascii_case(ext))
+}
+
+/// The movies in `dir` in Explorer's order, files with the hidden attribute
+/// (`FILE_ATTRIBUTE_HIDDEN`) left out.
+pub fn movie_files(dir: &Path) -> Result<Vec<PathBuf>, PlatformError> {
+    const FILE_ATTRIBUTE_HIDDEN: u32 = 0x2;
+    let entries = std::fs::read_dir(dir).map_err(|e| PlatformError::Os(e.to_string()))?;
+    let files: Vec<PathBuf> = entries
+        .filter_map(Result::ok)
+        .filter(|e| e.metadata().is_ok_and(|m| m.is_file() && m.file_attributes() & FILE_ATTRIBUTE_HIDDEN == 0))
+        .map(|e| e.path())
+        .filter(|p| p.extension().and_then(|e| e.to_str()).is_some_and(conforms_to_movie))
+        .collect();
+    Ok(crate::sort_by_os(&files, &|a: &PathBuf, b: &PathBuf| localized_standard_compare(&name_of(a), &name_of(b))))
+}
+
+fn name_of(p: &Path) -> String {
+    p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()
 }

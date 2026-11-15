@@ -808,7 +808,7 @@ dependencies = [
 
 [[package]]
 name = "glance-audio"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "cpal",
  "glance-media",
@@ -817,7 +817,7 @@ dependencies = [
 
 [[package]]
 name = "glance-gpu"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "bytemuck",
  "dxvkit-plus-apple",
@@ -831,7 +831,7 @@ dependencies = [
 
 [[package]]
 name = "glance-media"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "dxvkit-plus-apple",
  "dxvkit-plus-core",
@@ -840,7 +840,7 @@ dependencies = [
 
 [[package]]
 name = "glance-platform"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "block2 0.6.2",
  "muda",
@@ -855,7 +855,7 @@ dependencies = [
 
 [[package]]
 name = "glance-playback"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "glance-audio",
  "glance-gpu",
@@ -865,7 +865,7 @@ dependencies = [
 
 [[package]]
 name = "glance-proof"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "cpal",
  "egui",
@@ -881,7 +881,7 @@ dependencies = [
 
 [[package]]
 name = "glance-sample"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "egui",
  "glance-gpu",
@@ -895,7 +895,7 @@ dependencies = [
 
 [[package]]
 name = "glance-settings"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "glance-media",
  "glance-platform",
@@ -904,7 +904,7 @@ dependencies = [
 
 [[package]]
 name = "glance-ui"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "egui",
  "egui-wgpu",

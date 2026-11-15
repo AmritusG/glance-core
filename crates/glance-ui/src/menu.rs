@@ -4,8 +4,10 @@
 //! chosen ([`MenuCommand`]); the app applies it, so menu, keys and bar drive the same calls.
 //!
 //! Space and A are menu shortcuts without a modifier, as in Swift (`.keyboardShortcut(.space,
-//! modifiers: [])`): the menu takes the key, so it fires once (Swift: "Space lives only in the
-//! menu shortcut, or it fires twice"). Mute and Loop have no menu shortcut (⌘M is Minimize).
+//! modifiers: [])`): the menu takes the key, so it fires once and the window never sees it (Swift:
+//! "Space lives only in the menu shortcut, or it fires twice"). On macOS that needs
+//! [`glance_platform::install_menu_key_monitor`] (winit's view keeps bare keys from AppKit's menu
+//! path), which [`crate::run_shell`] installs. Mute and Loop have no menu shortcut (⌘M is Minimize).
 //!
 //! On Windows the same menus hang in the window (`glance_platform::attach_menu`), without the
 //! macOS app menu; its items move to File (Exit) and Help (About).

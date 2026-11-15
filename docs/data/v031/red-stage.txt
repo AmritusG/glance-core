@@ -1,0 +1,13 @@
+TMPDIR=<tmp>/
+default STAGE_DIR (as the conf writes it)=<tmp>//glance-kit/com.amritus.glancecore.sample
+physical: $TMPDIR/glance-kit/com.amritus.glancecore.sample
+registered the staged copy (lsregister -f)
+==> LaunchServices records for com.amritus.glancecore.sample before:
+    /Applications/Glance Sample.app
+    $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+    left alone (not a build product or DMG copy): $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+==> LaunchServices records for com.amritus.glancecore.sample after:
+    /Applications/Glance Sample.app
+    $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+WARNING: expected exactly one record (/Applications/Glance Sample.app).
+exit 1

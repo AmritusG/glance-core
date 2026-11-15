@@ -1,0 +1,13 @@
+app: /Applications/Glance Sample.app (0.3.0) pid 89121
+== before the menu click:
+owner=Glance Sample pid=89121 layer=0 size=960x648
+== alert up (after 4500 ms):
+owner=UserNotificationCenter pid=92864 layer=8 size=260x192
+owner=Glance Sample pid=89121 layer=0 size=960x648
+== the alert as Accessibility sees it (glance-sample's windows):
+,
+
+== after kill -9 89121:
+owner=UserNotificationCenter pid=92864 layer=8 size=260x192
+glance-sample running: none
+== leftover alert dismissed by hand (OK); now: 0 UserNotificationCenter windows

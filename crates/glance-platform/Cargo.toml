@@ -30,11 +30,11 @@ raw-window-handle = { workspace = true }
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2 = "0.6.3"
 block2 = "0.6.2"
-objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSArray", "NSData", "NSDictionary", "NSString", "NSUserDefaults", "NSURL", "NSValue", "NSBundle", "NSError", "NSObject", "NSEnumerator", "block2"] }
-objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSWorkspace", "NSDocumentController", "NSApplication", "NSResponder", "NSView", "NSWindow", "block2", "objc2-uniform-type-identifiers"] }
+objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSArray", "NSData", "NSDictionary", "NSString", "NSUserDefaults", "NSURL", "NSValue", "NSBundle", "NSError", "NSObject", "NSEnumerator", "NSFileManager", "NSObjCRuntime", "block2"] }
+objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSWorkspace", "NSDocumentController", "NSApplication", "NSResponder", "NSView", "NSWindow", "NSEvent", "NSMenu", "NSAlert", "NSButton", "NSControl", "block2", "objc2-uniform-type-identifiers"] }
 objc2-uniform-type-identifiers = { version = "0.3.2", default-features = false, features = ["std", "UTType"] }
 objc2-media-player = { version = "0.3.2", default-features = false, features = ["std", "block2", "MPRemoteCommandCenter", "MPRemoteCommand", "MPRemoteCommandEvent", "MPNowPlayingInfoCenter", "MPMediaItem"] }
 
 [target.'cfg(windows)'.dependencies]
 muda = { workspace = true }
-windows = { version = "0.62.2", features = ["Foundation", "Media", "Win32_Foundation", "Win32_Security", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_IO", "Win32_System_WinRT"] }
+windows = { version = "0.62.2", features = ["Foundation", "Media", "Win32_Foundation", "Win32_Security", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_IO", "Win32_System_WinRT", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_Shell"] }

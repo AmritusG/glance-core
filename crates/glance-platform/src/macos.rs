@@ -1,18 +1,24 @@
 //! macOS: AppKit, Foundation and MediaPlayer, as Swift Glance uses them.
 
-use crate::{MediaCommand, NowPlaying, PlatformError, PlatformEvent, Value, post};
+use crate::{AlertStyle, MediaCommand, NowPlaying, PlatformError, PlatformEvent, Value, post};
 use block2::RcBlock;
 use objc2::rc::Retained;
 use objc2::runtime::{AnyClass, AnyObject, Imp, Sel};
 use objc2::{AnyThread, MainThreadMarker, sel};
-use objc2_app_kit::{NSDocumentController, NSWorkspace};
-use objc2_foundation::{NSArray, NSBundle, NSData, NSDictionary, NSError, NSNumber, NSString, NSURL, NSUserDefaults};
+use objc2_app_kit::{
+    NSAlert, NSAlertFirstButtonReturn, NSAlertStyle, NSApplication, NSDocumentController, NSEvent, NSEventMask, NSEventModifierFlags, NSWorkspace,
+};
+use objc2_foundation::{
+    NSArray, NSBundle, NSComparisonResult, NSData, NSDictionary, NSDirectoryEnumerationOptions, NSError, NSFileManager, NSNumber, NSString, NSURL,
+    NSUserDefaults,
+};
 use objc2_media_player::{
     MPChangePlaybackPositionCommandEvent, MPMediaItemPropertyPlaybackDuration, MPMediaItemPropertyTitle, MPNowPlayingInfoCenter,
     MPNowPlayingInfoPropertyElapsedPlaybackTime, MPNowPlayingInfoPropertyPlaybackRate, MPNowPlayingPlaybackState, MPRemoteCommand, MPRemoteCommandCenter,
     MPRemoteCommandEvent, MPRemoteCommandHandlerStatus,
 };
 use objc2_uniform_type_identifiers::UTType;
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::ptr::NonNull;
@@ -174,6 +180,131 @@ pub fn install_open_handler() -> Result<(), PlatformError> {
 /// A second install finds our own implementation already there.
 fn method_is_ours(class: &AnyClass) -> bool {
     class.instance_method(sel!(application:openURLs:)).is_some_and(|m| m.implementation() as *const () == application_open_urls as *const ())
+}
+
+// ---------------------------------------------------------------------------------------------
+// Menu shortcuts without a modifier
+
+/// Offer every key press without ⌘ / ⌃ / ⌥ / ⇧ to the main menu before the window sees it, so menu
+/// items whose shortcut is a bare key (Glance: Space = Play/Pause, A = Toggle Alpha Type) fire.
+///
+/// Why: AppKit tries a key press as a menu key equivalent only when the window's views pass it
+/// up; winit 0.30.13's view takes every `keyDown:` (`interpretKeyEvents:` and its own queue,
+/// `platform_impl/macos/view.rs:441-496`) and never calls `super`, so a bare-key item never fires
+/// (⌘ keys work: AppKit offers those to the menu first). An `NSEvent` local monitor sees each event
+/// before `sendEvent:` dispatches it (Apple: "receives copies of events the system posts to this
+/// app prior to their dispatch"; returning nil "stop[s] the dispatching of the event"). The press
+/// goes to `NSApp.mainMenu performKeyEquivalent:`; when an item takes it the event is dropped, so
+/// the view never sees the same press (Swift: "Space lives only in the menu shortcut, or it fires
+/// twice"). Repeats are offered too: a held key repeats the item as AppKit does for Swift Glance.
+///
+/// Not while a modal window is up (an alert or an open panel keeps its own keys), and only in the
+/// key window's app (local monitors see this app's events only). An app with text fields would
+/// need them to take the press first; the family's windows have none.
+///
+/// Main thread, once the application exists (after winit's `EventLoop::new`). The monitor lives for
+/// the whole process.
+pub fn install_menu_key_monitor() -> Result<(), PlatformError> {
+    MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
+    let block = RcBlock::new(|event: NonNull<NSEvent>| -> *mut NSEvent {
+        // SAFETY: AppKit passes a valid event for the duration of the call.
+        let e = unsafe { event.as_ref() };
+        if offered_to_menu(e) {
+            return std::ptr::null_mut();
+        }
+        event.as_ptr()
+    });
+    // SAFETY: the block has the handler's signature (an event in, the event or nil out); AppKit
+    // copies it and calls it on the main thread for every key-down dispatched through `sendEvent:`.
+    let monitor = unsafe { NSEvent::addLocalMonitorForEventsMatchingMask_handler(NSEventMask::KeyDown, &block) };
+    match monitor {
+        // AppKit keeps the monitor until `removeMonitor:`; this one is never removed.
+        Some(m) => {
+            std::mem::forget(m);
+            Ok(())
+        }
+        None => Err(PlatformError::Os("AppKit refused the key monitor".into())),
+    }
+}
+
+/// The press went to the main menu and an item took it.
+fn offered_to_menu(event: &NSEvent) -> bool {
+    let Some(mtm) = MainThreadMarker::new() else { return false };
+    let modifiers = NSEventModifierFlags::Command | NSEventModifierFlags::Control | NSEventModifierFlags::Option | NSEventModifierFlags::Shift;
+    if event.modifierFlags().intersects(modifiers) {
+        return false;
+    }
+    let app = NSApplication::sharedApplication(mtm);
+    if app.modalWindow().is_some() {
+        return false;
+    }
+    app.mainMenu().is_some_and(|menu| menu.performKeyEquivalent(event))
+}
+
+// ---------------------------------------------------------------------------------------------
+// Alerts
+
+/// An app-modal alert in this process (`NSAlert runModal`, Swift Glance's
+/// `DefaultHandlerControl.swift:90-104, 125-147`): the app's icon, `title` in bold, `text` under it
+/// (none when empty), `buttons` left to right as AppKit orders them (the first is the default,
+/// Return). Answers the index of the button chosen. Blocks until then; main thread only.
+pub fn alert(style: AlertStyle, title: &str, text: &str, buttons: &[&str]) -> Result<usize, PlatformError> {
+    let mtm = MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
+    let a = NSAlert::new(mtm);
+    a.setAlertStyle(match style {
+        AlertStyle::Informational => NSAlertStyle::Informational,
+        AlertStyle::Warning => NSAlertStyle::Warning,
+    });
+    a.setMessageText(&NSString::from_str(title));
+    a.setInformativeText(&NSString::from_str(text));
+    for b in buttons {
+        a.addButtonWithTitle(&NSString::from_str(b));
+    }
+    // AppKit's own app-modal loop; the app stays frontmost behind it.
+    let response = a.runModal();
+    Ok(usize::try_from(response - NSAlertFirstButtonReturn).unwrap_or(0))
+}
+
+// ---------------------------------------------------------------------------------------------
+// Folder listing
+
+/// Finder's order for two names (`NSString localizedStandardCompare:`, "Compares strings as sorted
+/// by the Finder"; the current locale, and Apple may change it between releases).
+pub fn localized_standard_compare(a: &str, b: &str) -> Ordering {
+    match NSString::from_str(a).localizedStandardCompare(&NSString::from_str(b)) {
+        NSComparisonResult::Ascending => Ordering::Less,
+        NSComparisonResult::Descending => Ordering::Greater,
+        _ => Ordering::Equal,
+    }
+}
+
+/// Whether a file with extension `ext` is a movie as Swift Glance's folder scan decides
+/// (`PlayerModel.swift:236-249`): the type the OS gives the lowercased extension conforms to
+/// `public.movie`, `com.apple.quicktime-movie` or `public.mpeg-4`. The set is the system's.
+pub fn conforms_to_movie(ext: &str) -> bool {
+    let Some(ty) = UTType::typeWithFilenameExtension(&NSString::from_str(&ext.to_lowercase())) else { return false };
+    ["public.movie", "com.apple.quicktime-movie", "public.mpeg-4"]
+        .iter()
+        .filter_map(|id| UTType::typeWithIdentifier(&NSString::from_str(id)))
+        .any(|t| ty.conformsToType(&t))
+}
+
+/// The movies in `dir`, in Finder's order, as Swift Glance lists a clip's folder
+/// (`PlayerModel.swift:251-268`): `contentsOfDirectory(…, options: [.skipsHiddenFiles])` (dot
+/// files and files flagged hidden left out), [`conforms_to_movie`] on each extension, sorted by
+/// name with [`localized_standard_compare`].
+pub fn movie_files(dir: &Path) -> Result<Vec<PathBuf>, PlatformError> {
+    let url = NSURL::from_directory_path(dir).ok_or_else(|| PlatformError::Os(format!("not a folder path: {}", dir.display())))?;
+    let contents = NSFileManager::defaultManager()
+        .contentsOfDirectoryAtURL_includingPropertiesForKeys_options_error(&url, None, NSDirectoryEnumerationOptions::SkipsHiddenFiles)
+        .map_err(|e| PlatformError::Os(e.localizedDescription().to_string()))?;
+    let files: Vec<PathBuf> =
+        contents.iter().filter_map(|u| u.to_file_path()).filter(|p| p.extension().and_then(|e| e.to_str()).is_some_and(conforms_to_movie)).collect();
+    Ok(crate::sort_by_os(&files, &|a: &PathBuf, b: &PathBuf| localized_standard_compare(&name_of(a), &name_of(b))))
+}
+
+fn name_of(p: &Path) -> String {
+    p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()
 }
 
 // ---------------------------------------------------------------------------------------------

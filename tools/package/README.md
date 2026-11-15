@@ -33,7 +33,7 @@ team ids and certificate hashes are masked in everything the kit prints.
 | `NOTARY_PROFILE` | `amritus-notary` | a keychain profile its owner stored once (`xcrun notarytool store-credentials <name>`); never a password |
 | `SIGN_IDENTITY` | `auto` | `auto` = the first "Developer ID Application" identity in the keychain |
 | `INSTALL_DIR` | `/Applications` | the one place the app is registered |
-| `STAGE_DIR` | `$TMPDIR/glance-kit/<bundle id>` | outside the project |
+| `STAGE_DIR` | `$TMPDIR/glance-kit/<bundle id>` | outside the project; the kit creates it and uses its physical path (`pwd -P`: `/var/folders/…` becomes `/private/var/folders/…`, the path LaunchServices records), so the conf needs no resolving of its own |
 | `ICON` (optional) | — | an `.icns` beside the conf, copied to `Contents/Resources/AppIcon.icns` (`CFBundleIconFile` = `AppIcon`) |
 | `ENTITLEMENTS` (optional) | the kit's `entitlements.plist` | Swift Glance's two keys: user-selected read-only files, app-scope bookmarks |
 

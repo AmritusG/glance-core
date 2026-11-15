@@ -12,12 +12,17 @@
 //! - [`is_default_for`] / [`set_default_for`]: the "Set as Default" flow (`NSWorkspace`);
 //! - [`MediaKeys`]: the transport media keys and the Now Playing surface (`MPRemoteCommandCenter`,
 //!   `MPNowPlayingInfoCenter`), as [`PlatformEvent::Media`];
-//! - [`note_recent`]: the OS recent-documents list (`NSDocumentController`).
+//! - [`note_recent`]: the OS recent-documents list (`NSDocumentController`);
+//! - [`install_menu_key_monitor`]: menu shortcuts without a modifier (Space, A) reach the menu;
+//! - [`alert`]: an app-modal `NSAlert` in this process;
+//! - [`movie_files`]: a folder's movies in Finder's order ([`localized_standard_compare`],
+//!   [`conforms_to_movie`]), hidden files left out.
 //!
 //! **Windows** (written and compile-checked; run at the Windows milestone, C4):
 //! [`SingleInstance`] (a named mutex plus a named pipe that hands a second launch's paths to the
-//! first), [`settings_dir`] (the one documented per-user place), and [`MediaKeys`] on the System
-//! Media Transport Controls.
+//! first), [`settings_dir`] (the one documented per-user place), [`MediaKeys`] on the System
+//! Media Transport Controls, [`alert`] (a message box owned by the app's active window) and
+//! [`movie_files`] (`StrCmpLogicalW` order, [`MOVIE_EXTENSIONS`], hidden attribute).
 //!
 //! Events reach the app through one queue ([`take_events`]); [`set_waker`] lets the event loop be
 //! woken when one arrives (an `EventLoopProxy` in the apps).
@@ -32,17 +37,20 @@ pub use value::Value;
 #[cfg(target_os = "macos")]
 mod macos;
 #[cfg(target_os = "macos")]
-pub use macos::{Defaults, MediaKeys, install_open_handler, is_default_for, note_recent, set_default_for, set_subtitle};
+pub use macos::{
+    Defaults, MediaKeys, alert, conforms_to_movie, install_menu_key_monitor, install_open_handler, is_default_for, localized_standard_compare, movie_files,
+    note_recent, set_default_for, set_subtitle,
+};
 
 #[cfg(windows)]
 mod windows;
 #[cfg(windows)]
-pub use windows::{MediaKeys, SingleInstance, attach_menu};
+pub use windows::{MediaKeys, SingleInstance, alert, attach_menu, conforms_to_movie, localized_standard_compare, movie_files};
 
 #[cfg(not(any(target_os = "macos", windows)))]
 mod other;
 #[cfg(not(any(target_os = "macos", windows)))]
-pub use other::MediaKeys;
+pub use other::{MediaKeys, movie_files};
 
 /// A transport command from the OS (media keys, the Now Playing widget, Windows' media flyout).
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -65,6 +73,43 @@ pub enum PlatformEvent {
     Media(MediaCommand),
     /// The answer to [`set_default_for`]: `Err` holds the OS's words.
     DefaultHandlerSet(Result<(), String>),
+}
+
+/// How an alert looks (`NSAlert.Style`; on Windows the message box's icon).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AlertStyle {
+    Informational,
+    Warning,
+}
+
+/// Movie file extensions, for an open panel that filters by extension and for the folder scan
+/// where the OS has no type test (Windows). On macOS the panel's and the scan's own test is the
+/// OS's (`public.movie` and its kin); this list stands in for it: the QuickTime / MPEG-4 family,
+/// AVI, Matroska / WebM (shown "not supported" when opened, as Swift does), MPEG transport /
+/// program streams, DV, 3GPP, Flash and Windows Media video.
+pub const MOVIE_EXTENSIONS: [&str; 18] =
+    ["mov", "qt", "mp4", "m4v", "avi", "mkv", "webm", "mk3d", "mpg", "mpeg", "m2v", "mts", "m2ts", "ts", "dv", "3gp", "flv", "wmv"];
+
+/// Sort `items` with the OS's name order. A merge sort of our own: the OS's comparison is not
+/// promised to be a total order (Apple and Microsoft both say it may change between releases;
+/// macOS 27 already compares digit runs past 2^64 by their value modulo 2^64), and std's sorts may
+/// panic on a comparison that is not one. This one always returns, every item once.
+#[cfg_attr(not(any(target_os = "macos", windows)), allow(dead_code))]
+pub(crate) fn sort_by_os<T: Clone>(items: &[T], cmp: &impl Fn(&T, &T) -> std::cmp::Ordering) -> Vec<T> {
+    if items.len() <= 1 {
+        return items.to_vec();
+    }
+    let (left, right) = items.split_at(items.len() / 2);
+    let (left, right) = (sort_by_os(left, cmp), sort_by_os(right, cmp));
+    let mut out = Vec::with_capacity(items.len());
+    let (mut l, mut r) = (left.into_iter().peekable(), right.into_iter().peekable());
+    while let (Some(a), Some(b)) = (l.peek(), r.peek()) {
+        let next = if cmp(b, a) == std::cmp::Ordering::Less { r.next() } else { l.next() };
+        out.extend(next);
+    }
+    out.extend(l);
+    out.extend(r);
+    out
 }
 
 /// Why an OS call failed.
@@ -165,6 +210,19 @@ mod tests {
         assert_eq!(got, vec![PlatformEvent::Open(vec!["/a.mov".into(), "/b.mov".into()]), PlatformEvent::Media(MediaCommand::Seek(1.5))]);
         assert!(take_events().is_empty());
         assert_eq!(woken.load(Ordering::SeqCst), 2);
+    }
+
+    #[test]
+    fn the_os_sort_keeps_every_item_even_when_the_order_is_inconsistent() {
+        let v: Vec<u32> = (0..50).rev().collect();
+        assert_eq!(sort_by_os(&v, &|a, b| a.cmp(b)), (0..50).collect::<Vec<_>>());
+        // Stable: equal keys keep their order.
+        let pairs = [(1, 'a'), (0, 'b'), (1, 'c'), (0, 'd')];
+        assert_eq!(sort_by_os(&pairs, &|a, b| a.0.cmp(&b.0)), vec![(0, 'b'), (0, 'd'), (1, 'a'), (1, 'c')]);
+        // A comparison that is no order at all: no panic, the same items back.
+        let mut got = sort_by_os(&v, &|a, b| if (a + b) % 3 == 0 { std::cmp::Ordering::Less } else { std::cmp::Ordering::Greater });
+        got.sort_unstable();
+        assert_eq!(got, (0..50).collect::<Vec<_>>());
     }
 
     #[test]

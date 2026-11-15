@@ -1,0 +1,10 @@
+app: /Applications/Glance Sample.app (0.3.0)
+pid: 88313
+== DXV alpha clip (tiles_dxt5.mov): Space, Space, A
+== opaque clip (tiles_h264.mp4): A
+== events.jsonl lines since launch (menu / alpha / open):
+{"args_file":null,"background":"black","event":"launch","pid":88313,}
+{"alpha":"premultiplied","alpha_rule":"Choosable","audio":"None { reason: \"no audio track\" }","codec":"DXV3 Normal Quality With Alpha","event":"open","path":"<workspace>/glance-core/tests/fixtures/tiles_dxt5.mov","pid":88313,"remembered":null,"source":"os",}
+{"alpha":"premultiplied","alpha_rule":"Opaque","audio":"None { reason: \"no audio track\" }","codec":"H.264","event":"open","path":"<workspace>/glance-core/tests/fixtures/tiles_h264.mp4","pid":88313,"remembered":null,"source":"os",}
+== counts: PlayPause=0 ToggleAlphaType=0 alpha-changes=0
+after: none
