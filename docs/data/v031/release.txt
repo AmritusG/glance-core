@@ -1,0 +1,417 @@
+==> toolchain: rustc 1.100.0 (0ef1bc386 2026-11-09)
+==> cargo build --release --target aarch64-apple-darwin -p glance-sample
+   Compiling libc v0.2.191
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling bitflags v2.13.2
+   Compiling unicode-ident v1.0.27
+   Compiling objc2-encode v4.1.0
+   Compiling objc2 v0.6.5
+   Compiling libm v0.2.16
+   Compiling autocfg v1.5.1
+   Compiling cfg-if v1.0.5
+   Compiling cfg_aliases v0.2.2
+   Compiling thiserror v2.0.21
+   Compiling foldhash v0.2.0
+   Compiling smallvec v1.16.5
+   Compiling arrayvec v0.7.8
+   Compiling zerocopy v0.8.63
+   Compiling once_cell v1.21.4
+   Compiling log v0.4.35
+   Compiling parking_lot_core v0.9.12
+   Compiling hashbrown v0.17.1
+   Compiling raw-window-handle v0.6.2
+   Compiling scopeguard v1.2.0
+   Compiling equivalent v1.0.3
+   Compiling rustc-hash v1.1.0
+   Compiling naga v30.0.2
+   Compiling profiling v1.0.18
+   Compiling lock_api v0.4.14
+   Compiling shlex v2.0.1
+   Compiling unicode-width v0.2.3
+   Compiling find-msvc-tools v0.1.15
+   Compiling bit-vec v0.9.1
+   Compiling num-traits v0.2.19
+   Compiling codespan-reporting v0.13.1
+   Compiling static_assertions v1.1.0
+   Compiling pkg-config v0.3.34
+   Compiling simd-adler32 v0.3.10
+   Compiling bit-set v0.10.0
+   Compiling wgpu-hal v30.0.2
+   Compiling adler2 v2.0.1
+   Compiling crc32fast v1.5.5
+   Compiling libloading v0.8.9
+   Compiling serde_core v1.0.229
+   Compiling miniz_oxide v0.9.1
+   Compiling wgpu-core v30.0.2
+   Compiling indexmap v2.14.2
+   Compiling litrs v1.0.1
+   Compiling zstd-safe v8.3.0
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling wgpu v30.0.2
+   Compiling serde v1.0.229
+   Compiling snap v1.1.2
+   Compiling document-features v0.2.12
+   Compiling typenum v1.20.1
+   Compiling syn v3.0.10
+   Compiling block2 v0.6.2
+   Compiling syn v2.0.119
+   Compiling jobserver v0.1.35
+   Compiling objc2-core-audio-types v0.3.2
+   Compiling dispatch2 v0.3.1
+   Compiling parking_lot v0.12.5
+   Compiling cc v1.11.2
+   Compiling polycool v0.4.0
+   Compiling objc-sys v0.3.5
+   Compiling const-oid v0.10.3
+   Compiling version_check v0.9.5
+   Compiling flate2 v1.1.11
+   Compiling objc2-core-foundation v0.3.2
+   Compiling hybrid-array v0.4.15
+   Compiling euclid v0.22.14
+   Compiling kurbo v0.13.1
+   Compiling linebender_resource_handle v0.1.1
+   Compiling ahash v0.8.12
+   Compiling num-integer v0.1.47
+   Compiling cpufeatures v0.3.1
+   Compiling png v0.18.1
+   Compiling unicode-general-category v1.1.0
+   Compiling fearless_simd v0.4.1
+   Compiling strength_reduce v0.2.4
+   Compiling objc2 v0.5.3
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling guillotiere v0.7.0
+   Compiling core-foundation-sys v0.8.7
+   Compiling transpose v0.2.3
+   Compiling primal-check v0.3.4
+   Compiling num-complex v0.4.6
+   Compiling dispatch v0.2.0
+   Compiling core-foundation v0.9.4
+   Compiling audio-codec-algorithms v0.8.1
+   Compiling bitflags v1.3.2
+   Compiling crossbeam-utils v0.8.23
+   Compiling foreign-types-shared v0.3.1
+   Compiling unicode-segmentation v1.13.3
+   Compiling nohash-hasher v0.2.0
+   Compiling self_cell v1.3.0
+   Compiling rustfft v6.4.1
+   Compiling core-graphics-types v0.1.3
+   Compiling block2 v0.5.1
+   Compiling digest v0.11.3
+   Compiling audioadapter-sample v5.2.0
+   Compiling winit v0.30.13
+   Compiling sha2 v0.11.1
+   Compiling objc2-foundation v0.2.2
+   Compiling cpal v0.18.2
+   Compiling pin-project-lite v0.2.17
+   Compiling zmij v1.0.23
+   Compiling dpi v0.1.2
+   Compiling audioadapter v5.0.0
+   Compiling zstd-sys v2.1.3+zstd.1.5.7
+   Compiling either v1.19.0
+   Compiling tracing-core v0.1.36
+   Compiling uuid v1.29.2
+   Compiling audioadapter-buffers v5.2.0
+   Compiling itertools v0.15.0
+   Compiling objc2-foundation v0.3.2
+   Compiling objc2-core-graphics v0.3.2
+   Compiling objc2-media-toolbox v0.3.2
+   Compiling objc2-image-io v0.3.2
+   Compiling accesskit v0.24.1
+   Compiling tracing v0.1.44
+   Compiling windowfunctions v0.1.1
+   Compiling rustc-hash v2.1.3
+   Compiling dasp_sample v0.11.0
+   Compiling rfd v0.18.0
+   Compiling smol_str v0.2.2
+   Compiling web-time v1.1.0
+   Compiling cursor-icon v1.2.0
+   Compiling pollster v1.0.1
+   Compiling serde_json v1.0.154
+   Compiling mach2 v0.6.0
+   Compiling muda v0.21.2
+   Compiling crossbeam-channel v0.5.17
+   Compiling type-map v0.5.1
+   Compiling zerocopy-derive v0.8.63
+   Compiling bytemuck_derive v1.12.1
+   Compiling thiserror-impl v2.0.21
+   Compiling serde_derive v1.0.229
+   Compiling foreign-types-macros v0.2.4
+   Compiling visibility v0.1.1
+   Compiling keyboard-types v0.8.3
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.19
+   Compiling foreign-types v0.5.0
+   Compiling realfft v3.5.1
+   Compiling core-graphics v0.23.2
+   Compiling bytemuck v1.25.2
+   Compiling rubato v5.1.0
+   Compiling naga-types v30.0.2
+   Compiling color v0.3.3
+   Compiling wgpu-types v30.0.2
+   Compiling font-types v0.12.7
+   Compiling emath v0.36.2
+   Compiling peniko v0.6.1
+   Compiling read-fonts v0.41.0
+   Compiling ecolor v0.36.2
+   Compiling vello_common v0.1.0
+   Compiling objc2-app-kit v0.2.2
+   Compiling vello_cpu v0.1.0
+   Compiling half v2.7.1
+   Compiling zstd v0.14.4
+   Compiling dxvkit-plus-core v0.11.0 (https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#29fa9f5a)
+   Compiling harfrust v0.12.0
+   Compiling skrifa v0.44.0
+   Compiling epaint v0.36.2
+   Compiling objc2-io-surface v0.3.2
+   Compiling objc2-core-audio v0.3.2
+   Compiling objc2-avf-audio v0.3.2
+   Compiling objc2-core-image v0.3.2
+   Compiling objc2-uniform-type-identifiers v0.3.2
+   Compiling objc2-media-player v0.3.2
+   Compiling objc2-app-kit v0.3.2
+   Compiling objc2-metal v0.3.2
+   Compiling objc2-audio-toolbox v0.3.2
+   Compiling coreaudio-rs v0.14.2
+   Compiling wgpu-naga-bridge v30.0.2
+   Compiling egui v0.36.2
+   Compiling glance-platform v0.3.1 (<workspace>/glance-core/crates/glance-platform)
+   Compiling objc2-quartz-core v0.3.2
+   Compiling objc2-core-video v0.3.2
+   Compiling raw-window-metal v1.1.0
+   Compiling objc2-core-media v0.3.2
+   Compiling egui-winit v0.36.2
+   Compiling objc2-av-foundation v0.3.2
+   Compiling wgpu-core-deps-apple v30.0.2
+   Compiling dxvkit-plus-apple v0.11.0 (https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#29fa9f5a)
+   Compiling dxvkit-plus-wgpu v0.11.0 (https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#29fa9f5a)
+   Compiling egui-wgpu v0.36.2
+   Compiling glance-media v0.3.1 (<workspace>/glance-core/crates/glance-media)
+   Compiling glance-gpu v0.3.1 (<workspace>/glance-core/crates/glance-gpu)
+   Compiling glance-audio v0.3.1 (<workspace>/glance-core/crates/glance-audio)
+   Compiling glance-playback v0.3.1 (<workspace>/glance-core/crates/glance-playback)
+   Compiling glance-ui v0.3.1 (<workspace>/glance-core/crates/glance-ui)
+   Compiling glance-settings v0.3.1 (<workspace>/glance-core/crates/glance-settings)
+   Compiling glance-sample v0.3.1 (<workspace>/glance-core/crates/glance-sample)
+    Finished `release` profile [optimized + debuginfo] target(s) in 22.38s
+==> cargo build --release --target x86_64-apple-darwin -p glance-sample
+   Compiling bitflags v2.13.2
+   Compiling libc v0.2.191
+   Compiling objc2-encode v4.1.0
+   Compiling cfg-if v1.0.5
+   Compiling arrayvec v0.7.8
+   Compiling foldhash v0.2.0
+   Compiling smallvec v1.16.5
+   Compiling log v0.4.35
+   Compiling once_cell v1.21.4
+   Compiling objc2 v0.6.5
+   Compiling libm v0.2.16
+   Compiling thiserror v2.0.21
+   Compiling zerocopy v0.8.63
+   Compiling raw-window-handle v0.6.2
+   Compiling num-traits v0.2.19
+   Compiling parking_lot_core v0.9.12
+   Compiling equivalent v1.0.3
+   Compiling scopeguard v1.2.0
+   Compiling bytemuck v1.25.2
+   Compiling rustc-hash v1.1.0
+   Compiling bit-vec v0.9.1
+   Compiling unicode-width v0.2.3
+   Compiling lock_api v0.4.14
+   Compiling profiling v1.0.18
+   Compiling hashbrown v0.17.1
+   Compiling naga v30.0.2
+   Compiling static_assertions v1.1.0
+   Compiling codespan-reporting v0.13.1
+   Compiling unicode-ident v1.0.27
+   Compiling simd-adler32 v0.3.10
+   Compiling adler2 v2.0.1
+   Compiling crc32fast v1.5.5
+   Compiling bit-set v0.10.0
+   Compiling wgpu-hal v30.0.2
+   Compiling zstd-sys v2.1.3+zstd.1.5.7
+   Compiling libloading v0.8.9
+   Compiling serde_core v1.0.229
+   Compiling wgpu-core v30.0.2
+   Compiling typenum v1.20.1
+   Compiling serde v1.0.229
+   Compiling snap v1.1.2
+   Compiling wgpu v30.0.2
+   Compiling miniz_oxide v0.9.1
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling polycool v0.4.0
+   Compiling objc-sys v0.3.5
+   Compiling font-types v0.12.7
+   Compiling color v0.3.3
+   Compiling kurbo v0.13.1
+   Compiling const-oid v0.10.3
+   Compiling indexmap v2.14.2
+   Compiling parking_lot v0.12.5
+   Compiling flate2 v1.1.11
+   Compiling hybrid-array v0.4.15
+   Compiling linebender_resource_handle v0.1.1
+   Compiling read-fonts v0.41.0
+   Compiling block2 v0.6.2
+   Compiling objc2-core-audio-types v0.3.2
+   Compiling dispatch2 v0.3.1
+   Compiling png v0.18.1
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling euclid v0.22.14
+   Compiling naga-types v30.0.2
+   Compiling peniko v0.6.1
+   Compiling num-integer v0.1.47
+   Compiling wgpu-types v30.0.2
+   Compiling objc2-core-foundation v0.3.2
+   Compiling cpufeatures v0.3.1
+   Compiling fearless_simd v0.4.1
+   Compiling unicode-general-category v1.1.0
+   Compiling objc2 v0.5.3
+   Compiling ahash v0.8.12
+   Compiling emath v0.36.2
+   Compiling guillotiere v0.7.0
+   Compiling core-foundation-sys v0.8.7
+   Compiling strength_reduce v0.2.4
+   Compiling primal-check v0.3.4
+   Compiling transpose v0.2.3
+   Compiling core-foundation v0.9.4
+   Compiling num-complex v0.4.6
+   Compiling digest v0.11.3
+   Compiling ecolor v0.36.2
+   Compiling sha2 v0.11.1
+   Compiling unicode-segmentation v1.13.3
+   Compiling nohash-hasher v0.2.0
+   Compiling self_cell v1.3.0
+   Compiling audio-codec-algorithms v0.8.1
+   Compiling dispatch v0.2.0
+   Compiling bitflags v1.3.2
+   Compiling foreign-types-shared v0.3.1
+   Compiling block2 v0.5.1
+   Compiling audioadapter-sample v5.2.0
+   Compiling foreign-types v0.5.0
+   Compiling core-graphics-types v0.1.3
+   Compiling crossbeam-utils v0.8.23
+   Compiling rustfft v6.4.1
+   Compiling uuid v1.29.2
+   Compiling tracing-core v0.1.36
+   Compiling either v1.19.0
+   Compiling pin-project-lite v0.2.17
+   Compiling objc2-foundation v0.2.2
+   Compiling audioadapter v5.0.0
+   Compiling dpi v0.1.2
+   Compiling accesskit v0.24.1
+   Compiling itertools v0.15.0
+   Compiling tracing v0.1.44
+   Compiling audioadapter-buffers v5.2.0
+   Compiling zmij v1.0.23
+   Compiling core-graphics v0.23.2
+   Compiling cpal v0.18.2
+   Compiling winit v0.30.13
+   Compiling windowfunctions v0.1.1
+   Compiling half v2.7.1
+   Compiling cursor-icon v1.2.0
+   Compiling mach2 v0.6.0
+   Compiling rustc-hash v2.1.3
+   Compiling dasp_sample v0.11.0
+   Compiling smol_str v0.2.2
+   Compiling pollster v1.0.1
+   Compiling objc2-foundation v0.3.2
+   Compiling objc2-core-graphics v0.3.2
+   Compiling objc2-image-io v0.3.2
+   Compiling objc2-media-toolbox v0.3.2
+   Compiling web-time v1.1.0
+   Compiling type-map v0.5.1
+   Compiling rfd v0.18.0
+   Compiling muda v0.21.2
+   Compiling crossbeam-channel v0.5.17
+   Compiling serde_json v1.0.154
+   Compiling keyboard-types v0.8.3
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.19
+   Compiling vello_common v0.1.0
+   Compiling objc2-app-kit v0.2.2
+   Compiling vello_cpu v0.1.0
+   Compiling realfft v3.5.1
+   Compiling rubato v5.1.0
+   Compiling skrifa v0.44.0
+   Compiling harfrust v0.12.0
+   Compiling zstd-safe v8.3.0
+   Compiling zstd v0.14.4
+   Compiling dxvkit-plus-core v0.11.0 (https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#29fa9f5a)
+   Compiling epaint v0.36.2
+   Compiling wgpu-naga-bridge v30.0.2
+   Compiling egui v0.36.2
+   Compiling objc2-io-surface v0.3.2
+   Compiling objc2-metal v0.3.2
+   Compiling objc2-core-audio v0.3.2
+   Compiling objc2-avf-audio v0.3.2
+   Compiling objc2-core-image v0.3.2
+   Compiling objc2-uniform-type-identifiers v0.3.2
+   Compiling objc2-app-kit v0.3.2
+   Compiling objc2-audio-toolbox v0.3.2
+   Compiling objc2-media-player v0.3.2
+   Compiling egui-winit v0.36.2
+   Compiling coreaudio-rs v0.14.2
+   Compiling glance-platform v0.3.1 (<workspace>/glance-core/crates/glance-platform)
+   Compiling objc2-quartz-core v0.3.2
+   Compiling objc2-core-video v0.3.2
+   Compiling objc2-core-media v0.3.2
+   Compiling raw-window-metal v1.1.0
+   Compiling objc2-av-foundation v0.3.2
+   Compiling wgpu-core-deps-apple v30.0.2
+   Compiling dxvkit-plus-apple v0.11.0 (https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#29fa9f5a)
+   Compiling dxvkit-plus-wgpu v0.11.0 (https://github.com/AmritusG/DXVKit-Plus?tag=v0.11.0#29fa9f5a)
+   Compiling egui-wgpu v0.36.2
+   Compiling glance-media v0.3.1 (<workspace>/glance-core/crates/glance-media)
+   Compiling glance-gpu v0.3.1 (<workspace>/glance-core/crates/glance-gpu)
+   Compiling glance-audio v0.3.1 (<workspace>/glance-core/crates/glance-audio)
+   Compiling glance-playback v0.3.1 (<workspace>/glance-core/crates/glance-playback)
+   Compiling glance-ui v0.3.1 (<workspace>/glance-core/crates/glance-ui)
+   Compiling glance-settings v0.3.1 (<workspace>/glance-core/crates/glance-settings)
+   Compiling glance-sample v0.3.1 (<workspace>/glance-core/crates/glance-sample)
+    Finished `release` profile [optimized + debuginfo] target(s) in 22.51s
+==> assembling $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+==> $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app: version 0.3.1, x86_64 arm64, minos 14.0
+$TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app: replacing existing signature
+$TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app: valid on disk
+$TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app: satisfies its Designated Requirement
+Identifier=com.amritus.glancecore.sample
+Format=app bundle with Mach-O universal (x86_64 arm64)
+CodeDirectory v=20500 size=28297 flags=0x10000(runtime) hashes=873+7 location=embedded
+Timestamp=15 Nov 2026 at 22:14:21
+TeamIdentifier=<team>
+Runtime Version=27.2.0
+==> notarytool submit Glance Sample.zip (profile amritus-notary)
+    submission c817906b-5fe0-4e29-b80b-3102cab2e8e6: Accepted
+==> stapler staple
+Processing: $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+Processing: $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+The staple and validate action worked!
+Processing: $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+The validate action worked!
+$TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app: accepted
+source=Notarized Developer ID
+==> hdiutil create Glance Sample-v0.3.1.dmg
+hdiutil: WARNING: 'hdiutil create -volname -format ...' is deprecated. Please use 'diskutil image create from/blank --volumeName --format ...' instead.
+==> notarytool submit Glance Sample-v0.3.1.dmg (profile amritus-notary)
+    submission e12e66af-2605-4a12-a8f7-6862a199a3f1: Accepted
+==> stapler staple
+Processing: $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample-v0.3.1.dmg
+Processing: $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample-v0.3.1.dmg
+The staple and validate action worked!
+Processing: $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample-v0.3.1.dmg
+The validate action worked!
+$TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample-v0.3.1.dmg: accepted
+source=Notarized Developer ID
+==> $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample-v0.3.1.dmg (11621152 bytes), sha256 f2338422a25578ace65961e535871878702adf9ff1afb841448427b84b3a136d
+==> LaunchServices records for com.amritus.glancecore.sample before:
+    /Applications/Glance Sample.app
+    $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+    unregistered build product: $TMPDIR/glance-kit/com.amritus.glancecore.sample/Glance Sample.app
+==> LaunchServices records for com.amritus.glancecore.sample after:
+    /Applications/Glance Sample.app
+==> OK: exactly one record (/Applications/Glance Sample.app)
+exit 0

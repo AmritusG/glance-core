@@ -80,14 +80,19 @@ fn a_missing_folder_is_an_error_not_a_crash() {
     assert!(movie_files(std::path::Path::new("/nonexistent/glance-platform")).is_err());
 }
 
-/// The OS's answer for every extension of the open panel's list and a few that are not movies,
-/// as macOS 27.0.1 gives it (recorded in docs/handoffs/v031-g1-fixes.md).
+/// The type test is the system's, and the system's set moves between macOS versions (macOS 27.0.1
+/// says `mkv` is a movie, the CI runner's macOS says it is not). Asserted: what holds on every
+/// supported macOS (the QuickTime / MPEG-4 family in, non-movies out). The rest is printed as this
+/// machine's record (docs/handoffs/v031-g1-fixes.md has macOS 27.0.1's).
 #[test]
 fn the_type_test_is_the_systems() {
-    for ext in ["mov", "MOV", "qt", "mp4", "m4v", "avi", "mkv", "webm", "mpg", "mpeg", "m2v", "mts", "m2ts", "ts", "dv", "3gp", "flv", "wmv"] {
-        assert!(conforms_to_movie(ext), "{ext} should be a movie on macOS 27");
+    for ext in ["mov", "MOV", "qt", "mp4", "m4v"] {
+        assert!(conforms_to_movie(ext), "{ext} should be a movie");
     }
-    for ext in ["mk3d", "txt", "png", "wav", "mp3", "gif", ""] {
-        assert!(!conforms_to_movie(ext), "{ext} should not be a movie on macOS 27");
+    for ext in ["txt", "png", "wav", "mp3", "gif", ""] {
+        assert!(!conforms_to_movie(ext), "{ext} should not be a movie");
     }
+    let version = std::process::Command::new("sw_vers").arg("-productVersion").output().map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string());
+    let (yes, no): (Vec<&str>, Vec<&str>) = glance_platform::MOVIE_EXTENSIONS.iter().copied().partition(|e| conforms_to_movie(e));
+    println!("macOS {}: movies {yes:?}; not movies {no:?}", version.unwrap_or_default());
 }
