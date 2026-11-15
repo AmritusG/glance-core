@@ -1,6 +1,6 @@
 # glance-core CHECKPOINT
 
-Wave: c3-shell (closing). Brief: ~/claude-handoffs/glance-core_2026-11-15_c3-shell_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1). Previous wave: c2-time-and-sound (closed, tag v0.2.0; its checkpoint is in git history at 2d29f8e).
+Wave: c3-shell (closed, tag v0.3.0). Brief: ~/claude-handoffs/glance-core_2026-11-15_c3-shell_brief.md. Machine: <host> (Apple M5 Max, macOS 27.0.1). Previous wave: c2-time-and-sound (closed, tag v0.2.0; its checkpoint is in git history at 2d29f8e).
 
 ## DONE
 - SCOPE 1 read: the brief; roadmap (C3 row, crates, §3); parity Core "Settings, identity, release" and Glance "Identity and packaging", "Opening files", "Transport", "Audio", "Folder navigation and media keys", "Window and readouts", "Settings", "Release"; `docs/research/glance.md` (whole); Swift Glance a9dc601 `GlanceApp.swift`, `TransportBar.swift`, `ScrubBar.swift`, `PlayerScreen.swift`, `DefaultHandlerControl.swift`, `NowPlayingController.swift`, `AlphaTypeMemory.swift`, `PlayerModel.swift` (settings), `Info.plist`, `scripts/{build,sign,notarize,make-dmg,ls-cleanup,install-from-dmg}.sh`, `entitlements.plist`; settings sections of `docs/research/{cueglance,glenc,macrate}.md` (store design); cpal 0.18.2 CoreAudio stream monitors (`macos/mod.rs`, `macos/device.rs`, `error.rs`); winit 0.30.13 macOS app delegate (`app_state.rs`, `event_loop.rs`, `platform/macos.rs`); epaint 0.36.2 font data (variation coords); loombda-rs `release-app.sh` (prior art).
@@ -24,8 +24,11 @@ Wave: c3-shell (closing). Brief: ~/claude-handoffs/glance-core_2026-11-15_c3-she
 
 - Verifier (cc-kit) at ed5ab5b: 26 confirmed, 2 unproven (stated in the handoff), 6 wrong — corrected (the "three persisted values" tick back to core half, the 96 kHz blocked call 223 ms, the icon count, stale NEXT, the tag status in the handoff, the reference-build observation marked unrecorded). CI green on ed5ab5b (run 43743987329: lint, macos, windows).
 
+- CI green on 8977eab (run 43744705445). Tag `v0.3.0` on the commit that closes this checkpoint, after its CI run. Handoff `docs/handoffs/c3-shell.md`, mailbox copy `~/claude-handoffs/glance-core_2026-11-15_c3-shell-result.md`.
+- **Wave closed.**
+
 ## NEXT
-- Commit the corrections, push, CI green, tag `v0.3.0`, mailbox handoff with receipts. Then nothing queued in this repo: Glance G1 (glance-rs) starts on v0.3.0.
+- Nothing queued in this repo. Glance G1 (glance-rs) starts on v0.3.0; the look review (title-bar chrome, icons, sliders, egui tooltips / popup) is G2's with `docs/data/c3-look/`. Deferred to later waves, reasons in the handoff: media keys pressed by hand, recents read back, drag-drop on the window, the `.mov` default switch (G1 / G2); every Windows run (C4); the screen width from `visibleFrame` (G1).
 
 ## STATE
 - Test media (read-only): `<testfiles>` (174 movie files).
