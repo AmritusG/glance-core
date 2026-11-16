@@ -1,10 +1,10 @@
 project:    glance-core
 pass:       v032-g2-fixes
-STATUS:     BLOCKED
+STATUS:     COMPLETE
 parent:     5d529ff
-result:     8c90e4d (no tag: v0.3.2 waits for Amrit's decision on the drop crash)
+result:     8c90e4d (tag v0.3.2; the drop crash stays open, reported to Apple)
 session:    glance-core Claude Code, 2026-11-16 (<session>)
-written_at: 2026-11-16T17:30Z
+written_at: 2026-11-16T20:20Z
 
 # glance-core v0.3.2: menus as Swift's, Esc on alerts, the parity line done; the drop crash is macOS's (handoff)
 
@@ -21,6 +21,11 @@ core. Do I tag v0.3.2 now without a crash fix (and draft a report to Apple), or 
   ignores `defaults write com.apple.CrashReporter DialogType none`. The key was absent before and was
   removed again after.
 - "finish the run, be consistent and dont make mistakes, or at the very least LEARN from mistakes."
+- **On the drop-crash decision (2026-11-16, evening):** "yes, tag v0.3.2 now with the drop crash open. Tag on
+  8c90e4d, push, record my answer in the handoff, and write a ready-to-send Apple Feedback Assistant report".
+  Done: annotated tag v0.3.2 → 8c90e4d, pushed. Report:
+  `~/claude-handoffs/glance-core_2026-11-16_apple-feedback-drop-crash.md`, with the plain-winit repro
+  `…_apple-feedback-drop-crash-repro.zip`. The crash stays open (option 1 below).
 
 ## Incident (read first)
 The first diagnosis runs (until about 16:05) posted mouse drags and drops with posted HID events and
@@ -167,10 +172,9 @@ that prompt was answered "Don't Allow" without granting anything.
   scratchpad, which the verifier found.
 
 ## For glance-rs
-Note: `~/claude-handoffs/glance-rs_2026-11-16_note-from-glance-core-v032.md`. Mailbox copy of this handoff:
-`~/claude-handoffs/glance-core_2026-11-16_v032-g2-fixes-result_BLOCKED.md`. CLAUDE.md's `-result` name, plus the
-handoff skill's status suffix for a BLOCKED pass. No tag yet. When v0.3.2 is
-tagged, bump the pin, re-run the menus run (the system items now match), and keep
+Note: `~/claude-handoffs/glance-rs_2026-11-16_note-from-glance-core-v032.md`. Mailbox copies of this handoff:
+`~/claude-handoffs/glance-core_2026-11-16_v032-g2-fixes-result_BLOCKED.md` (before the decision) and
+`~/claude-handoffs/glance-core_2026-11-16_v032-g2-fixes-result.md` (this version). Tagged v0.3.2 (8c90e4d): bump the pin, re-run the menus run (the system items now match), and keep
 `tools/g2-drop-crash.sh` as the crash repro. It will still crash, because the cause is macOS's. glance-rs's
 `drag-file.swift` should get the target check of `probes/safe-drag.swift` before anyone runs it again.
 
@@ -178,8 +182,9 @@ tagged, bump the pin, re-run the menus run (the system items now match), and kee
 ```
 $ git log -1 --format='%H %s' 8c90e4d   (pushed: main...origin/main, no ahead/behind)
 8c90e4dd888e38b0a8de4f240181afc44ae174f2 v0.3.2: system menus as Swift Glance's, Esc = Not Now on two-button alerts, parity Esc line; drop crash diagnosed (macOS CoreDrag), not fixed
-$ git tag --list v0.3.2
-(none: the tag waits for Amrit)
+$ git ls-remote --tags origin v0.3.2 ; git rev-parse v0.3.2^{commit}
+7f3862d5d4a391fc2f0164af5d0e1e1486aa09d4	refs/tags/v0.3.2
+8c90e4dd888e38b0a8de4f240181afc44ae174f2
 $ gh run view 43902765934   (CI on 8c90e4d)
 windows: success
 lint: success
@@ -210,4 +215,4 @@ path:                       /Applications/Glance Sample.app (0x128a4)
 $ defaults read com.apple.CrashReporter DialogType
 Error: Could not find key 'DialogType' in domain 'com.apple.CrashReporter'.
 ```
-END OF HANDOFF v032-g2-fixes sha256:251ea8fb 15348
+END OF HANDOFF v032-g2-fixes sha256:31ada5fa 15937

@@ -1,6 +1,6 @@
 # glance-core CHECKPOINT
 
-Wave: v032-g2-fixes (patch, version 0.3.2; tag withheld, see NEXT). Brief: ~/claude-handoffs/glance-core_2026-11-16_v032-g2-fixes_brief.md (with ~/claude-handoffs/glance-core_2026-11-16_g2-findings_brief-r2.md). Machine: <host> (Apple M5 Max, macOS 27.0.1). Previous wave: v031-g1-fixes (closed, tag v0.3.1; its checkpoint is in git history at 871d0f7).
+Wave: v032-g2-fixes (patch, version 0.3.2; closed, tag v0.3.2 on 8c90e4d, drop crash open). Brief: ~/claude-handoffs/glance-core_2026-11-16_v032-g2-fixes_brief.md (with ~/claude-handoffs/glance-core_2026-11-16_g2-findings_brief-r2.md). Machine: <host> (Apple M5 Max, macOS 27.0.1). Previous wave: v031-g1-fixes (closed, tag v0.3.1; its checkpoint is in git history at 871d0f7).
 
 ## DONE
 - SCOPE read: both briefs; glance-rs g2-runs evidence and tools (copied with `cp -p` to the scratchpad); winit 0.30.13 `window_delegate.rs:367-428`; winit master (`winit-appkit`, NSDragOperation returns since #4571, no 0.30.x backport); muda 0.21.2 macOS (every submenu `setAutoenablesItems(false)`); wgpu-hal 30.0.2 metal present; Swift Glance a9dc601 `GlanceApp.swift`, `VideoHostingView.swift:274-285`, `FrameClock.swift`, the running Swift reference build (lldb: Window menu items, window `tabbingMode` 2, `collectionBehavior` 0x10080, excluded from the Window menu).
@@ -12,8 +12,10 @@ Wave: v032-g2-fixes (patch, version 0.3.2; tag withheld, see NEXT). Brief: ~/cla
 
 - Committed 8c90e4d on main, pushed; CI run 43902765934 green (lint, macos, windows). Verifier on the handoff draft: 49 confirmed / 14 unproven / 6 wrong. All six wrong ones corrected: winit history, which runs were safe, the three alive-but-not-opened tries, the repro steps, the stale RED diff (regenerated), and a stale `com.amritus.glancecore.swiftref` LaunchServices record from 2026-11-15 (unregistered). Session-only evidence saved to `docs/data/v032/session-evidence.txt`. Handoff `docs/handoffs/v032-g2-fixes.md` (STATUS BLOCKED), mailbox copy, note for glance-rs `~/claude-handoffs/glance-rs_2026-11-16_note-from-glance-core-v032.md`.
 
+- Amrit's decision (2026-11-16): tag v0.3.2 with the drop crash open. Annotated tag v0.3.2 → 8c90e4d, pushed. Answer recorded in the handoff (now COMPLETE). Apple Feedback Assistant report ready to send: `~/claude-handoffs/glance-core_2026-11-16_apple-feedback-drop-crash.md` + `…-repro.zip` (plain winit 0.30.13 repro; built, not run).
+
 ## NEXT
-- Amrit decides the crash (one line in the handoff): tag v0.3.2 without a crash fix and report the CoreDrag bug to Apple, or hold the tag. The drop crash cannot reach 0/20 from the core without his call.
+- Amrit sends the Apple report. The drop crash stays open in the core (macOS CoreDrag); no core work is owed for it.
 
 ## STATE
 - Drop fixtures: the repo's own `tests/fixtures/tiles_dxt1.mov`, `tiles_hap1.mov`, `tiles_dxt5.mov` (copies with `cp -p` outside ~/Documents for the Swift build, which asks for Documents access; that prompt was answered "Don't Allow").
