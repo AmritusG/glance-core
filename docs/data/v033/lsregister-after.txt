@@ -1,0 +1,1 @@
+path:                       /Applications/Glance Sample.app (0x128a4)

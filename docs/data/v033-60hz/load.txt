@@ -1,0 +1,588 @@
+== 21:50:32
+ 66.8 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 38.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.1 claude
+ 14.8 /usr/sbin/coreaudiod
+ 13.1 /Applications/Claude.app/Contents/Frameworks/Claude Helper.app/Contents/MacOS/Claude Helper
+  7.1 /usr/bin/top
+== 21:50:37
+ 67.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 38.3 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.2 /usr/sbin/coreaudiod
+ 12.0 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+  9.9 ./target/release/glance-proof
+  7.6 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:50:42
+100.0 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 44.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 34.9 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 13.9 /usr/sbin/coreaudiod
+  9.6 ./target/release/glance-proof
+  7.9 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:50:47
+262.7 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 83.9 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 79.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 35.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 20.8 claude
+ 12.2 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared
+== 21:50:52
+ 96.5 app-rs/target/release/tkapp_check
+ 64.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 38.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 13.4 /usr/sbin/coreaudiod
+  8.6 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  7.9 claude
+== 21:50:57
+ 94.4 app-rs/target/release/tkapp_check
+ 91.5 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 63.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 32.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 11.3 /usr/sbin/coreaudiod
+  7.3 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+== 21:51:02
+ 64.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.4 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.6 /usr/sbin/coreaudiod
+  8.9 claude
+  6.0 ./target/release/glance-proof
+  5.2 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:51:07
+ 99.2 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 75.2 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 36.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.9 /usr/sbin/coreaudiod
+ 12.4 claude
+ 12.1 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+== 21:51:12
+ 89.8 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 70.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 35.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 12.5 /usr/sbin/coreaudiod
+  9.7 ./target/release/glance-proof
+  9.2 bash
+== 21:51:17
+ 53.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 51.4 /System/Library/CoreServices/TimeMachine/backupd
+ 40.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.3 /usr/sbin/coreaudiod
+ 14.1 ./target/release/glance-proof
+  6.5 claude
+== 21:51:22
+320.1 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 74.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 33.3 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 27.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 19.3 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores
+ 18.6 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds
+== 21:51:27
+ 77.7 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 67.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 59.4 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+ 34.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.8 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+ 12.6 claude
+== 21:51:32
+ 87.3 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 65.8 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 34.9 (top)
+ 15.1 /usr/sbin/coreaudiod
+ 10.1 ./target/release/glance-proof
+== 21:51:37
+100.0 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 64.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 40.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.4 /usr/sbin/coreaudiod
+  6.1 /System/Library/CoreServices/MenuBarAgent.app/Contents/MacOS/MenuBarAgent
+  5.8 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:51:42
+490.7 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 42.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 36.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 36.7 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 13.2 /usr/sbin/coreaudiod
+ 11.2 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores
+== 21:51:47
+ 65.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 35.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 31.6 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 30.4 /System/Library/CoreServices/TimeMachine/backupd
+ 13.5 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+ 12.9 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores
+== 21:51:52
+ 99.0 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 98.7 rustc
+ 68.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.7 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+ 39.3 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.2 /usr/sbin/coreaudiod
+== 21:51:57
+ 97.8 rustc
+ 72.5 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+ 68.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 42.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 17.5 ./target/release/glance-proof
+ 16.7 /usr/sbin/coreaudiod
+== 21:52:02
+191.2 rustc
+ 98.5 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 92.5 rustc
+ 82.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 33.9 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 19.9 ./target/release/glance-proof
+== 21:52:07
+ 98.5 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 96.6 rustc
+ 75.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 36.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 18.3 ./target/release/glance-proof
+ 13.6 /usr/sbin/coreaudiod
+== 21:52:13
+298.1 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 70.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 36.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.2 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)
+ 14.3 /usr/sbin/coreaudiod
+ 13.2 ./target/release/glance-proof
+== 21:52:18
+ 95.1 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 63.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 39.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.3 (Python)
+ 16.1 /usr/sbin/coreaudiod
+ 12.0 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+== 21:52:23
+ 99.0 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 58.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.2 /System/Library/CoreServices/TimeMachine/backupd
+ 36.5 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.2 /usr/sbin/coreaudiod
+ 13.8 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+== 21:52:28
+ 64.2 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.6 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdbulkimport
+ 37.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 29.2 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds
+ 16.2 ./target/release/glance-proof
+ 13.9 /usr/sbin/coreaudiod
+== 21:52:33
+ 99.0 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 94.5 /System/Library/CoreServices/TimeMachine/backupd
+ 81.1 /System/Library/PrivateFrameworks/VoiceShortcuts.framework/Versions/A/Support/siriactionsd
+ 70.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 33.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 28.8 /usr/bin/top
+== 21:52:38
+ 66.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 66.2 /System/Library/PrivateFrameworks/WorkflowKit.framework/XPCServices/BackgroundShortcutRunner.xpc/Contents/MacOS/BackgroundShortcutRunner
+ 47.9 /System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/mediaanalysisd
+ 29.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 23.4 /System/Library/PrivateFrameworks/VoiceShortcuts.framework/Versions/A/Support/siriactionsd
+ 18.7 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+== 21:52:43
+ 88.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 44.2 ./target/release/glance-proof
+ 39.3 /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+ 29.4 /System/Library/CoreServices/MenuBarAgent.app/Contents/MacOS/MenuBarAgent
+ 29.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 21.4 /usr/sbin/coreaudiod
+== 21:52:48
+ 62.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 54.6 /usr/libexec/spotlightknowledged.updater
+ 41.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.8 /usr/sbin/coreaudiod
+ 14.2 ./target/release/glance-proof
+  9.6 /usr/sbin/cfprefsd
+== 21:52:53
+ 96.6 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 61.8 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 50.3 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+ 42.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.5 ./target/release/glance-proof
+ 14.7 /usr/sbin/coreaudiod
+== 21:52:58
+ 97.8 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 60.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.9 ./target/release/glance-proof
+ 15.2 /usr/sbin/coreaudiod
+  6.1 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+== 21:53:03
+ 94.8 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 72.1 /usr/bin/top
+ 62.2 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.4 /System/Library/PrivateFrameworks/UniversalAccess.framework/Versions/A/Resources/AXVisualSupportAgent.app/Contents/MacOS/AXVisualSupportAgent
+ 15.7 /usr/sbin/coreaudiod
+== 21:53:08
+ 92.3 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 60.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.5 /usr/sbin/coreaudiod
+  8.9 ./target/release/glance-proof
+  8.6 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)
+== 21:53:13
+ 93.8 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 60.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 39.3 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.1 /usr/sbin/coreaudiod
+ 10.3 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+  9.8 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+== 21:53:18
+121.9 /System/Library/CoreServices/TimeMachine/backupd
+ 93.7 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 66.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 32.5 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 21.0 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+ 13.9 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTDecoderXPCService.xpc/Contents/MacOS/VTDecoderXPCService
+== 21:53:23
+ 69.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 58.0 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 34.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 29.2 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTDecoderXPCService.xpc/Contents/MacOS/VTDecoderXPCService
+ 26.8 ./target/release/tl-play
+ 15.0 (tkapp_check)
+== 21:53:28
+ 97.6 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 63.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 30.3 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTDecoderXPCService.xpc/Contents/MacOS/VTDecoderXPCService
+ 29.5 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 12.8 ./target/release/tl-play
+ 11.1 /usr/sbin/coreaudiod
+== 21:53:33
+ 98.2 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 89.1 /usr/bin/top
+ 60.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 40.5 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.1 /usr/sbin/coreaudiod
+ 13.6 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTDecoderXPCService.xpc/Contents/MacOS/VTDecoderXPCService
+== 21:53:38
+ 97.0 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 64.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 40.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 33.3 /System/Library/CoreServices/TimeMachine/backupd
+ 15.0 /usr/sbin/coreaudiod
+  7.8 ./target/release/glance-proof
+== 21:53:43
+ 84.4 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 64.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 36.9 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 35.4 /usr/libexec/diskimagesiod
+ 13.6 /usr/sbin/coreaudiod
+  7.6 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds
+== 21:53:48
+ 77.2 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 37.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 22.2 /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+ 21.4 /usr/sbin/coreaudiod
+ 16.6 /System/Library/PrivateFrameworks/SafariPlatformSupport.framework/Versions/A/XPCServices/com.apple.SafariPlatformSupport.Helper.xpc/Contents/MacOS/com.apple.SafariPlatformSupport.Helper
+ 15.1 ./target/release/glance-proof
+== 21:53:53
+119.0 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores
+ 81.5 /usr/libexec/duetexpertd
+ 60.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 30.4 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)
+ 16.8 /usr/sbin/coreaudiod
+== 21:53:58
+169.2 <another project>/target/release/tkapp_check
+ 70.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 40.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.7 /usr/sbin/coreaudiod
+ 12.1 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  6.5 ./target/release/glance-proof
+== 21:54:03
+170.4 <another project>/target/release/tkapp_check
+ 94.5 /usr/bin/top
+ 69.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 39.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.7 /usr/sbin/coreaudiod
+ 11.5 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:54:09
+459.9 rustc
+ 91.5 <another project>/target/release/tkapp_check
+ 76.8 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 38.4 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 13.0 /usr/sbin/coreaudiod
+ 10.4 ./target/release/glance-proof
+== 21:54:14
+ 96.3 <another project>/target/release/tkapp_check
+ 58.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.3 /usr/sbin/coreaudiod
+  9.9 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  8.9 ./target/release/glance-proof
+== 21:54:19
+ 95.7 <another project>/target/release/tkapp_check
+ 85.3 /usr/libexec/PerfPowerServices
+ 65.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 46.3 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 19.0 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+ 15.7 /usr/sbin/coreaudiod
+== 21:54:24
+ 46.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 44.4 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.3 /usr/sbin/coreaudiod
+ 12.0 ./target/release/glance-proof
+  8.9 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)
+  7.5 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:54:29
+624.5 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 82.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 78.3 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 73.9 ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc
+ 70.8 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 34.3 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+== 21:54:34
+ 97.9 /usr/bin/top
+ 52.2 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 31.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.7 /usr/sbin/coreaudiod
+  8.2 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  6.0 ./target/release/glance-proof
+== 21:54:39
+ 75.0 <another project>/target/release/build/app/4b89461a07d9f695/out/ui_crawl-4b89461a07d9f695
+ 62.8 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 44.4 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.7 /usr/sbin/coreaudiod
+ 11.8 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  9.5 ./target/release/glance-proof
+== 21:54:44
+ 62.3 <another project>/target/release/build/app/4b89461a07d9f695/out/ui_crawl-4b89461a07d9f695
+ 60.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.0 /usr/sbin/coreaudiod
+  8.9 ./target/release/glance-proof
+  6.6 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mds_stores
+== 21:54:49
+ 97.0 <another project>/target/release/build/app/4b89461a07d9f695/out/ui_crawl-4b89461a07d9f695
+ 62.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 42.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.6 /usr/sbin/coreaudiod
+  9.7 ./target/release/glance-proof
+  8.9 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:54:54
+ 94.6 <another project>/target/release/build/app/4b89461a07d9f695/out/ui_crawl-4b89461a07d9f695
+ 83.9 /System/Library/PrivateFrameworks/CoreEmbeddedSpeechRecognition.framework/speechmaintenanced
+ 58.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 44.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.2 /usr/sbin/coreaudiod
+ 12.3 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:54:59
+ 95.1 /System/Library/PrivateFrameworks/CoreEmbeddedSpeechRecognition.framework/speechmaintenanced
+ 54.2 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 35.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.1 ./target/release/glance-proof
+ 11.9 /usr/sbin/coreaudiod
+ 11.1 /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer
+== 21:55:04
+ 98.8 /usr/bin/top
+ 94.8 /System/Library/PrivateFrameworks/CoreEmbeddedSpeechRecognition.framework/speechmaintenanced
+ 55.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.2 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.9 /usr/sbin/coreaudiod
+ 15.7 /Applications/CleanMyMac_5.app/Contents/Library/LoginItems/CleanMyMac_5_HealthMonitor.app/Contents/MacOS/CleanMyMac_5_HealthMonitor
+== 21:55:09
+ 89.1 /System/Library/PrivateFrameworks/CoreEmbeddedSpeechRecognition.framework/speechmaintenanced
+ 83.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 75.3 /opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python
+ 36.9 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 32.5 ./target/release/glance-proof
+ 29.8 /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+== 21:55:14
+ 58.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 55.8 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+ 35.2 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 21.0 /usr/libexec/coreduetd
+ 16.1 /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer
+ 13.9 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)
+== 21:55:19
+ 48.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.9 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 33.5 /usr/libexec/diskimagesiod
+ 16.7 ./target/release/glance-proof
+ 15.0 /usr/sbin/coreaudiod
+  6.0 /System/Library/CoreServices/TimeMachine/backupd
+== 21:55:24
+ 50.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 38.9 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.5 /usr/sbin/coreaudiod
+ 14.6 ./target/release/glance-proof
+  4.6 ./target/release/tl-play
+  4.5 /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+== 21:55:29
+ 57.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 37.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 26.1 ./target/release/glance-proof
+ 23.7 /usr/bin/top
+ 12.9 /usr/sbin/coreaudiod
+ 11.2 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:55:34
+ 99.8 /usr/bin/top
+ 54.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 36.8 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 26.1 ./target/release/glance-proof
+ 14.9 /usr/sbin/coreaudiod
+ 11.1 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:55:39
+ 56.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 37.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 21.2 ./target/release/glance-proof
+ 15.1 /usr/sbin/coreaudiod
+  9.6 /usr/libexec/diskimagesiod
+  5.2 /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+== 21:55:44
+ 57.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 38.2 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.0 /usr/sbin/coreaudiod
+ 12.2 ./target/release/glance-proof
+ 10.6 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  5.4 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif).app/Contents/MacOS/Google Chrome Helper (Aperitif)
+== 21:55:49
+ 62.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.2 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 43.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.6 /usr/sbin/coreaudiod
+ 12.4 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+ 12.1 ./target/release/glance-proof
+== 21:55:54
+879.6 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 58.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 29.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 11.3 ./target/release/glance-proof
+ 10.9 /usr/sbin/coreaudiod
+  5.8 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:56:00
+112.6 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 70.3 /usr/bin/top
+ 61.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 29.0 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.1 ./target/release/glance-proof
+ 10.2 /usr/sbin/coreaudiod
+== 21:56:05
+ 73.1 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 55.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 43.5 /usr/bin/top
+ 37.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 16.4 /usr/sbin/coreaudiod
+ 14.6 ./target/release/glance-proof
+== 21:56:10
+328.2 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 65.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 37.5 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 17.1 claude
+ 16.4 ./target/release/glance-proof
+ 14.3 /usr/sbin/coreaudiod
+== 21:56:15
+786.5 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 72.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 25.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 20.5 ./target/release/glance-proof
+ 12.8 /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+ 10.2 /usr/sbin/coreaudiod
+== 21:56:20
+179.3 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 90.5 /System/Library/PrivateFrameworks/PhotoAnalysis.framework/Versions/A/Support/photoanalysisd
+ 61.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 27.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.4 ./target/release/glance-proof
+  9.7 /usr/sbin/coreaudiod
+== 21:56:25
+ 55.7 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 36.9 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 19.2 claude
+ 15.4 /usr/sbin/coreaudiod
+ 12.9 ./target/release/glance-proof
+ 11.4 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:56:30
+ 88.8 /usr/bin/top
+ 66.8 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 37.5 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 17.1 claude
+ 15.8 ./target/release/glance-proof
+ 15.1 /usr/sbin/coreaudiod
+== 21:56:35
+ 56.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 41.2 /System/Library/PrivateFrameworks/ModelCatalogRuntime.framework/Versions/A/modelcatalogd
+ 32.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 29.2 /System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/mediaanalysisd
+ 19.7 /usr/bin/top
+ 16.9 /System/Library/ExtensionKit/Extensions/TGOnDeviceInferenceProviderService.appex/Contents/MacOS/TGOnDeviceInferenceProviderService
+== 21:56:40
+ 58.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 37.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 28.3 /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer
+ 15.6 /usr/sbin/coreaudiod
+ 10.4 ./target/release/glance-proof
+  9.7 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+== 21:56:45
+ 50.2 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 35.5 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 13.7 /usr/sbin/coreaudiod
+ 11.6 ./target/release/glance-proof
+ 11.0 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  8.2 ./target/release/tl-play
+== 21:56:50
+ 55.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 38.4 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.8 /usr/sbin/coreaudiod
+ 12.2 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  7.8 ./target/release/tl-play
+  7.2 ./target/release/glance-proof
+== 21:56:55
+108.8 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 55.5 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 31.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 14.1 /usr/sbin/coreaudiod
+  9.3 ./target/release/glance-proof
+  6.7 ./target/release/tl-play
+== 21:57:00
+ 96.0 /usr/bin/top
+ 72.2 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 59.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 37.7 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.4 /usr/sbin/coreaudiod
+ 10.1 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared
+== 21:57:05
+ 54.0 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 35.5 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 32.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.3 /usr/sbin/coreaudiod
+ 10.8 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  7.3 ./target/release/tl-play
+== 21:57:10
+178.5 /opt/homebrew/Cellar/python@3.12/3.12.13/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python
+ 59.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 31.1 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 13.8 /usr/sbin/coreaudiod
+  7.4 ./target/release/tl-play
+  7.0 ./target/release/glance-proof
+== 21:57:15
+ 54.6 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 33.3 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 23.1 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)
+ 20.2 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+ 15.5 /usr/sbin/coreaudiod
+  7.4 ./target/release/glance-proof
+== 21:57:20
+ 58.9 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 34.6 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 15.0 /usr/sbin/coreaudiod
+ 11.3 /System/Library/DriverExtensions/AppleCentauriAlpha.dext/AppleCentauriAlpha
+  9.2 /System/Library/PrivateFrameworks/PhotoLibraryServices.framework/Versions/A/Support/photolibraryd
+  7.7 ./target/release/tl-play
+== 21:57:25
+ 68.4 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 33.4 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 30.7 /Applications/CleanMyMac_5.app/Contents/Library/LoginItems/CleanMyMac_5_HealthMonitor.app/Contents/MacOS/CleanMyMac_5_HealthMonitor
+ 18.1 /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+ 14.6 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/157.0.8103.79/Helpers/Google Chrome Helper (Aperitif Renderer).app/Contents/MacOS/Google Chrome Helper (Aperitif Renderer)
+ 14.1 /usr/sbin/coreaudiod
+== 21:57:30
+ 98.1 /usr/bin/top
+ 52.8 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 31.4 /Applications/Resolume Arena/Arena.app/Contents/MacOS/Arena
+ 12.9 /usr/sbin/coreaudiod
+ 12.4 ./target/release/tl-play
+  7.8 ./target/release/glance-proof

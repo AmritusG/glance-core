@@ -1,0 +1,89 @@
+Glance Sample | About Glance Sample |  |  | on
+Glance Sample | --- |  |  | off
+Glance Sample | Set Glance Sample as Default for .mov Files… |  |  | on
+Glance Sample | --- |  |  | off
+Glance Sample | Services |  |  | on
+Glance Sample | --- |  |  | off
+Glance Sample | Hide Glance Sample | H | 0 | on
+Glance Sample | Hide Others | H | 2 | on
+Glance Sample | Show All |  |  | off
+Glance Sample | --- |  |  | off
+Glance Sample | Quit Glance Sample | Q | 0 | on
+Glance Sample | Quit and Keep Windows | Q | 2 | on
+File | Open… | O | 0 | on
+File | --- |  |  | off
+File | Close | W | 0 | on
+File | Close All | W | 2 | on
+Edit | Undo | Z | 0 | off
+Edit | Redo | Z | 1 | off
+Edit | --- |  |  | off
+Edit | Cut | X | 0 | off
+Edit | Copy | C | 0 | off
+Edit | Paste | V | 0 | off
+Edit | Delete |  |  | off
+Edit | Select All | A | 0 | off
+Edit | --- |  |  | off
+Edit | AutoFill |  |  | on
+Edit | AutoFill > Contact… |  |  | off
+Edit | AutoFill > Passwords… |  |  | off
+Edit | AutoFill > Credit Card… |  |  | off
+Edit | Start Dictation… | 🎤 | 8 | on
+Edit | Emoji & Symbols | 🌐 | 8 | on
+View | Default Window Size | 0 | 0 | on
+View | Background |  |  | on
+View | Background > Black |  |  | on
+View | Background > Checkerboard |  |  | on
+View | Alpha Type |  |  | on
+View | Alpha Type > Premultiplied |  |  | on
+View | Alpha Type > Straight |  |  | on
+View | Toggle Alpha Type | A | 8 | on
+View | Enter Full Screen | F | 24 | on
+Playback | Play/Pause |   | 8 | on
+Playback | --- |  |  | off
+Playback | Previous Clip |  | 0 | on
+Playback | Next Clip |  | 0 | on
+Playback | Restart |  |  | on
+Playback | --- |  |  | off
+Playback | Volume Up |  | 0 | on
+Playback | Volume Down |  | 0 | on
+Playback | Mute |  |  | on
+Playback | Loop |  |  | on
+Window | Minimize | M | 0 | off
+Window | Minimize All | M | 2 | on
+Window | Zoom |  |  | off
+Window | Zoom All |  |  | on
+Window | Fill | F | 28 | off
+Window | Center | C | 28 | off
+Window | --- |  |  | off
+Window | Move & Resize |  |  | on
+Window | Move & Resize > Halves |  |  | off
+Window | Move & Resize > Left |  |  | off
+Window | Move & Resize > Right |  |  | off
+Window | Move & Resize > Top |  |  | off
+Window | Move & Resize > Bottom |  |  | off
+Window | Move & Resize > --- |  |  | off
+Window | Move & Resize > Quarters |  |  | off
+Window | Move & Resize > Top Left |  |  | off
+Window | Move & Resize > Top Right |  |  | off
+Window | Move & Resize > Bottom Left |  |  | off
+Window | Move & Resize > Bottom Right |  |  | off
+Window | Move & Resize > --- |  |  | off
+Window | Move & Resize > Arrange |  |  | off
+Window | Move & Resize > Left & Right |  |  | off
+Window | Move & Resize > Left & Quarters |  |  | off
+Window | Move & Resize > Right & Left |  |  | off
+Window | Move & Resize > Right & Quarters |  |  | off
+Window | Move & Resize > Top & Bottom |  |  | off
+Window | Move & Resize > Top & Quarters |  |  | off
+Window | Move & Resize > Bottom & Top |  |  | off
+Window | Move & Resize > Bottom & Quarters |  |  | off
+Window | Move & Resize > Quarters |  |  | off
+Window | Move & Resize > --- |  |  | off
+Window | Move & Resize > Return to Previous Size | R | 28 | off
+Window | Full Screen Tile |  |  | off
+Window | --- |  |  | off
+Window | --- |  |  | off
+Window | Bring All to Front |  |  | on
+Window | Arrange in Front |  |  | on
+Window | Remove Window from Set |  |  | off
+Help | Glance Sample Help | ? | 0 | on

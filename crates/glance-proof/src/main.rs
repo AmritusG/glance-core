@@ -2,7 +2,7 @@
 //!
 //! ```sh
 //! glance-proof <clip>... [--seconds 10] [--warmup 1] [--out results.json] [--log frames.csv]
-//!               [--mute] [--no-audio] [--pace N] [--no-loop]
+//!               [--mute] [--no-audio] [--pace N] [--no-loop] [--display <name>]
 //! glance-proof scrub [--seconds 10] [--out report.json] <clip>
 //! glance-proof reroute [--seconds 10] [--switch-at 4] [--to 48000] [--no-follow] [--out r.json] <clip>
 //! glance-proof media <file or folder>...
@@ -16,7 +16,8 @@
 //! frame timing logged. `--mute` plays the sound at gain 0 (the clock runs on exactly as audible:
 //! for unattended measurements), `--no-audio` plays the picture on the wall clock, `--pace N`
 //! takes a new frame only every N-th display refresh (N = 2 on a 120 Hz display is a 60 Hz
-//! cadence), `--no-loop` stops at the last frame. `scrub` drags a clip's scrubber to a new random
+//! cadence), `--no-loop` stops at the last frame, `--display` opens the window centred on the display
+//! of that name (as `system_profiler SPDisplaysDataType` names it; the report records the display). `scrub` drags a clip's scrubber to a new random
 //! frame every 8 ms without a window and times each request. `reroute` changes the output device's
 //! rate while a clip's sound plays and measures the sound's speed before and after ([`reroute`]).
 //! `verify` runs the 0-difference render harness without a window ([`verify`]); `hapq` measures
@@ -52,10 +53,12 @@ struct Args {
     sound: Sound,
     pace: u32,
     looping: bool,
+    display: Option<String>,
 }
 
 fn parse_args() -> Result<Args, String> {
-    let mut args = Args { clips: Vec::new(), seconds: None, warmup: 1.0, out: None, log: None, mute: false, sound: Sound::Device, pace: 1, looping: true };
+    let mut args =
+        Args { clips: Vec::new(), seconds: None, warmup: 1.0, out: None, log: None, mute: false, sound: Sound::Device, pace: 1, looping: true, display: None };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
         let mut value = |name: &str| it.next().ok_or_else(|| format!("{name} needs a value"));
@@ -67,6 +70,7 @@ fn parse_args() -> Result<Args, String> {
             "--mute" => args.mute = true,
             "--no-audio" => args.sound = Sound::Off,
             "--no-loop" => args.looping = false,
+            "--display" => args.display = Some(value("--display")?),
             "--pace" => args.pace = value("--pace")?.parse::<u32>().map_err(|e| format!("--pace: {e}"))?.max(1),
             flag if flag.starts_with("--") => return Err(format!("unknown option {flag}")),
             clip => args.clips.push(clip.into()),
@@ -282,6 +286,10 @@ struct Proof {
     rows: Vec<String>,
     finished: bool,
     pace: u32,
+    /// `--display`: moved there on the first frame (then `None`).
+    move_to: Option<String>,
+    /// The display the window is on.
+    display: Option<String>,
 }
 
 /// The shown picture (GPU read-back) against the CPU decode of the same frame, in code values.
@@ -364,6 +372,7 @@ struct Report {
     warmup_seconds: f64,
     /// The measured span (after the warm-up).
     seconds: f64,
+    display: Option<String>,
     display_refresh_hz: Option<f64>,
     presents: usize,
     present_interval: Option<Summary>,
@@ -424,6 +433,7 @@ impl Proof {
             build: if cfg!(debug_assertions) { "debug" } else { "release" },
             warmup_seconds: self.warmup,
             seconds,
+            display: self.display.clone(),
             display_refresh_hz: self.refresh_millihertz.map(|m| f64::from(m) / 1000.0),
             presents: self.intervals.len(),
             present_interval: self.intervals.summary(),
@@ -453,7 +463,14 @@ impl Proof {
 impl App for Proof {
     fn frame(&mut self, ui: &mut egui::Ui, host: &mut Host<'_>) {
         let now = Instant::now();
+        if let Some(name) = self.move_to.take()
+            && let Err(names) = host.move_to_display(&name)
+        {
+            eprintln!("glance-proof: no display named {name} (displays: {})", names.join(", "));
+            host.quit();
+        }
         self.refresh_millihertz = host.refresh_millihertz.or(self.refresh_millihertz);
+        self.display = host.display_name().or(self.display.take());
         if self.measured_from.is_none() && (now - self.started).as_secs_f64() >= self.warmup {
             self.measured_from = Some(now);
             self.rows.clear();
@@ -628,6 +645,8 @@ fn main() -> std::process::ExitCode {
             rows: Vec::new(),
             finished: false,
             pace: args.pace,
+            move_to: args.display.clone(),
+            display: None,
         })
     });
     match result {

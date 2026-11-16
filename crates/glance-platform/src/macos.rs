@@ -397,11 +397,13 @@ pub fn set_single_window(handle: raw_window_handle::RawWindowHandle) -> Result<(
 
 /// The system items Swift Glance's menu bar has from SwiftUI / AppKit, added to the menu bar the
 /// app set (`NSApp.mainMenu`, Help menu set as `NSApp.helpMenu`):
-/// - the Edit and Window menus' items are enabled by AppKit's own validation (`autoenablesItems`,
-///   which muda turns off on every submenu): an item is on only when something in the responder
-///   chain takes its action, so with nothing to edit all Edit items are off, and the window
-///   answers for the items AppKit adds to the Window menu (Remove Window from Set is off, as in
-///   Swift);
+/// - the app, Edit and Window menus' items are enabled by AppKit's own validation
+///   (`autoenablesItems`, which muda turns off on every submenu): an item is on only when something
+///   in the responder chain takes its action, so with nothing to edit all Edit items are off, the
+///   window answers for the items AppKit adds to the Window menu (Remove Window from Set is off, as
+///   in Swift), and NSApp's own validation sets Hide Others / Show All (Show All off when no other
+///   app is hidden, as in Swift; v0.3.3). The app's own items there (About, Set … as Default, Quit)
+///   stay on: muda's items are their own target and take their action;
 /// - Help ▸ "`app` Help" ⌘? sending `showHelp:` to the responder chain, as SwiftUI's default Help
 ///   menu does; with no help book AppKit's alert says "Help isn't available for `app`." (measured
 ///   on both apps, v0.3.2).
@@ -411,6 +413,13 @@ pub fn finish_app_menus(app: &str) -> Result<(), PlatformError> {
     let mtm = MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
     let ns_app = NSApplication::sharedApplication(mtm);
     let main = ns_app.mainMenu().ok_or(PlatformError::Os("no menu bar".into()))?;
+    let app_menu = main
+        .itemArray()
+        .iter()
+        .filter_map(|item| item.submenu())
+        .find(|menu| menu.itemArray().iter().any(|i| i.action() == Some(sel!(unhideAllApplications:))))
+        .ok_or(PlatformError::Os("no app menu (a Show All item) in the menu bar".into()))?;
+    app_menu.setAutoenablesItems(true);
     let edit = main
         .itemArray()
         .iter()

@@ -1,15 +1,18 @@
 #!/bin/zsh
 # C2 measurement matrix: one clip per window run, 15 s measured after 1 s warm-up.
+# c2-measure.sh <folder with synth/> <out> [paces, default "1 2"] [display, as glance-proof --display]
+# Each run also logs one CSV row per refresh (c2-<run>-p<pace>.csv).
 T=<testfiles>
-S=$1; OUT=$2; BIN=./target/release/glance-proof
+S=$1; OUT=$2; PACES=(${=${3:-1 2}}); BIN=./target/release/glance-proof
+DISPLAY_ARGS=(); [[ -n $4 ]] && DISPLAY_ARGS=(--display "$4")
 mkdir -p $OUT
 run() { # name pace extra... clip
   local name=$1 pace=$2; shift 2
   pgrep -x glance-proof >/dev/null && pkill -9 -x glance-proof
-  $BIN "$@" --seconds 15 --warmup 1 --pace $pace --out $OUT/c2-$name-p$pace.json >/dev/null 2>>$OUT/c2-matrix.err
+  $BIN "$@" --seconds 15 --warmup 1 --pace $pace $DISPLAY_ARGS --out $OUT/c2-$name-p$pace.json --log $OUT/c2-$name-p$pace.csv >/dev/null 2>>$OUT/c2-matrix.err
   echo "$name p$pace exit $?"
 }
-for pace in 1 2; do
+for pace in $PACES; do
   run hap1080-hapq-noaudio $pace "$T/Metric_01_HapM.mov"
   run hap1080-hap-noaudio $pace "$T/glenc_hap1_1920x1080_chunks4.mov"
   run hap2160-hap5-noaudio $pace "$T/glenc_hap5_alpha_real_chunks4.mov"

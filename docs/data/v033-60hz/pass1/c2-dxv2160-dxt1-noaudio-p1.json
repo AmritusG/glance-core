@@ -1,0 +1,80 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.00967625,
+  "display": "Monitor #53534",
+  "display_refresh_hz": 60.0,
+  "presents": 900,
+  "present_interval": {
+    "count": 900,
+    "mean_ms": 16.676700741111095,
+    "p50_ms": 16.675333000000002,
+    "p95_ms": 18.068416,
+    "p99_ms": 20.438208,
+    "max_ms": 24.664958000000002
+  },
+  "clips": [
+    {
+      "path": "<scratchpad>/synth/dxv_dxt1_3840x2160.mov",
+      "codec": "DXV3 Normal Quality",
+      "width": 3840,
+      "height": 2160,
+      "frames": 150,
+      "clip_fps": 30.0,
+      "has_alpha": false,
+      "alpha_view": "None",
+      "cadence": {
+        "shown": 451,
+        "skipped": 0
+      },
+      "shown_fps": 30.04728366476259,
+      "fetch": {
+        "count": 451,
+        "mean_ms": 0.010195230598669622,
+        "p50_ms": 0.008457999999999999,
+        "p95_ms": 0.01925,
+        "p99_ms": 0.026792,
+        "max_ms": 0.0305
+      },
+      "show": {
+        "count": 451,
+        "mean_ms": 0.6349696319290463,
+        "p50_ms": 0.6307090000000001,
+        "p95_ms": 0.761875,
+        "p99_ms": 0.798917,
+        "max_ms": 0.852917
+      },
+      "cache_hits": 956,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 487,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 30,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          26.359547164351852,
+          15.584557291666666,
+          39.424138213734565,
+          255.0
+        ]
+      },
+      "error": null,
+      "master": "wall",
+      "audio_state": "none (no audio track)",
+      "audio": null,
+      "av_offset_ms": null,
+      "loop_period_ms": {
+        "count": 2,
+        "mean": 5004.1224585,
+        "min": 5003.057583999999,
+        "p05": 5003.057583999999,
+        "p50": 5003.057583999999,
+        "p95": 5005.187333,
+        "max": 5005.187333
+      },
+      "clip_length_ms": 5000.0
+    }
+  ]
+}

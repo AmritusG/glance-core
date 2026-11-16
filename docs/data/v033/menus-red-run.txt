@@ -1,0 +1,11 @@
+hidden apps (before): []
+sample pid 77823
+hidden apps (sample up): []
+swiftref pid 78115
+hidden apps (swiftref up): []
+hidden apps (after): []
+diff (swift <, sample with "Glance Sample" read as "Glance" >), exit 1:
+9c9
+< Glance | Show All |  |  | off
+---
+> Glance | Show All |  |  | on

@@ -1,0 +1,80 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.014950583,
+  "display": "Monitor #53534",
+  "display_refresh_hz": 60.0,
+  "presents": 900,
+  "present_interval": {
+    "count": 900,
+    "mean_ms": 16.68151699000001,
+    "p50_ms": 16.676667,
+    "p95_ms": 17.316083,
+    "p99_ms": 19.772708,
+    "max_ms": 21.302542
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/glenc_hapm_LEAKTEST_4k.mov",
+      "codec": "HAP Q Alpha",
+      "width": 3840,
+      "height": 2160,
+      "frames": 90,
+      "clip_fps": 30.0,
+      "has_alpha": true,
+      "alpha_view": "Straight",
+      "cadence": {
+        "shown": 452,
+        "skipped": 0
+      },
+      "shown_fps": 30.1033291785693,
+      "fetch": {
+        "count": 452,
+        "mean_ms": 0.008146865044247787,
+        "p50_ms": 0.007125,
+        "p95_ms": 0.015542000000000002,
+        "p99_ms": 0.020125,
+        "max_ms": 0.022958
+      },
+      "show": {
+        "count": 452,
+        "mean_ms": 1.3715837146017704,
+        "p50_ms": 1.365416,
+        "p95_ms": 1.620042,
+        "p99_ms": 1.7299170000000001,
+        "max_ms": 1.891
+      },
+      "cache_hits": 956,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 487,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 30,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          84.10403477044753,
+          52.24175118152006,
+          127.12469714506173,
+          127.21875
+        ]
+      },
+      "error": null,
+      "master": "wall",
+      "audio_state": "none (sound off)",
+      "audio": null,
+      "av_offset_ms": null,
+      "loop_period_ms": {
+        "count": 4,
+        "mean": 2999.1317707499998,
+        "min": 2989.157958,
+        "p05": 2989.157958,
+        "p50": 3001.361875,
+        "p95": 3003.5130830000003,
+        "max": 3003.5130830000003
+      },
+      "clip_length_ms": 3000.0
+    }
+  ]
+}

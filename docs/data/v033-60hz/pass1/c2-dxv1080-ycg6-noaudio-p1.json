@@ -1,0 +1,72 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.01629675,
+  "display": "Monitor #53534",
+  "display_refresh_hz": 60.0,
+  "presents": 900,
+  "present_interval": {
+    "count": 900,
+    "mean_ms": 16.684274907777766,
+    "p50_ms": 16.680500000000002,
+    "p95_ms": 17.383167,
+    "p99_ms": 18.958416,
+    "max_ms": 21.609416
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/YCG6-DXV3.mov",
+      "codec": "DXV3 High Quality",
+      "width": 1920,
+      "height": 1080,
+      "frames": 300,
+      "clip_fps": 30.0,
+      "has_alpha": false,
+      "alpha_view": "None",
+      "cadence": {
+        "shown": 452,
+        "skipped": 0
+      },
+      "shown_fps": 30.100630503322996,
+      "fetch": {
+        "count": 452,
+        "mean_ms": 0.00926578761061947,
+        "p50_ms": 0.008084,
+        "p95_ms": 0.017334,
+        "p99_ms": 0.021707999999999998,
+        "max_ms": 0.033417
+      },
+      "show": {
+        "count": 452,
+        "mean_ms": 0.359128420353982,
+        "p50_ms": 0.34608300000000003,
+        "p95_ms": 0.466458,
+        "p99_ms": 0.499083,
+        "max_ms": 0.518834
+      },
+      "cache_hits": 956,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 487,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 180,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          17.061065779320987,
+          10.022347125771605,
+          25.137534722222224,
+          255.0
+        ]
+      },
+      "error": null,
+      "master": "wall",
+      "audio_state": "none (no audio track)",
+      "audio": null,
+      "av_offset_ms": null,
+      "loop_period_ms": null,
+      "clip_length_ms": 10000.0
+    }
+  ]
+}

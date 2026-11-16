@@ -11,6 +11,14 @@ cargo build --release
 ./target/release/glance-proof verify clip.mov a-folder/        # the render harness, no window
 ```
 
+## What 0.3.3 changes (Show All; the 60 Hz run)
+
+- The app menu's Hide Others and Show All are validated by AppKit as in Swift Glance: Show All is
+  off when no other app is hidden (macOS; About, Set … as Default and Quit unchanged).
+- No clip frame skipped at 1x on a real 60 Hz display (26 runs, 1080p and 2160p HAP and DXV, with
+  and without sound): `docs/05-C2-RESULTS.md` §1a. The proof window takes `--display <name>`.
+- The file-drop crash stays open in macOS (Apple report sent 2026-11-16).
+
 ## What 0.3.2 changes (Glance G2's menu findings, Esc on alerts)
 
 - The system menu items match Swift Glance item for item (macOS, measured with an Accessibility dump

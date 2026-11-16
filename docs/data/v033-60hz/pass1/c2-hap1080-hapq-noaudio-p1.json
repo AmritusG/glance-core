@@ -1,0 +1,72 @@
+{
+  "build": "release",
+  "warmup_seconds": 1.0,
+  "seconds": 15.012478375,
+  "display": "Monitor #53534",
+  "display_refresh_hz": 60.0,
+  "presents": 900,
+  "present_interval": {
+    "count": 900,
+    "mean_ms": 16.68002837999999,
+    "p50_ms": 16.677208999999998,
+    "p95_ms": 17.175290999999998,
+    "p99_ms": 18.001,
+    "max_ms": 24.004167
+  },
+  "clips": [
+    {
+      "path": "<testfiles>/Metric_01_HapM.mov",
+      "codec": "HAP Q Alpha",
+      "width": 1920,
+      "height": 1080,
+      "frames": 201,
+      "clip_fps": 25.0,
+      "has_alpha": true,
+      "alpha_view": "Straight",
+      "cadence": {
+        "shown": 377,
+        "skipped": 0
+      },
+      "shown_fps": 25.112442501686534,
+      "fetch": {
+        "count": 377,
+        "mean_ms": 0.009614267904509283,
+        "p50_ms": 0.008209000000000001,
+        "p95_ms": 0.017750000000000002,
+        "p99_ms": 0.024417,
+        "max_ms": 0.0335
+      },
+      "show": {
+        "count": 377,
+        "mean_ms": 0.6307081007957561,
+        "p50_ms": 0.602125,
+        "p95_ms": 1.01275,
+        "p99_ms": 1.2388329999999999,
+        "max_ms": 1.3933330000000002
+      },
+      "cache_hits": 960,
+      "cache_misses": 1,
+      "cache_waits": 0,
+      "prefetched": 407,
+      "worker_errors": 0,
+      "picture_vs_cpu": {
+        "frame": 199,
+        "max_diff": 0,
+        "mean_diff": 0.0,
+        "mean_rgba": [
+          85.12509500385802,
+          49.19905044367284,
+          49.648657407407406,
+          255.0
+        ]
+      },
+      "error": null,
+      "master": "wall",
+      "audio_state": "none (no audio track)",
+      "audio": null,
+      "av_offset_ms": null,
+      "loop_period_ms": null,
+      "clip_length_ms": 8039.999999999999
+    }
+  ]
+}

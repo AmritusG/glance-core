@@ -1,0 +1,72 @@
+hidden apps (before): []
+sample pid 88657
+hidden apps (sample up): []
+swiftref pid 88822
+hidden apps (swiftref up): []
+hidden apps (after): []
+diff (swift <, sample with "Glance Sample" read as "Glance" >), exit 1:
+11a12
+> Glance | Quit and Keep Windows | Q | 2 | on
+50c51
+< Window | Minimize | M | 0 | on
+---
+> Window | Minimize | M | 0 | off
+52c53
+< Window | Zoom |  |  | on
+---
+> Window | Zoom |  |  | off
+54,55c55,56
+< Window | Fill | F | 28 | on
+< Window | Center | C | 28 | on
+---
+> Window | Fill | F | 28 | off
+> Window | Center | C | 28 | off
+59,62c60,63
+< Window | Move & Resize > Left |  |  | on
+< Window | Move & Resize > Right |  |  | on
+< Window | Move & Resize > Top |  |  | on
+< Window | Move & Resize > Bottom |  |  | on
+---
+> Window | Move & Resize > Left |  |  | off
+> Window | Move & Resize > Right |  |  | off
+> Window | Move & Resize > Top |  |  | off
+> Window | Move & Resize > Bottom |  |  | off
+65,68c66,69
+< Window | Move & Resize > Top Left |  |  | on
+< Window | Move & Resize > Top Right |  |  | on
+< Window | Move & Resize > Bottom Left |  |  | on
+< Window | Move & Resize > Bottom Right |  |  | on
+---
+> Window | Move & Resize > Top Left |  |  | off
+> Window | Move & Resize > Top Right |  |  | off
+> Window | Move & Resize > Bottom Left |  |  | off
+> Window | Move & Resize > Bottom Right |  |  | off
+71,79c72,80
+< Window | Move & Resize > Left & Right |  |  | on
+< Window | Move & Resize > Left & Quarters |  |  | on
+< Window | Move & Resize > Right & Left |  |  | on
+< Window | Move & Resize > Right & Quarters |  |  | on
+< Window | Move & Resize > Top & Bottom |  |  | on
+< Window | Move & Resize > Top & Quarters |  |  | on
+< Window | Move & Resize > Bottom & Top |  |  | on
+< Window | Move & Resize > Bottom & Quarters |  |  | on
+< Window | Move & Resize > Quarters |  |  | on
+---
+> Window | Move & Resize > Left & Right |  |  | off
+> Window | Move & Resize > Left & Quarters |  |  | off
+> Window | Move & Resize > Right & Left |  |  | off
+> Window | Move & Resize > Right & Quarters |  |  | off
+> Window | Move & Resize > Top & Bottom |  |  | off
+> Window | Move & Resize > Top & Quarters |  |  | off
+> Window | Move & Resize > Bottom & Top |  |  | off
+> Window | Move & Resize > Bottom & Quarters |  |  | off
+> Window | Move & Resize > Quarters |  |  | off
+82,87c83
+< Window | Full Screen Tile |  |  | on
+< Window | Full Screen Tile > Left of Screen |  |  | on
+< Window | Full Screen Tile > Right of Screen |  |  | on
+< Window | --- |  |  | off
+< Window | Move to PT-RZ570 |  |  | on
+< Window | Move All to PT-RZ570 |  |  | on
+---
+> Window | Full Screen Tile |  |  | off

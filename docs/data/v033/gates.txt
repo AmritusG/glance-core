@@ -1,0 +1,7 @@
+== 2026-11-16 22:06:25 6bdc3d9+working tree
+fmt: ok
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.31s
+clippy exit 0
+tests (GLANCE_REQUIRE_GPU=1): 71 passed, 0 failed
+advisories ok, bans ok, licenses ok, sources ok
+    Finished `release` profile [optimized + debuginfo] target(s) in 1.01s

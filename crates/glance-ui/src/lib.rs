@@ -190,6 +190,26 @@ impl Host<'_> {
         Some(m.size().to_logical::<f64>(m.scale_factor()).width)
     }
 
+    /// The name of the display the window is on, when the OS gives one.
+    pub fn display_name(&self) -> Option<String> {
+        self.window?.current_monitor()?.name()
+    }
+
+    /// Centre the window on the display named `name` (measurements on a given display); when no
+    /// display has that name, the names there are. The display's own settings are not touched.
+    pub fn move_to_display(&self, name: &str) -> Result<(), Vec<String>> {
+        let Some(w) = self.window else { return Err(Vec::new()) };
+        let Some(m) = w.available_monitors().find(|m| m.name().as_deref() == Some(name)) else {
+            return Err(w.available_monitors().filter_map(|m| m.name()).collect());
+        };
+        let (mp, ms) = (m.position().to_logical::<f64>(m.scale_factor()), m.size().to_logical::<f64>(m.scale_factor()));
+        let outer = w.outer_size().to_logical::<f64>(w.scale_factor());
+        let x = mp.x + ((ms.width - outer.width) / 2.0).max(0.0);
+        let y = mp.y + ((ms.height - outer.height) / 2.0).max(0.0);
+        w.set_outer_position(winit::dpi::LogicalPosition::new(x, y));
+        Ok(())
+    }
+
     /// Swift's `fitWindowWidth` for a clip of `video` pixels: the height stays, the width follows
     /// the clip's aspect over the video area (the content less `bottom_chrome` points), clamped to
     /// the minimum and to 95 % of the screen ([`window::fit_width`]). Not in full screen.

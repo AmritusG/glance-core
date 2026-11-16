@@ -1,0 +1,8 @@
+hidden apps (before): [Terminal]; frontmost: [Claude]
+sample pid 2970
+hidden apps (sample up): [Terminal]; frontmost: [glance-sample]
+swiftref pid 3212
+hidden apps (swiftref up): [Terminal]; frontmost: [Glance]
+hidden apps (after): [Terminal]; frontmost: [Claude]
+diff (swift <, sample with "Glance Sample" read as "Glance" >), exit 0:
+Terminal visible after: true

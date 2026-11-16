@@ -57,6 +57,50 @@ Raw: `docs/data/c2-runs/pass1/`, `pass2/`, `pass3-audio/` (`c2-<run>-p<pace>.jso
   folder; the made 2160p DXV clips have no sound track). The audio clock is measured on 2160p HAP Q
   Alpha (PCM), 1080p DXV (PCM and AAC) and 512x288 HAP (AAC).
 
+### 1a. 60 Hz on a real display (2026-11-16, v0.3.3)
+
+Amrit: "60 Hz run can be done now." Run on the same machine (macOS 27.0.1) on **Amrit's projector,
+Panasonic PT-RZ570** (CoreGraphics display 3, vendor 13481 / model 53534, winit "Monitor #53534";
+1920 x 1200 points = pixels, scale 1; mode **60.00 Hz** as macOS reports it), connected to the right
+of the built-in display; its settings were not touched (`docs/data/v033-60hz/displays.txt`,
+`system-profiler-displays.txt`). The window was opened on it with the proof's new `--display` option
+(moved there on the first frame, within the 1 s warm-up; every JSON records `"display": "Monitor
+#53534"`, `"display_refresh_hz": 60.0`), **pace 1** (a new frame asked for at every refresh of the
+60 Hz display; no simulation). Same 13 runs, clips, durations and two passes as above
+(`tools/c2-measure.sh <synth> <out> 1 "Monitor #53534"`), release build, plus one CSV row per refresh.
+Raw: `docs/data/v033-60hz/pass1/`, `pass2/`, `summary.txt`.
+
+Load (sampled every 5 s, `load.txt`): Arena open the whole time (25–46 % CPU; Arena untouched by
+this brief); another session's Rust builds (rustc up to 620 % CPU) and a Time Machine backup ran
+during about half of the runs, from 21:50 to 21:57. None of it started by this session. Not an
+idle machine.
+
+| Run (as above) | pass 1 skipped / shown | presents p95 / max (ms) | pass 2 skipped / shown | presents p95 / max (ms) |
+|---|---|---|---|---|
+| hap1080-hapq-noaudio | 0 / 377 | 17.18 / 24.00 | 0 / 377 | 17.39 / 23.04 |
+| hap1080-hap-noaudio | 0 / 452 | 17.31 / 23.74 | 0 / 451 | 22.16 / 27.56 |
+| hap2160-hap5-noaudio | 0 / 452 | 17.21 / 24.46 | 0 / 452 | 17.22 / 21.10 |
+| hap2160-hapqa-pcm (audio clock) | 0 / 451 | 17.70 / 22.23 | 0 / 452 | 17.31 / 20.61 |
+| hap2160-hapqa-pcm-soundoff | 0 / 452 | 17.43 / 24.01 | 0 / 452 | 17.32 / 21.30 |
+| hap288-aac (audio clock) | 0 / 452 | 17.35 / 25.06 | 0 / 452 | 17.13 / 23.65 |
+| dxv1080-dxt5-noaudio | 0 / 451 | 17.41 / 22.93 | 0 / 451 | 17.08 / 21.11 |
+| dxv1080-ycg6-noaudio | 0 / 452 | 17.38 / 21.61 | 0 / 451 | 17.40 / 25.04 |
+| dxv1080-yg10-pcm (audio clock) | 0 / 377 | 17.14 / 23.89 | 0 / 376 | 17.47 / 23.31 |
+| dxv1080-yg10-pcm-soundoff | 0 / 376 | 17.48 / 21.74 | 0 / 376 | 17.70 / 22.95 |
+| dxv1080-aac (audio clock) | 0 / 376 | 17.30 / 21.25 | 0 / 376 | 17.28 / 24.16 |
+| dxv2160-ycg6-noaudio | 0 / 451 | 18.80 / 25.85 | 0 / 452 | 20.18 / 25.10 |
+| dxv2160-dxt1-noaudio | 0 / 451 | 18.07 / 24.66 | 0 / 451 | 17.14 / 23.22 |
+
+- **0 skipped in all 26 runs** (11,139 frames shown), 1080p and 2160p, HAP and DXV, with and without
+  sound; the picture read back equals the CPU decode, max difference 0, in every run.
+- Presents: p50 16.66–16.68 ms in every run (one per refresh, about 900 per 15 s), p95 17.08–22.16 ms,
+  max 27.56 ms; no interval reached two refreshes (33.3 ms). Presents over 25 ms: 0 in 21 runs,
+  1 in 4, 15 in one (hap1080-hap pass 2), with no skip.
+- Against the simulated cadence above (pace 2 on the 120 Hz display: 4 of 26 runs of passes 1–2
+  skipped 1–3 frames): there the clock was asked for a frame every second *present*, so two late
+  presents in a row left a 33 ms gap; on the real 60 Hz display the clock is asked at every refresh,
+  and the presents came steadily (p50 16.67 ms), so the bursts measured at 120 Hz did not occur here.
+
 ## 2. A/V offset
 
 **Method** (from `docs/handoffs/c2-time-and-sound.md`, DIAGNOSE 2). The clock picks the frame for the
