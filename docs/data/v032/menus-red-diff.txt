@@ -1,0 +1,45 @@
+15c15
+< File | Close Window | W | 0 | on
+---
+> File | Close | W | 0 | on
+17,18c17,18
+< Edit | Undo | Z | 0 | on
+< Edit | Redo | Z | 1 | on
+---
+> Edit | Undo | Z | 0 | off
+> Edit | Redo | Z | 1 | off
+20,23c20,24
+< Edit | Cut | X | 0 | on
+< Edit | Copy | C | 0 | on
+< Edit | Paste | V | 0 | on
+< Edit | Select All | A | 0 | on
+---
+> Edit | Cut | X | 0 | off
+> Edit | Copy | C | 0 | off
+> Edit | Paste | V | 0 | off
+> Edit | Delete |  |  | off
+> Edit | Select All | A | 0 | off
+31,33d31
+< View | Show Tab Bar |  |  | on
+< View | Show All Tabs | ' | 1 | off
+< View | --- |  |  | off
+39,43c37,40
+< View | Alpha Type > Premultiplied |  |  | on
+< View | Alpha Type > Straight |  |  | on
+< View | Toggle Alpha Type | A | 8 | on
+< View | --- |  |  | off
+< View | Toggle Full Screen | F | 24 | on
+---
+> View | Alpha Type > Premultiplied |  |  | off
+> View | Alpha Type > Straight |  |  | off
+> View | Toggle Alpha Type | A | 8 | off
+> View | Enter Full Screen | F | 24 | on
+89a87
+> Window | --- |  |  | off
+92,94c90,91
+< Window | Remove Window from Set |  |  | on
+< Window | --- |  |  | off
+< Window | tiles_dxt5.mov  [DXV3 Normal Quality With Alpha]  [LOOP] (128×72 · 30fps · 0:01) |  |  | on
+---
+> Window | Remove Window from Set |  |  | off
+> Help | Glance Help | ? | 0 | on

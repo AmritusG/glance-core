@@ -1,0 +1,21 @@
+// TEMPORARY measurement probe for v0.3.2 (deleted before commit; source kept in docs/data/v032/): inside winit's
+// running event loop (as the apps), shows glance_platform::alert with Swift Glance's two buttons (through
+// glance_ui::dialog::ask) and prints the index answered, then quits.
+use winit::application::ApplicationHandler;
+use winit::event::WindowEvent;
+use winit::event_loop::{ActiveEventLoop, EventLoop};
+use winit::window::WindowId;
+struct P;
+impl ApplicationHandler for P {
+    fn resumed(&mut self, el: &ActiveEventLoop) {
+        let r = glance_platform::alert(glance_platform::AlertStyle::Informational, "Make Glance the default for .mov files?", "probe", &["Set as Default", "Not Now"]);
+        println!("answer {r:?}");
+        el.exit();
+    }
+    fn window_event(&mut self, _: &ActiveEventLoop, _: WindowId, _: WindowEvent) {}
+}
+fn main() {
+    if let Ok(el) = EventLoop::new() {
+        let _ = el.run_app(&mut P);
+    }
+}

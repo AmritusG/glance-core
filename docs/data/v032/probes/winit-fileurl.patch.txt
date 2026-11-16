@@ -1,0 +1,113 @@
+Only in ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/winit-0.30.13: .cargo_vcs_info.json
+Only in ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/winit-0.30.13: Cargo.toml.orig
+diff -ru ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/winit-0.30.13/src/platform_impl/macos/window_delegate.rs winit-b/src/platform_impl/macos/window_delegate.rs
+--- ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/winit-0.30.13/src/platform_impl/macos/window_delegate.rs	2006-07-24 03:21:28
++++ winit-b/src/platform_impl/macos/window_delegate.rs	2026-11-16 16:39:55
+@@ -9,11 +9,11 @@
+ use monitor::VideoModeHandle;
+ use objc2::rc::{autoreleasepool, Retained};
+ use objc2::runtime::{AnyObject, ProtocolObject};
+-use objc2::{declare_class, msg_send_id, mutability, sel, ClassType, DeclaredClass};
++use objc2::{class, declare_class, msg_send_id, mutability, sel, ClassType, DeclaredClass};
+ use objc2_app_kit::{
+     NSAppKitVersionNumber, NSAppKitVersionNumber10_12, NSAppearance, NSAppearanceCustomization,
+     NSAppearanceNameAqua, NSApplication, NSApplicationPresentationOptions, NSBackingStoreType,
+-    NSColor, NSDraggingDestination, NSFilenamesPboardType, NSPasteboard,
++    NSColor, NSDragOperation, NSDraggingDestination, NSPasteboard, NSPasteboardTypeFileURL,
+     NSRequestUserAttentionType, NSScreen, NSView, NSWindowButton, NSWindowDelegate,
+     NSWindowFullScreenButton, NSWindowLevel, NSWindowOcclusionState, NSWindowOrderingMode,
+     NSWindowSharingType, NSWindowStyleMask, NSWindowTabbingMode, NSWindowTitleVisibility,
+@@ -125,6 +125,23 @@
+     is_borderless_game: Cell<bool>,
+ }
+ 
++/// The drag's file paths, read as Swift Glance reads them: each pasteboard item's
++/// `public.file-url` (no legacy `NSFilenamesPboardType` translation).
++fn dragged_paths(sender: &NSObject) -> Vec<std::path::PathBuf> {
++    let pb: Retained<NSPasteboard> = unsafe { msg_send_id![sender, draggingPasteboard] };
++    let items: Option<Retained<NSArray<AnyObject>>> = unsafe { msg_send_id![&pb, pasteboardItems] };
++    let mut out = Vec::new();
++    for item in items.iter().flat_map(|a| a.iter()) {
++        let s: Option<Retained<NSString>> = unsafe { msg_send_id![item, stringForType: NSPasteboardTypeFileURL] };
++        let Some(s) = s else { continue };
++        let url: Option<Retained<AnyObject>> = unsafe { msg_send_id![class!(NSURL), URLWithString: &*s] };
++        let Some(url) = url else { continue };
++        let path: Option<Retained<NSString>> = unsafe { msg_send_id![&url, path] };
++        if let Some(p) = path { out.push(std::path::PathBuf::from(p.to_string())); }
++    }
++    out
++}
++
+ declare_class!(
+     pub(crate) struct WindowDelegate;
+ 
+@@ -367,24 +384,16 @@
+     unsafe impl NSDraggingDestination for WindowDelegate {
+         /// Invoked when the dragged image enters destination bounds or frame
+         #[method(draggingEntered:)]
+-        fn dragging_entered(&self, sender: &NSObject) -> bool {
++        fn dragging_entered(&self, sender: &NSObject) -> NSDragOperation {
+             trace_scope!("draggingEntered:");
+-
+-            use std::path::PathBuf;
+-
+-            let pb: Retained<NSPasteboard> = unsafe { msg_send_id![sender, draggingPasteboard] };
+-            let filenames = match pb.propertyListForType(unsafe { NSFilenamesPboardType }) {
+-                Some(filenames) => filenames,
+-                None => return false.into(),
+-            };
+-            let filenames: Retained<NSArray<NSString>> = unsafe { Retained::cast(filenames) };
+-
+-            filenames.into_iter().for_each(|file| {
+-                let path = PathBuf::from(file.to_string());
++            let paths = dragged_paths(sender);
++            if paths.is_empty() {
++                return NSDragOperation::None;
++            }
++            for path in paths {
+                 self.queue_event(WindowEvent::HoveredFile(path));
+-            });
+-
+-            true
++            }
++            NSDragOperation::Copy
+         }
+ 
+         /// Invoked when the image is released
+@@ -398,21 +407,13 @@
+         #[method(performDragOperation:)]
+         fn perform_drag_operation(&self, sender: &NSObject) -> bool {
+             trace_scope!("performDragOperation:");
+-
+-            use std::path::PathBuf;
+-
+-            let pb: Retained<NSPasteboard> = unsafe { msg_send_id![sender, draggingPasteboard] };
+-            let filenames = match pb.propertyListForType(unsafe { NSFilenamesPboardType }) {
+-                Some(filenames) => filenames,
+-                None => return false.into(),
+-            };
+-            let filenames: Retained<NSArray<NSString>> = unsafe { Retained::cast(filenames) };
+-
+-            filenames.into_iter().for_each(|file| {
+-                let path = PathBuf::from(file.to_string());
++            let paths = dragged_paths(sender);
++            if paths.is_empty() {
++                return false.into();
++            }
++            for path in paths {
+                 self.queue_event(WindowEvent::DroppedFile(path));
+-            });
+-
++            }
+             true
+         }
+ 
+@@ -665,7 +666,7 @@
+         // register for drag and drop operations.
+         window
+             .registerForDraggedTypes(&NSArray::from_id_slice(&[
+-                unsafe { NSFilenamesPboardType }.copy()
++                unsafe { NSPasteboardTypeFileURL }.copy()
+             ]));
+ 
+         Some(window)

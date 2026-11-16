@@ -149,7 +149,7 @@ Detail and sources: `docs/research/glance.md`.
 - [x] On the system-codec path, seeking to frame N shows frame N at 23.976, 25, 29.97, 30, 60 fps and on jittered timing (the 8 `frames_*` fixtures, 40 of 40 each). — **C2, macOS:** the same 8 fixtures (copied from Glance a9dc601), 40 of 40 each, shuffled (`swift_glances_frame_timing_fixtures_land_on_frame_n`).
 - [x] On the system-codec path the loop wraps onto frame 0 exactly. — **C2, macOS:** frame 39 2 µs before the clip's end, frame 0 2 µs after, on all 8 fixtures (same test).
 - [ ] Time label `M:SS.mmm`, frame number label, both updating at about 20 Hz, also while a slider is held. — C3 core half: `bar::time_label` (`%d:%06.3f`, tested); the row is drawn every refresh, a held slider included.
-- [ ] Esc quits only when: not full screen, no dialog, a file is open, no "not supported" message, and playing. Otherwise Esc keeps its normal meaning.
+- [ ] Esc quits Glance in every state. Changed by Amrit 2026-11-15: "Also add, Esc = quit Glance." Esc quits in every state; was Swift's conditional rule (not full screen, no dialog, a file open, no "not supported" message, playing). Evidence: glance-rs `docs/data/g1b-runs/esc.txt`.
 - [ ] `F` and the bar button toggle full screen; the OS's own full-screen shortcut also works. — C3 core half: `Host::toggle_fullscreen` (the system's full screen), View ▸ Enter Full Screen (⌃⌘F) in the menu.
 
 ### Audio

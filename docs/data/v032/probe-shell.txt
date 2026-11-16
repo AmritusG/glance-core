@@ -1,0 +1,10 @@
+try 1: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 2: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 3: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 4: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 5: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 6: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 7: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 8: drag ended: operation 1 (copy); title after drop []; app GONE; new crash reports: 1
+try 9: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0
+try 10: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov]; app alive; new crash reports: 0

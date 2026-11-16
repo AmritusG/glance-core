@@ -1,0 +1,10 @@
+Safari crash report Safari-2026-11-16-160315.ips (~/Library/Logs/DiagnosticReports, not copied: it holds browsing data).
+captureTime 2026-11-16 16:03:14 +0100, during the v0.3.2 diagnosis drop runs made before the drop tool checked its target
+(the unsafe drop-env.sh runs; drops could land on other apps). The run just before: glance-sample report at 16:03:08.
+exception: EXC_BREAKPOINT SIGTRAP, main thread, top frames:
+  libsystem_malloc  _xzm_xzone_malloc_freelist_outlined
+  CoreFoundation    _CFRuntimeCreateInstance
+  CoreFoundation    __CFStringCreateImmutableFunnel3
+  Foundation        NSURL.__copySwiftURLStringByResolvingPath
+  ... SafariShared WBSCloudTab initWithDictionary:, Safari CloudTabStore
+The same signature (a corrupted xzone free list found by a later allocation) as the glance-sample victims of the drop crash.

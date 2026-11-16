@@ -1,0 +1,3 @@
+-- windows of pid 26660:
+, tiles_dxt5.mov  [DXV3 Normal Quality With Alpha]  [LOOP] – 128×72 · 30fps · 0:01, Help, Help isn’t available for Glance Sample., tiles_dxt5.mov  [DXV3 Normal Quality With Alpha]  [LOOP] – 128×72 · 30fps · 0:01, OK, missing value, missing value, missing value
+-- Help Viewer / Tips running:

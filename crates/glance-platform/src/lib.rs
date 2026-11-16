@@ -14,7 +14,9 @@
 //!   `MPNowPlayingInfoCenter`), as [`PlatformEvent::Media`];
 //! - [`note_recent`]: the OS recent-documents list (`NSDocumentController`);
 //! - [`install_menu_key_monitor`]: menu shortcuts without a modifier (Space, A) reach the menu;
-//! - [`alert`]: an app-modal `NSAlert` in this process;
+//! - [`alert`]: an app-modal `NSAlert` in this process (Esc answers the second of two buttons);
+//! - [`set_single_window`], [`finish_app_menus`]: Swift Glance's single
+//!   window (no tabs, not listed in the Window menu) and the system menu items SwiftUI gives it;
 //! - [`movie_files`]: a folder's movies in Finder's order ([`localized_standard_compare`],
 //!   [`conforms_to_movie`]), hidden files left out.
 //!
@@ -38,8 +40,8 @@ pub use value::Value;
 mod macos;
 #[cfg(target_os = "macos")]
 pub use macos::{
-    Defaults, MediaKeys, alert, conforms_to_movie, install_menu_key_monitor, install_open_handler, is_default_for, localized_standard_compare, movie_files,
-    note_recent, set_default_for, set_subtitle,
+    Defaults, MediaKeys, alert, conforms_to_movie, finish_app_menus, install_menu_key_monitor, install_open_handler, is_default_for,
+    localized_standard_compare, movie_files, note_recent, set_default_for, set_single_window, set_subtitle,
 };
 
 #[cfg(windows)]

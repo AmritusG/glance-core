@@ -11,6 +11,17 @@ cargo build --release
 ./target/release/glance-proof verify clip.mov a-folder/        # the render harness, no window
 ```
 
+## What 0.3.2 changes (Glance G2's menu findings, Esc on alerts)
+
+- The system menu items match Swift Glance item for item (macOS, measured with an Accessibility dump
+  of both apps): File ▸ Close; AppKit's own View ▸ Enter / Exit Full Screen; no window tabs; Edit
+  items validated by AppKit (off with nothing to edit) with Delete; Help ▸ "<app> Help" ⌘?; the
+  window not listed in the Window menu, which AppKit validates too.
+- Esc answers the second button of a two-button alert ("Not Now"); Return keeps the first.
+- The file-drop crash G2 found (the drag source quitting at once after the drop) is **not** fixed:
+  it is in macOS's drag code (HIServices CoreDrag), not in winit or the core. Evidence and the open
+  decision: `docs/handoffs/v032-g2-fixes.md`.
+
 ## What 0.3.1 fixes (the four findings of Glance G1)
 
 - Menu shortcuts without a modifier (Space = Play/Pause, A = Toggle Alpha Type) fire, once per

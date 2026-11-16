@@ -291,6 +291,11 @@ impl<A: App> Running<A> {
             attrs = attrs.with_min_inner_size(winit::dpi::LogicalSize::new(w, h));
         }
         let window = Arc::new(el.create_window(attrs).map_err(|e| e.to_string())?);
+        #[cfg(target_os = "macos")]
+        {
+            let handle = window.window_handle().map_err(|e| e.to_string())?;
+            glance_platform::set_single_window(handle.as_raw()).map_err(|e| e.to_string())?;
+        }
         let surface = gpu.instance.create_surface(window.clone()).map_err(|e| e.to_string())?;
         let setup = WgpuConfiguration {
             wgpu_setup: WgpuSetup::Existing(WgpuSetupExisting {
@@ -325,7 +330,7 @@ impl<A: App> Running<A> {
         let app = make(&gpu)?;
         #[cfg(target_os = "macos")]
         if let Some(menu) = app.menu() {
-            menu.attach_to_app();
+            menu.attach_to_app()?;
         }
         #[cfg(windows)]
         if let (Some(menu), Ok(handle)) = (app.menu(), window.window_handle()) {
@@ -513,7 +518,8 @@ pub fn run<A: App>(title: &str, size: (f64, f64), make: impl FnOnce(&Gpu) -> Res
 /// as [`ShellEvent::Platform`] — at cold launch too (they wait for the first frame). Closing the
 /// window ends the app (Swift Glance: `applicationShouldTerminateAfterLastWindowClosed`). On macOS
 /// menu shortcuts without a modifier (Space, A) go to the menu, not the window
-/// ([`glance_platform::install_menu_key_monitor`]).
+/// ([`glance_platform::install_menu_key_monitor`]), and the window is Swift Glance's single
+/// window: never tabbed, not listed in the Window menu.
 pub fn run_shell<A: App>(config: ShellConfig, make: impl FnOnce(&Gpu) -> Result<A, String>) -> Result<(), String> {
     let el = EventLoop::<()>::with_user_event().build().map_err(|e| e.to_string())?;
     let proxy: EventLoopProxy<()> = el.create_proxy();

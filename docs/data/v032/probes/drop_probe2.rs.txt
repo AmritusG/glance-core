@@ -1,0 +1,53 @@
+// TEMPORARY diagnosis probe for v0.3.2 (deleted before commit): winit + a wgpu surface presenting a clear
+// colour every frame (Fifo), no egui. The title becomes the dropped file's name. KEYMON=1 installs
+// glance_platform's menu key monitor; OPENH=1 its open handler; IDLE=1 draws only when asked;
+// IMMEDIATE=1 presents without waiting for the display.
+#![allow(clippy::unwrap_used)]
+use std::sync::Arc;
+use winit::application::ApplicationHandler;
+use winit::event::WindowEvent;
+use winit::event_loop::{ActiveEventLoop, EventLoop};
+use winit::window::{Window, WindowId};
+struct G { w: Arc<Window>, gpu: glance_gpu::Gpu, s: wgpu::Surface<'static>, c: wgpu::SurfaceConfiguration }
+struct App { g: Option<G> }
+impl ApplicationHandler for App {
+    fn resumed(&mut self, el: &ActiveEventLoop) {
+        let w = Arc::new(el.create_window(Window::default_attributes().with_title("min").with_inner_size(winit::dpi::LogicalSize::new(800.0, 600.0))).unwrap());
+        let gpu = glance_gpu::open_gpu().unwrap();
+        let s = gpu.instance.create_surface(w.clone()).unwrap();
+        let caps = s.get_capabilities(&gpu.adapter);
+        let size = w.inner_size();
+        let c = wgpu::SurfaceConfiguration { usage: wgpu::TextureUsages::RENDER_ATTACHMENT, format: caps.formats[0], width: size.width, height: size.height, present_mode: if std::env::var("IMMEDIATE").is_ok() { wgpu::PresentMode::Immediate } else { wgpu::PresentMode::Fifo }, desired_maximum_frame_latency: 2, alpha_mode: caps.alpha_modes[0], view_formats: vec![], color_space: wgpu::SurfaceColorSpace::Auto };
+        s.configure(&gpu.device, &c);
+        w.focus_window();
+        w.request_redraw();
+        self.g = Some(G { w, gpu, s, c });
+    }
+    fn window_event(&mut self, el: &ActiveEventLoop, _: WindowId, e: WindowEvent) {
+        let Some(g) = self.g.as_mut() else { return };
+        match e {
+            WindowEvent::CloseRequested => el.exit(),
+            WindowEvent::DroppedFile(p) => g.w.set_title(&p.file_name().unwrap().to_string_lossy()),
+            WindowEvent::RedrawRequested => {
+                if let wgpu::CurrentSurfaceTexture::Success(f) | wgpu::CurrentSurfaceTexture::Suboptimal(f) = g.s.get_current_texture() {
+                    let v = f.texture.create_view(&Default::default());
+                    let mut enc = g.gpu.device.create_command_encoder(&Default::default());
+                    enc.begin_render_pass(&wgpu::RenderPassDescriptor { label: None, color_attachments: &[Some(wgpu::RenderPassColorAttachment { view: &v, resolve_target: None, depth_slice: None, ops: wgpu::Operations { load: wgpu::LoadOp::Clear(wgpu::Color::BLACK), store: wgpu::StoreOp::Store } })], depth_stencil_attachment: None, timestamp_writes: None, occlusion_query_set: None, multiview_mask: None });
+                    g.gpu.queue.submit([enc.finish()]);
+                    g.w.pre_present_notify();
+                    g.gpu.queue.present(f);
+                } else {
+                    g.s.configure(&g.gpu.device, &g.c);
+                }
+                if std::env::var("IDLE").is_err() { g.w.request_redraw(); }
+            }
+            _ => {}
+        }
+    }
+}
+fn main() {
+    let el = EventLoop::new().unwrap();
+    if std::env::var("KEYMON").is_ok() { glance_platform::install_menu_key_monitor().unwrap(); }
+    if std::env::var("OPENH").is_ok() { glance_platform::install_open_handler().unwrap(); }
+    el.run_app(&mut App { g: None }).unwrap();
+}

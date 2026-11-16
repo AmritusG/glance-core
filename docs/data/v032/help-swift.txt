@@ -1,0 +1,3 @@
+-- windows of pid 26417:
+, tiles_dxt5.mov  [DXV3 alpha]  [LOOP] – 128×72 · 30fps · 0:01, Help, Help isn’t available for Glance., tiles_dxt5.mov  [DXV3 alpha]  [LOOP] – 128×72 · 30fps · 0:01, OK, missing value, missing value, missing value
+-- Help Viewer / Tips running:

@@ -1,0 +1,22 @@
+// TEMPORARY diagnosis probe for v0.3.2 (deleted before commit): run_shell with an empty app; the title
+// becomes the dropped file's name. MENU=1 attaches Glance's menu bar; RECENT=1 notes the drop as recent.
+#![allow(clippy::unwrap_used)]
+use glance_ui::{App, Host, ShellConfig, ShellEvent};
+struct P { menu: Option<glance_ui::menu::GlanceMenu>, recent: bool }
+impl App for P {
+    fn frame(&mut self, ui: &mut egui::Ui, _host: &mut Host<'_>) { ui.label("probe"); }
+    fn event(&mut self, e: ShellEvent, host: &mut Host<'_>) {
+        if let ShellEvent::Dropped(p) = e {
+            if self.recent { let _ = glance_platform::note_recent(&p); }
+            host.set_title(&p.file_name().unwrap().to_string_lossy());
+        }
+    }
+    fn menu(&self) -> Option<&glance_ui::menu::GlanceMenu> { self.menu.as_ref() }
+}
+fn main() {
+    let menu = std::env::var("MENU").is_ok();
+    let recent = std::env::var("RECENT").is_ok();
+    glance_ui::run_shell(ShellConfig { title: "probe".into(), size: (800.0, 600.0), min_size: None, open_files: true }, move |_| {
+        Ok(P { menu: if menu { Some(glance_ui::menu::GlanceMenu::new("Probe", "0").unwrap()) } else { None }, recent })
+    }).unwrap();
+}

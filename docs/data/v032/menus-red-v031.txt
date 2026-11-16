@@ -1,0 +1,94 @@
+Glance Sample | About Glance Sample |  |  | on
+Glance Sample | --- |  |  | off
+Glance Sample | Set Glance Sample as Default for .mov Files… |  |  | on
+Glance Sample | --- |  |  | off
+Glance Sample | Services |  |  | on
+Glance Sample | --- |  |  | off
+Glance Sample | Hide Glance Sample | H | 0 | on
+Glance Sample | Hide Others | H | 2 | on
+Glance Sample | Show All |  |  | on
+Glance Sample | --- |  |  | off
+Glance Sample | Quit Glance Sample | Q | 0 | on
+Glance Sample | Quit and Keep Windows | Q | 2 | on
+File | Open… | O | 0 | on
+File | --- |  |  | off
+File | Close Window | W | 0 | on
+File | Close All | W | 2 | on
+Edit | Undo | Z | 0 | on
+Edit | Redo | Z | 1 | on
+Edit | --- |  |  | off
+Edit | Cut | X | 0 | on
+Edit | Copy | C | 0 | on
+Edit | Paste | V | 0 | on
+Edit | Select All | A | 0 | on
+Edit | --- |  |  | off
+Edit | AutoFill |  |  | on
+Edit | AutoFill > Contact… |  |  | off
+Edit | AutoFill > Passwords… |  |  | off
+Edit | AutoFill > Credit Card… |  |  | off
+Edit | Start Dictation… | 🎤 | 8 | on
+Edit | Emoji & Symbols | 🌐 | 8 | on
+View | Show Tab Bar |  |  | on
+View | Show All Tabs | ' | 1 | off
+View | --- |  |  | off
+View | Default Window Size | 0 | 0 | on
+View | Background |  |  | on
+View | Background > Black |  |  | on
+View | Background > Checkerboard |  |  | on
+View | Alpha Type |  |  | on
+View | Alpha Type > Premultiplied |  |  | on
+View | Alpha Type > Straight |  |  | on
+View | Toggle Alpha Type | A | 8 | on
+View | --- |  |  | off
+View | Toggle Full Screen | F | 24 | on
+Playback | Play/Pause |   | 8 | on
+Playback | --- |  |  | off
+Playback | Previous Clip |  | 0 | on
+Playback | Next Clip |  | 0 | on
+Playback | Restart |  |  | on
+Playback | --- |  |  | off
+Playback | Volume Up |  | 0 | on
+Playback | Volume Down |  | 0 | on
+Playback | Mute |  |  | on
+Playback | Loop |  |  | on
+Window | Minimize | M | 0 | on
+Window | Minimize All | M | 2 | on
+Window | Zoom |  |  | on
+Window | Zoom All |  |  | on
+Window | Fill | F | 28 | on
+Window | Center | C | 28 | on
+Window | --- |  |  | off
+Window | Move & Resize |  |  | on
+Window | Move & Resize > Halves |  |  | off
+Window | Move & Resize > Left |  |  | on
+Window | Move & Resize > Right |  |  | on
+Window | Move & Resize > Top |  |  | on
+Window | Move & Resize > Bottom |  |  | on
+Window | Move & Resize > --- |  |  | off
+Window | Move & Resize > Quarters |  |  | off
+Window | Move & Resize > Top Left |  |  | on
+Window | Move & Resize > Top Right |  |  | on
+Window | Move & Resize > Bottom Left |  |  | on
+Window | Move & Resize > Bottom Right |  |  | on
+Window | Move & Resize > --- |  |  | off
+Window | Move & Resize > Arrange |  |  | off
+Window | Move & Resize > Left & Right |  |  | on
+Window | Move & Resize > Left & Quarters |  |  | on
+Window | Move & Resize > Right & Left |  |  | on
+Window | Move & Resize > Right & Quarters |  |  | on
+Window | Move & Resize > Top & Bottom |  |  | on
+Window | Move & Resize > Top & Quarters |  |  | on
+Window | Move & Resize > Bottom & Top |  |  | on
+Window | Move & Resize > Bottom & Quarters |  |  | on
+Window | Move & Resize > Quarters |  |  | on
+Window | Move & Resize > --- |  |  | off
+Window | Move & Resize > Return to Previous Size | R | 28 | off
+Window | Full Screen Tile |  |  | on
+Window | Full Screen Tile > Left of Screen |  |  | on
+Window | Full Screen Tile > Right of Screen |  |  | on
+Window | --- |  |  | off
+Window | Bring All to Front |  |  | on
+Window | Arrange in Front |  |  | on
+Window | Remove Window from Set |  |  | on
+Window | --- |  |  | off
+Window | tiles_dxt5.mov  [DXV3 Normal Quality With Alpha]  [LOOP] (128×72 · 30fps · 0:01) |  |  | on

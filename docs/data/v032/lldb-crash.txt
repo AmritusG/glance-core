@@ -1,0 +1,79 @@
+# lldb, v0.3.1 sample under MallocStackLogging, try 1 of drop-lldb (2026-11-16): the fault and frame 1 (BuildIPCPackage) registers.
+* thread #1, name = 'main', queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x100000009)
+       frame #0: 0x000000019f0ff108 AE`AESizeOfFlattenedDesc + 56
+AE`AESizeOfFlattenedDesc:
+->  0x19f0ff108 <+56>: ldr    w8, [x0, #0x10]
+    0x19f0ff10c <+60>: cmp    w8, #0x4
+    0x19f0ff110 <+64>: b.ne   0x19f0ff12c               ; <+92>
+    0x19f0ff114 <+68>: ldr    w8, [x20]
+Target 0: (glance-sample) stopped.
+(lldb) bt 12
+* thread #1, name = 'main', queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x100000009)
+   * frame #0: 0x000000019f0ff108 AE`AESizeOfFlattenedDesc + 56
+     frame #1: 0x000000019deb55f0 HIServices`BuildIPCPackage + 64
+     frame #2: 0x000000019deb7420 HIServices`SendDragIPCMessage + 320
+     frame #3: 0x000000019deb03e0 HIServices`SendEnterLeaveHandlerMessage + 96
+     frame #4: 0x000000019deb8fe0 HIServices`CoreDragEndDragging + 96
+     frame #5: 0x000000019deb9978 HIServices`CoreDragTerminate + 88
+     frame #6: 0x000000019deb72c8 HIServices`RemotePortInvalidationCallback + 48
+     frame #7: 0x00000001969e1abc CoreFoundation`CFMessagePortInvalidate + 348
+     frame #8: 0x00000001969e18c0 CoreFoundation`____CFMachPortChecker_block_invoke + 84
+     frame #9: 0x00000001966eca34 libdispatch.dylib`_dispatch_call_block_and_release + 32
+     frame #10: 0x00000001967065a0 libdispatch.dylib`_dispatch_client_callout + 16
+     frame #11: 0x0000000196724998 libdispatch.dylib`_dispatch_main_queue_drain.cold.6 + 832
+(lldb) register read
+General Purpose Registers:
+        x0 = 0x00000000fffffff9
+        x1 = 0x000000016d89c11c
+        x2 = 0x0000000000000000
+        x3 = 0xffffffffb0000000
+        x4 = 0xfffff0007fc00000
+        x5 = 0x000000020005e8cb  (void *)0x3e495a000000020f
+        x6 = 0x00000001966d4d2c  libsystem_malloc.dylib`_malloc_zone_memalign + 300
+        x7 = 0x000000010005e8cb
+        x8 = 0x0000000100000001
+        x9 = 0x00000001fc3e3938  _current_pid
+       x10 = 0x0000000000000000
+       x11 = 0x0000000000000000
+       x12 = 0x0a17500000404870
+       x13 = 0x0a17400000404050
+       x14 = 0x0000000000004800
+       x15 = 0x00000001fc3f64f8  (void *)0x00000001fc3f58a0: __NSCFType
+       x16 = 0x000000019f0ff0d0  AE`AESizeOfFlattenedDesc
+       x17 = 0x00000001fdf82d00
+       x18 = 0x0000000000000000
+       x19 = 0x00000000fffffff9
+       x20 = 0x0000007654373074
+       x21 = 0x000000016d89c11c
+       x22 = 0x0000007654373000
+       x23 = 0x0000000000000003
+       x24 = 0x0000000000000001
+       x25 = 0x0000000000000011
+       x26 = 0x00000001fa5c6000  CoreGraphics`initialize_path.predicate + 20264
+       x27 = 0x000000019deb7298  HIServices`RemotePortInvalidationCallback
+       x28 = 0xffffffff76ffffff
+        fp = 0x000000016d89bff0
+        lr = 0x000000019deb55f0  HIServices`BuildIPCPackage + 64
+        sp = 0x000000016d89bfe0
+        pc = 0x000000019f0ff108  AE`AESizeOfFlattenedDesc + 56
+      cpsr = 0x80000000
+(lldb) frame select 1
+frame #1: 0x000000019deb55f0 HIServices`BuildIPCPackage + 64
+HIServices`BuildIPCPackage:
+->  0x19deb55f0 <+64>: mov    x23, x0
+    0x19deb55f4 <+68>: ldr    w22, [x20, #0x14]
+    0x19deb55f8 <+72>: bl     0x19e122e60
+    0x19deb55fc <+76>: cmp    w22, w0
+(lldb) register read x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 fp
+     x19 = 0x0000000000000000
+     x20 = 0x0000007654373000
+     x21 = 0x000000016d89c11c
+     x22 = 0x0000007654373000
+     x23 = 0x0000000000000003
+     x24 = 0x0000000000000001
+     x25 = 0x0000000000000011
+     x26 = 0x00000001fa5c6000  CoreGraphics`initialize_path.predicate + 20264
+     x27 = 0x000000019deb7298  HIServices`RemotePortInvalidationCallback
+     x28 = 0xffffffff76ffffff
+      fp = 0x000000016d89c060
+(lldb) disassemble -f

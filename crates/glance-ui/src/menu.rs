@@ -1,7 +1,13 @@
 //! Swift Glance's menu bar in muda, item for item and shortcut for shortcut
 //! (`glance/Sources/Glance/GlanceApp.swift:67-164`, plus what SwiftUI and AppKit add by themselves:
-//! the app menu, Edit, Window, Help, and View ▸ Enter Full Screen). The menu bar only names what was
-//! chosen ([`MenuCommand`]); the app applies it, so menu, keys and bar drive the same calls.
+//! the app menu, File ▸ Close, Edit, Window, Help ▸ "Glance Help", and View ▸ Enter / Exit Full
+//! Screen, which AppKit adds to the View menu itself as it does for Swift). The menu bar only names
+//! what was chosen ([`MenuCommand`]); the app applies it, so menu, keys and bar drive the same calls.
+//!
+//! As Swift's: the Edit items are on only when something can take them (AppKit's validation, so
+//! all off with nothing to edit), with Delete; no window tabs and the window not listed in the
+//! Window menu (`glance_platform::set_single_window`, from [`crate::run_shell`]); two separators
+//! before Bring All to Front, as SwiftUI's Window menu has.
 //!
 //! Space and A are menu shortcuts without a modifier, as in Swift (`.keyboardShortcut(.space,
 //! modifiers: [])`): the menu takes the key, so it fires once and the window never sees it (Swift:
@@ -149,6 +155,7 @@ pub struct GlanceMenu {
     toggle_alpha: MenuItem,
     window_menu: Submenu,
     help_menu: Submenu,
+    app: String,
 }
 
 fn err(e: muda::Error) -> String {
@@ -171,12 +178,8 @@ impl GlanceMenu {
 
         let background_menu = Submenu::with_items("Background", true, &[&background[0], &background[1]]).map_err(err)?;
         let alpha_menu = Submenu::with_items("Alpha Type", true, &[&alpha[0], &alpha[1]]).map_err(err)?;
-        let view = Submenu::with_items(
-            "View",
-            true,
-            &[&item(app, MenuCommand::DefaultWindowSize), &background_menu, &alpha_menu, &toggle_alpha, &s(), &PredefinedMenuItem::fullscreen(None)],
-        )
-        .map_err(err)?;
+        let view =
+            Submenu::with_items("View", true, &[&item(app, MenuCommand::DefaultWindowSize), &background_menu, &alpha_menu, &toggle_alpha]).map_err(err)?;
         let playback = Submenu::with_items(
             "Playback",
             true,
@@ -214,6 +217,11 @@ impl GlanceMenu {
             &[&PredefinedMenuItem::minimize(None), &PredefinedMenuItem::zoom(None), &s(), &PredefinedMenuItem::bring_all_to_front(None)],
         )
         .map_err(err)?;
+        if cfg!(target_os = "macos") {
+            // Swift's Edit ▸ Delete (muda has it on macOS only) and SwiftUI's second Window-menu separator.
+            edit.insert(&PredefinedMenuItem::delete(Some("Delete")), 6).map_err(err)?;
+            window_menu.insert(&s(), 3).map_err(err)?;
+        }
         let menu = Menu::new();
         let help_menu;
         if cfg!(target_os = "macos") {
@@ -235,7 +243,9 @@ impl GlanceMenu {
                 ],
             )
             .map_err(err)?;
-            let file = Submenu::with_items("File", true, &[&item(app, MenuCommand::Open), &s(), &PredefinedMenuItem::close_window(None)]).map_err(err)?;
+            let file =
+                Submenu::with_items("File", true, &[&item(app, MenuCommand::Open), &s(), &PredefinedMenuItem::close_window(Some("Close"))]).map_err(err)?;
+            // "<app> Help" ⌘? is added by `attach_to_app` (an AppKit `showHelp:` item; muda has none).
             help_menu = Submenu::new("Help", true);
             menu.append_items(&[&app_menu, &file, &edit, &view, &playback, &window_menu, &help_menu]).map_err(err)?;
         } else {
@@ -248,16 +258,17 @@ impl GlanceMenu {
             help_menu = Submenu::with_items("Help", true, &[&PredefinedMenuItem::about(None, Some(about))]).map_err(err)?;
             menu.append_items(&[&file, &edit, &view, &playback, &window_menu, &help_menu]).map_err(err)?;
         }
-        Ok(GlanceMenu { menu, background, alpha, toggle_alpha, window_menu, help_menu })
+        Ok(GlanceMenu { menu, background, alpha, toggle_alpha, window_menu, help_menu, app: app.into() })
     }
 
     /// Make this the app's menu bar (macOS; on Windows `glance_platform::attach_menu` with the
     /// window). Call once the event loop runs.
     #[cfg(target_os = "macos")]
-    pub fn attach_to_app(&self) {
+    pub fn attach_to_app(&self) -> Result<(), String> {
         self.menu.init_for_nsapp();
         self.window_menu.set_as_windows_menu_for_nsapp();
         self.help_menu.set_as_help_menu_for_nsapp();
+        glance_platform::finish_app_menus(&self.app).map_err(|e| e.to_string())
     }
 
     /// The check beside View ▸ Background.

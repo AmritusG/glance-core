@@ -1,0 +1,6 @@
+try 1: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov  [HAP]  [LOOP] – 128×72 · 30fps · 0:01]; app alive; new crash reports: 0
+try 2: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov  [HAP]  [LOOP] – 128×72 · 30fps · 0:01]; app alive; new crash reports: 0
+try 3: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov  [HAP]  [LOOP] – 128×72 · 30fps · 0:01]; app alive; new crash reports: 0
+try 4: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov  [HAP]  [LOOP] – 128×72 · 30fps · 0:01]; app alive; new crash reports: 0
+try 5: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov  [HAP]  [LOOP] – 128×72 · 30fps · 0:01]; app alive; new crash reports: 0
+try 6: drag ended: operation 1 (copy); title after drop [tiles_hap1.mov  [HAP]  [LOOP] – 128×72 · 30fps · 0:01]; app alive; new crash reports: 0

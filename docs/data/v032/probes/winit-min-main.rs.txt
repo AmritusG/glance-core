@@ -1,0 +1,40 @@
+// The smallest winit 0.30.13 window that takes a file drop: no egui, no wgpu. The title becomes
+// the dropped file's name. POLL=1 redraws continuously (as glance-ui does), else it waits.
+use winit::application::ApplicationHandler;
+use winit::event::WindowEvent;
+use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
+use winit::window::{Window, WindowId};
+struct App { w: Option<Window>, poll: bool, churn: bool, keep: Vec<Vec<u8>>, seed: u64, lo: usize, hi: usize }
+impl ApplicationHandler for App {
+    fn resumed(&mut self, el: &ActiveEventLoop) {
+        let a = Window::default_attributes().with_title("min").with_inner_size(winit::dpi::LogicalSize::new(800.0, 600.0));
+        self.w = el.create_window(a).ok();
+        if let Some(w) = &self.w { w.focus_window(); w.request_redraw(); }
+    }
+    fn window_event(&mut self, el: &ActiveEventLoop, _: WindowId, e: WindowEvent) {
+        match e {
+            WindowEvent::CloseRequested => el.exit(),
+            WindowEvent::DroppedFile(p) => if let Some(w) = &self.w { w.set_title(&p.file_name().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default()) },
+            WindowEvent::RedrawRequested => {
+                if self.churn {
+                    // egui-like heap traffic: a few thousand small blocks a frame, a rolling set kept alive.
+                    for _ in 0..4000 {
+                        self.seed = self.seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+                        let n = self.lo + (self.seed >> 33) as usize % (self.hi - self.lo);
+                        let v = vec![(self.seed >> 56) as u8; n];
+                        if self.keep.len() < 20000 { self.keep.push(v) } else { let i = (self.seed >> 20) as usize % self.keep.len(); self.keep[i] = v; }
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(8));
+                }
+                if self.poll { if let Some(w) = &self.w { w.request_redraw() } }
+            }
+            _ => {}
+        }
+    }
+}
+fn main() {
+    let el = EventLoop::new().unwrap();
+    el.set_control_flow(ControlFlow::Wait);
+    let mut app = App { w: None, poll: std::env::var("POLL").is_ok(), churn: std::env::var("CHURN").is_ok(), keep: Vec::new(), seed: 1, lo: std::env::var("LO").ok().and_then(|v| v.parse().ok()).unwrap_or(16), hi: std::env::var("HI").ok().and_then(|v| v.parse().ok()).unwrap_or(512) };
+    el.run_app(&mut app).unwrap();
+}

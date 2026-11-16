@@ -4,9 +4,10 @@ use crate::{AlertStyle, MediaCommand, NowPlaying, PlatformError, PlatformEvent, 
 use block2::RcBlock;
 use objc2::rc::Retained;
 use objc2::runtime::{AnyClass, AnyObject, Imp, Sel};
-use objc2::{AnyThread, MainThreadMarker, sel};
+use objc2::{AnyThread, MainThreadMarker, MainThreadOnly, sel};
 use objc2_app_kit::{
-    NSAlert, NSAlertFirstButtonReturn, NSAlertStyle, NSApplication, NSDocumentController, NSEvent, NSEventMask, NSEventModifierFlags, NSWorkspace,
+    NSAlert, NSAlertFirstButtonReturn, NSAlertStyle, NSApplication, NSDocumentController, NSEvent, NSEventMask, NSEventModifierFlags, NSMenuItem, NSWindow,
+    NSWindowCollectionBehavior, NSWindowTabbingMode, NSWorkspace,
 };
 use objc2_foundation::{
     NSArray, NSBundle, NSComparisonResult, NSData, NSDictionary, NSDirectoryEnumerationOptions, NSError, NSFileManager, NSNumber, NSString, NSURL,
@@ -248,8 +249,10 @@ fn offered_to_menu(event: &NSEvent) -> bool {
 /// An app-modal alert in this process (`NSAlert runModal`, Swift Glance's
 /// `DefaultHandlerControl.swift:90-104, 125-147`): the app's icon, `title` in bold, `text` under it
 /// (none when empty), `buttons` left to right as AppKit orders them (the first is the default,
-/// Return). Answers the index of the button chosen; an alert ended without one (stopped by the
-/// system) is an error, never read as the first button. Blocks until then; main thread only.
+/// Return). With two buttons Esc answers the second (Glance's "Not Now"; AppKit gives Esc only to a
+/// button titled "Cancel" or "Don't Save", Apple's `NSAlert addButtonWithTitle:` docs). Answers the
+/// index of the button chosen; an alert ended without one (stopped by the system) is an error,
+/// never read as the first button. Blocks until then; main thread only.
 pub fn alert(style: AlertStyle, title: &str, text: &str, buttons: &[&str]) -> Result<usize, PlatformError> {
     let mtm = MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
     let a = NSAlert::new(mtm);
@@ -259,8 +262,11 @@ pub fn alert(style: AlertStyle, title: &str, text: &str, buttons: &[&str]) -> Re
     });
     a.setMessageText(&NSString::from_str(title));
     a.setInformativeText(&NSString::from_str(text));
-    for b in buttons {
-        a.addButtonWithTitle(&NSString::from_str(b));
+    for (i, b) in buttons.iter().enumerate() {
+        let button = a.addButtonWithTitle(&NSString::from_str(b));
+        if i == 1 && buttons.len() == 2 {
+            button.setKeyEquivalent(&NSString::from_str("\u{1b}"));
+        }
     }
     // AppKit's own app-modal loop; the app stays frontmost behind it.
     let response = a.runModal();
@@ -358,6 +364,12 @@ pub fn set_default_for(uti: &str) -> Result<(), PlatformError> {
 /// `W×H · fps · duration`). `handle` is the window's raw handle (winit's `window_handle()`). Main
 /// thread only.
 pub fn set_subtitle(handle: raw_window_handle::RawWindowHandle, text: &str) -> Result<(), PlatformError> {
+    window_of(handle)?.setSubtitle(&NSString::from_str(text));
+    Ok(())
+}
+
+/// The NSWindow behind a raw window handle. Main thread only.
+fn window_of(handle: raw_window_handle::RawWindowHandle) -> Result<Retained<NSWindow>, PlatformError> {
     MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
     let raw_window_handle::RawWindowHandle::AppKit(h) = handle else {
         return Err(PlatformError::Unsupported("a non-AppKit window"));
@@ -365,8 +377,54 @@ pub fn set_subtitle(handle: raw_window_handle::RawWindowHandle, text: &str) -> R
     // SAFETY: an AppKit window handle's `ns_view` is the window's live content NSView (winit's
     // contract for `window_handle()`), valid while the window exists; we are on the main thread.
     let view: &objc2_app_kit::NSView = unsafe { h.ns_view.cast::<objc2_app_kit::NSView>().as_ref() };
-    let window = view.window().ok_or(PlatformError::Os("the view has no window".into()))?;
-    window.setSubtitle(&NSString::from_str(text));
+    view.window().ok_or(PlatformError::Os("the view has no window".into()))
+}
+
+// ---------------------------------------------------------------------------------------------
+// Window and menu rules of Swift Glance's single window
+
+/// The app's one window as Swift Glance's SwiftUI `Window` scene makes it (read from the running
+/// Swift app, a9dc601): never tabbed (`tabbingMode = .disallowed`, so AppKit adds no View ▸ Show
+/// Tab Bar / Show All Tabs), not listed in the Window menu (`isExcludedFromWindowsMenu`), and
+/// `collectionBehavior = [.fullScreenPrimary, .primary]` (0x10080). Main thread only.
+pub fn set_single_window(handle: raw_window_handle::RawWindowHandle) -> Result<(), PlatformError> {
+    let window = window_of(handle)?;
+    window.setTabbingMode(NSWindowTabbingMode::Disallowed);
+    window.setExcludedFromWindowsMenu(true);
+    window.setCollectionBehavior(NSWindowCollectionBehavior::FullScreenPrimary | NSWindowCollectionBehavior::Primary);
+    Ok(())
+}
+
+/// The system items Swift Glance's menu bar has from SwiftUI / AppKit, added to the menu bar the
+/// app set (`NSApp.mainMenu`, Help menu set as `NSApp.helpMenu`):
+/// - the Edit and Window menus' items are enabled by AppKit's own validation (`autoenablesItems`,
+///   which muda turns off on every submenu): an item is on only when something in the responder
+///   chain takes its action, so with nothing to edit all Edit items are off, and the window
+///   answers for the items AppKit adds to the Window menu (Remove Window from Set is off, as in
+///   Swift);
+/// - Help ▸ "`app` Help" ⌘? sending `showHelp:` to the responder chain, as SwiftUI's default Help
+///   menu does; with no help book AppKit's alert says "Help isn't available for `app`." (measured
+///   on both apps, v0.3.2).
+///
+/// Call once, after the menu bar is attached. Main thread only.
+pub fn finish_app_menus(app: &str) -> Result<(), PlatformError> {
+    let mtm = MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
+    let ns_app = NSApplication::sharedApplication(mtm);
+    let main = ns_app.mainMenu().ok_or(PlatformError::Os("no menu bar".into()))?;
+    let edit = main
+        .itemArray()
+        .iter()
+        .filter_map(|item| item.submenu())
+        .find(|menu| menu.itemArray().iter().any(|i| i.action() == Some(sel!(undo:))))
+        .ok_or(PlatformError::Os("no Edit menu (an Undo item) in the menu bar".into()))?;
+    edit.setAutoenablesItems(true);
+    ns_app.windowsMenu().ok_or(PlatformError::Os("no Window menu set".into()))?.setAutoenablesItems(true);
+    let help = ns_app.helpMenu().ok_or(PlatformError::Os("no Help menu set".into()))?;
+    let title = NSString::from_str(&format!("{app} Help"));
+    // SAFETY: `showHelp:` is a valid selector (NSApplication's `showHelp:`, one object argument),
+    // sent through the responder chain (nil target) when the item is chosen.
+    let item = unsafe { NSMenuItem::initWithTitle_action_keyEquivalent(NSMenuItem::alloc(mtm), &title, Some(sel!(showHelp:)), &NSString::from_str("?")) };
+    help.addItem(&item);
     Ok(())
 }
 
