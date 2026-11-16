@@ -17,6 +17,9 @@
 //! - [`alert`]: an app-modal `NSAlert` in this process (Esc answers the second of two buttons);
 //! - [`set_single_window`], [`finish_app_menus`]: Swift Glance's single
 //!   window (no tabs, not listed in the Window menu) and the system menu items SwiftUI gives it;
+//! - [`install_terminate_guard`] / [`set_unsaved_work`]: a quit through AppKit waits for an editor's question
+//!   ([`PlatformEvent::QuitRequested`]); [`set_frame_autosave`]: the window's frame saved and restored by name;
+//!   [`pointer_in_window`]: where a drop landed; [`open_path`]: open a file or folder as Finder does (v0.4.0);
 //! - [`movie_files`]: a folder's movies in Finder's order ([`localized_standard_compare`],
 //!   [`conforms_to_movie`]), hidden files left out.
 //!
@@ -40,14 +43,19 @@ pub use value::Value;
 mod macos;
 #[cfg(target_os = "macos")]
 pub use macos::{
-    Defaults, MediaKeys, alert, conforms_to_movie, finish_app_menus, install_menu_key_monitor, install_open_handler, is_default_for,
-    localized_standard_compare, movie_files, note_recent, set_default_for, set_single_window, set_subtitle,
+    Defaults, MediaKeys, alert, conforms_to_movie, finish_app_menus, install_menu_key_monitor, install_open_handler, install_terminate_guard, is_default_for,
+    localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, set_default_for, set_frame_autosave, set_single_window, set_subtitle,
+    set_unsaved_work,
 };
 
 #[cfg(windows)]
 mod windows;
 #[cfg(windows)]
 pub use windows::{MediaKeys, SingleInstance, alert, attach_menu, conforms_to_movie, localized_standard_compare, movie_files};
+
+/// Off macOS the quit guard is the app's own close handling: nothing to tell the OS.
+#[cfg(not(target_os = "macos"))]
+pub fn set_unsaved_work(_unsaved: bool) {}
 
 #[cfg(not(any(target_os = "macos", windows)))]
 mod other;
@@ -75,6 +83,9 @@ pub enum PlatformEvent {
     Media(MediaCommand),
     /// The answer to [`set_default_for`]: `Err` holds the OS's words.
     DefaultHandlerSet(Result<(), String>),
+    /// The OS asked the app to quit (the Dock, a quit Apple Event, log out) while it had unsaved work
+    /// ([`set_unsaved_work`]); the quit was held back so the app can ask about the work and quit itself.
+    QuitRequested,
 }
 
 /// How an alert looks (`NSAlert.Style`; on Windows the message box's icon).

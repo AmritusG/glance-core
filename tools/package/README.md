@@ -8,7 +8,7 @@ read for C3; `docs/handoffs/c3-shell.md` DIAGNOSE 4). Proven on `glance-sample`
 
 | Script | Does |
 |---|---|
-| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
+| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, `strip -S` (debug information out, the symbol table kept; refuses if any debug map entry is left), the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
 | `sign.sh <conf> [path]` | Developer ID, hardened runtime, secure timestamp, `entitlements.plist`; strict verify |
 | `notarize.sh <conf> [path]` | `notarytool submit --keychain-profile NOTARY_PROFILE --wait`, refuses anything but Accepted (prints the log), `stapler staple` + `validate`, Gatekeeper |
 | `dmg.sh <conf>` | UDZO image "`<APP_NAME> <VERSION>`" with the app and an `/Applications` link, file `<APP_NAME>-v<VERSION>.dmg`; signed, notarised, stapled; then `<dmg>.sha256` |

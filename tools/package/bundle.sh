@@ -32,6 +32,12 @@ case "$APP" in */"$APP_NAME".app) ;; *) kit_die "odd bundle path $APP";; esac
 if [ -e "$APP" ]; then rm -r "$APP"; fi
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 lipo -create -output "$APP/Contents/MacOS/$EXECUTABLE" "$target_dir/aarch64-apple-darwin/release/$EXECUTABLE" "$target_dir/x86_64-apple-darwin/release/$EXECUTABLE"
+# Debug information out of the shipped binary, the symbol table kept (crash reports keep function names): Apple's
+# `strip -S` on the universal file. Cargo's `strip = "debuginfo"` runs rustup's rust-objcopy, which on rustc 1.100
+# cannot load (it looks for libLLVM.dylib beside itself, not in the toolchain's lib/) and only warns (v0.4.0).
+strip -S "$APP/Contents/MacOS/$EXECUTABLE"
+stabs="$(nm -a "$APP/Contents/MacOS/$EXECUTABLE" 2>/dev/null | grep -c ' - ' || true)"
+[ "$stabs" = 0 ] || kit_die "debug map entries left after strip -S: $stabs"
 sed -e "s|@APP_NAME@|$APP_NAME|g" -e "s|@BUNDLE_ID@|$BUNDLE_ID|g" -e "s|@EXECUTABLE@|$EXECUTABLE|g" -e "s|@VERSION@|$VERSION|g" -e "s|@MIN_MACOS@|$MIN_MACOS|g" \
     "$CONF_DIR/$INFO_PLIST" > "$APP/Contents/Info.plist"
 plutil -lint "$APP/Contents/Info.plist" >/dev/null
@@ -42,4 +48,5 @@ long="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Contents/Info.
 if [ -n "${ICON:-}" ]; then
     cp -p "$CONF_DIR/$ICON" "$APP/Contents/Resources/AppIcon.icns"
 fi
+echo "==> stripped: 0 debug map entries, $(nm "$APP/Contents/MacOS/$EXECUTABLE" 2>/dev/null | wc -l | tr -d ' ') symbols kept"
 echo "==> $APP: version $short, $(lipo -archs "$APP/Contents/MacOS/$EXECUTABLE"), minos $(otool -l "$APP/Contents/MacOS/$EXECUTABLE" | awk '/LC_BUILD_VERSION/{f=1} f&&/minos/{print $2; exit}')"

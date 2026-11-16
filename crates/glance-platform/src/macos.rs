@@ -184,6 +184,54 @@ fn method_is_ours(class: &AnyClass) -> bool {
 }
 
 // ---------------------------------------------------------------------------------------------
+// The quit guard
+
+/// The app has work a quit would lose (an editor's unsaved document): [`set_unsaved_work`].
+static UNSAVED_WORK: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// Tell the quit guard ([`install_terminate_guard`]) whether a quit now would lose work.
+pub fn set_unsaved_work(unsaved: bool) {
+    UNSAVED_WORK.store(unsaved, std::sync::atomic::Ordering::SeqCst);
+}
+
+/// `-[NSApplicationDelegate applicationShouldTerminate:]`, added to winit's delegate: with no unsaved work the
+/// quit goes ahead (`NSTerminateNow`); with unsaved work it is cancelled (`NSTerminateCancel`) and the app gets
+/// [`PlatformEvent::QuitRequested`] to ask its question and quit itself.
+extern "C-unwind" fn application_should_terminate(_this: &AnyObject, _cmd: Sel, _app: &AnyObject) -> usize {
+    if UNSAVED_WORK.load(std::sync::atomic::Ordering::SeqCst) {
+        post(PlatformEvent::QuitRequested);
+        0
+    } else {
+        1
+    }
+}
+
+/// Guard every quit that goes through AppKit's `terminate:` — the Dock's Quit, a quit Apple Event, log out, the
+/// predefined Quit item — as Swift CueGlance's `applicationShouldTerminate` backstop does
+/// (`CueGlanceApp.swift:220-222`). Inert until the app calls [`set_unsaved_work`]`(true)`. Same placement rules as
+/// [`install_open_handler`] (main thread, after `EventLoop::new`, before `run_app`); winit 0.30.13's delegate has
+/// no `applicationShouldTerminate:` of its own (`platform_impl/macos/app_state.rs`), so the method is added.
+pub fn install_terminate_guard() -> Result<(), PlatformError> {
+    if MainThreadMarker::new().is_none() {
+        return Err(PlatformError::NotMainThread);
+    }
+    let class = AnyClass::get(c"WinitApplicationDelegate")
+        .ok_or(PlatformError::Os("winit's application delegate class is not registered yet (call after EventLoop::new)".into()))?;
+    let handler: extern "C-unwind" fn(&AnyObject, Sel, &AnyObject) -> usize = application_should_terminate;
+    // SAFETY: `Imp` is the erased type of every method implementation; the runtime calls this one with the
+    // receiver, the selector and the application, and reads an `NSUInteger` back, as the encoding `Q@:@` states
+    // (unsigned long long return on 64-bit, id self, SEL _cmd, id sender) — `application_should_terminate`'s
+    // signature (`usize` is `NSUInteger` on every Apple target this builds for).
+    let imp: Imp = unsafe { std::mem::transmute::<extern "C-unwind" fn(&AnyObject, Sel, &AnyObject) -> usize, Imp>(handler) };
+    // SAFETY: a registered class, a selector and encoding that match the implementation; `class_addMethod`
+    // never replaces an existing method.
+    let added = unsafe { objc2::ffi::class_addMethod((class as *const AnyClass).cast_mut(), sel!(applicationShouldTerminate:), imp, c"Q@:@".as_ptr()) };
+    let ours =
+        class.instance_method(sel!(applicationShouldTerminate:)).is_some_and(|m| m.implementation() as *const () == application_should_terminate as *const ());
+    if added.as_bool() || ours { Ok(()) } else { Err(PlatformError::Os("winit's application delegate already handles applicationShouldTerminate:".into())) }
+}
+
+// ---------------------------------------------------------------------------------------------
 // Menu shortcuts without a modifier
 
 /// Offer every key press without ⌘ / ⌃ / ⌥ / ⇧ to the main menu before the window sees it, so menu
@@ -395,9 +443,37 @@ pub fn set_single_window(handle: raw_window_handle::RawWindowHandle) -> Result<(
     Ok(())
 }
 
+/// Save and restore the window's frame under `name` in the app's preferences (`NSWindow Frame <name>`), as a
+/// SwiftUI `Window(id: name)` scene does (Swift CueGlance: `Window("CueGlance", id: "cue")` → `NSWindow Frame cue`):
+/// the saved frame, when there is one, is applied now, and every later move or resize is saved. Main thread only.
+pub fn set_frame_autosave(handle: raw_window_handle::RawWindowHandle, name: &str) -> Result<(), PlatformError> {
+    let window = window_of(handle)?;
+    let name = NSString::from_str(name);
+    window.setFrameUsingName(&name);
+    if window.setFrameAutosaveName(&name) { Ok(()) } else { Err(PlatformError::Os("another window already uses that frame name".into())) }
+}
+
+/// The pointer in the window's content, in points from its top-left corner (`mouseLocationOutsideOfEventStream`),
+/// read when called — at a drop, the drop's point. Main thread only.
+pub fn pointer_in_window(handle: raw_window_handle::RawWindowHandle) -> Result<(f64, f64), PlatformError> {
+    let window = window_of(handle)?;
+    let p = window.mouseLocationOutsideOfEventStream();
+    let content = window.contentView().ok_or(PlatformError::Os("the window has no content view".into()))?;
+    let height = content.frame().size.height;
+    Ok((p.x, height - p.y))
+}
+
+/// Open a file or folder the way Finder would (`NSWorkspace.shared.open(url)`; a folder opens in a Finder
+/// window, as Swift CueGlance's export-folder button does).
+pub fn open_path(path: &Path) -> Result<(), PlatformError> {
+    let url = NSURL::from_file_path(path).ok_or_else(|| PlatformError::Os(format!("not a file path: {}", path.display())))?;
+    if NSWorkspace::sharedWorkspace().openURL(&url) { Ok(()) } else { Err(PlatformError::Os(format!("could not open {}", path.display()))) }
+}
+
 /// The system items Swift Glance's menu bar has from SwiftUI / AppKit, added to the menu bar the
 /// app set (`NSApp.mainMenu`, Help menu set as `NSApp.helpMenu`):
-/// - the app, Edit and Window menus' items are enabled by AppKit's own validation
+/// - the app, Edit (found by its Undo or, for an editor whose Undo is its own item, its Copy) and Window menus'
+///   items are enabled by AppKit's own validation
 ///   (`autoenablesItems`, which muda turns off on every submenu): an item is on only when something
 ///   in the responder chain takes its action, so with nothing to edit all Edit items are off, the
 ///   window answers for the items AppKit adds to the Window menu (Remove Window from Set is off, as
@@ -424,8 +500,8 @@ pub fn finish_app_menus(app: &str) -> Result<(), PlatformError> {
         .itemArray()
         .iter()
         .filter_map(|item| item.submenu())
-        .find(|menu| menu.itemArray().iter().any(|i| i.action() == Some(sel!(undo:))))
-        .ok_or(PlatformError::Os("no Edit menu (an Undo item) in the menu bar".into()))?;
+        .find(|menu| menu.itemArray().iter().any(|i| i.action() == Some(sel!(undo:)) || i.action() == Some(sel!(copy:))))
+        .ok_or(PlatformError::Os("no Edit menu (an Undo or Copy item) in the menu bar".into()))?;
     edit.setAutoenablesItems(true);
     ns_app.windowsMenu().ok_or(PlatformError::Os("no Window menu set".into()))?.setAutoenablesItems(true);
     let help = ns_app.helpMenu().ok_or(PlatformError::Os("no Help menu set".into()))?;

@@ -7,7 +7,7 @@
 //! where it outlives the app; with one it is a sheet); on Windows a message box owned by the app's
 //! window. A failed alert is not shown (the app goes on).
 
-use glance_platform::AlertStyle;
+pub use glance_platform::AlertStyle;
 use rfd::FileDialog;
 use std::path::PathBuf;
 
@@ -18,6 +18,44 @@ pub use glance_platform::MOVIE_EXTENSIONS;
 /// File ▸ Open…: one movie file, folders not choosable.
 pub fn open_movie() -> Option<PathBuf> {
     FileDialog::new().add_filter("Movie", &MOVIE_EXTENSIONS).pick_file()
+}
+
+/// An open panel for one file, titled `title`, showing files with these extensions (none: every file).
+pub fn open_file(title: &str, filter_name: &str, extensions: &[&str]) -> Option<PathBuf> {
+    let mut d = FileDialog::new().set_title(title);
+    if !extensions.is_empty() {
+        d = d.add_filter(filter_name, extensions);
+    }
+    d.pick_file()
+}
+
+/// A save panel titled `title`, the name field filled with `file_name`, starting in `directory` when given; with
+/// `extensions` the panel keeps to them (Swift's `allowedContentTypes`), without them the typed name is kept as it
+/// is. Folders can be created.
+pub fn save_file(title: &str, file_name: &str, directory: Option<&std::path::Path>, filter: Option<(&str, &[&str])>) -> Option<PathBuf> {
+    let mut d = FileDialog::new().set_title(title).set_file_name(file_name).set_can_create_directories(true);
+    if let Some(dir) = directory {
+        d = d.set_directory(dir);
+    }
+    if let Some((name, extensions)) = filter {
+        d = d.add_filter(name, extensions);
+    }
+    d.save_file()
+}
+
+/// A folder chooser titled `title`, starting in `directory`.
+pub fn pick_folder(title: &str, directory: Option<&std::path::Path>) -> Option<PathBuf> {
+    let mut d = FileDialog::new().set_title(title).set_can_create_directories(true);
+    if let Some(dir) = directory {
+        d = d.set_directory(dir);
+    }
+    d.pick_folder()
+}
+
+/// An alert with these buttons (left to right as AppKit orders them; the first is the default, a button titled
+/// "Cancel" takes Esc): the index chosen, `None` when the alert could not be shown or ended without a button.
+pub fn choose(style: AlertStyle, title: &str, text: &str, buttons: &[&str]) -> Option<usize> {
+    glance_platform::alert(style, title, text, buttons).ok()
 }
 
 /// An informational alert with one OK button.

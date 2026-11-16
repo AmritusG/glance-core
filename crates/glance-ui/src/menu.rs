@@ -15,9 +15,14 @@
 //! [`glance_platform::install_menu_key_monitor`] (winit's view keeps bare keys from AppKit's menu
 //! path), which [`crate::run_shell`] installs. Mute and Loop have no menu shortcut (⌘M is Minimize).
 //!
+//! An app with other menus (an editor: New, Save, Undo, …) builds them with [`muda`] (re-exported, so it is the
+//! core's version), shows them through [`MenuBar`] / [`attach_menu_bar`], and gets its items as
+//! [`crate::ShellEvent::MenuItem`] (v0.4.0).
+//!
 //! On Windows the same menus hang in the window (`glance_platform::attach_menu`), without the
 //! macOS app menu; its items move to File (Exit) and Help (About).
 
+pub use muda;
 use muda::accelerator::{Accelerator, Code, Modifiers};
 use muda::{AboutMetadata, CheckMenuItem, Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu};
 
@@ -286,23 +291,76 @@ impl GlanceMenu {
         self.alpha[1].set_checked(straight);
         self.toggle_alpha.set_enabled(choosable);
     }
+}
 
-    /// The Glance commands chosen since the last call (other ids — the predefined items — are
-    /// handled by the OS and not reported).
-    pub fn take_commands() -> Vec<MenuCommand> {
-        let mut out = Vec::new();
-        while let Ok(e) = MenuEvent::receiver().try_recv() {
-            if let Some(c) = MenuCommand::from_id(e.id().as_ref()) {
-                out.push(c);
-            }
-        }
-        out
+impl MenuBar for GlanceMenu {
+    #[cfg(target_os = "macos")]
+    fn attach_to_app(&self) -> Result<(), String> {
+        GlanceMenu::attach_to_app(self)
+    }
+
+    fn menu(&self) -> &Menu {
+        &self.menu
+    }
+}
+
+/// A menu bar an app shows: Glance's ([`GlanceMenu`]), or one an app builds itself with [`muda`] (an editor's File
+/// and Edit items), its items reported as [`Chosen::Item`] by their muda id.
+pub trait MenuBar {
+    /// Make this the app's menu bar (macOS), once the event loop runs ([`attach_menu_bar`] does it for a bar built
+    /// with muda).
+    #[cfg(target_os = "macos")]
+    fn attach_to_app(&self) -> Result<(), String>;
+    /// The menu bar itself (Windows hangs it in the window).
+    fn menu(&self) -> &Menu;
+}
+
+/// Attach a muda menu bar the way [`GlanceMenu`] attaches its own: the app's menu bar, `window_menu` as the Window
+/// menu and `help_menu` as the Help menu (AppKit fills both), then [`glance_platform::finish_app_menus`] (AppKit's
+/// validation of the app, Edit and Window menus, "`app` Help"). The bar must have an app menu with a Show All item
+/// and an Edit menu with an Undo item (muda's predefined ones). Main thread, once the event loop runs.
+#[cfg(target_os = "macos")]
+pub fn attach_menu_bar(menu: &Menu, window_menu: &Submenu, help_menu: &Submenu, app: &str) -> Result<(), String> {
+    menu.init_for_nsapp();
+    window_menu.set_as_windows_menu_for_nsapp();
+    help_menu.set_as_help_menu_for_nsapp();
+    glance_platform::finish_app_menus(app).map_err(|e| e.to_string())
+}
+
+/// A menu item chosen.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum Chosen {
+    /// One of Glance's items.
+    Glance(MenuCommand),
+    /// Any other item an app added, by its muda id (the predefined items are handled by the OS and not reported).
+    Item(String),
+}
+
+/// The items chosen since the last call, in order.
+pub fn take_chosen() -> Vec<Chosen> {
+    let mut out = Vec::new();
+    while let Ok(e) = MenuEvent::receiver().try_recv() {
+        out.push(Chosen::of(e.id().as_ref()));
+    }
+    out
+}
+
+impl Chosen {
+    /// What the item with muda id `id` is.
+    pub fn of(id: &str) -> Chosen {
+        MenuCommand::from_id(id).map_or_else(|| Chosen::Item(id.to_string()), Chosen::Glance)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn an_apps_own_items_come_back_by_id() {
+        assert_eq!(Chosen::of("glance.open"), Chosen::Glance(MenuCommand::Open));
+        assert_eq!(Chosen::of("cueglance.save"), Chosen::Item("cueglance.save".into()));
+    }
 
     #[test]
     fn the_items_and_shortcuts_are_swift_glances() {

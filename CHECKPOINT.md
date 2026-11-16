@@ -1,33 +1,20 @@
 # glance-core CHECKPOINT
 
-Wave: 60hz-and-v033 (patch, version 0.3.3; closed, tag v0.3.3 on 6816383). Brief: ~/claude-handoffs/glance-core_2026-11-16_60hz-run-and-v033-show-all_brief.md (part B: ~/claude-handoffs/glance-core_2026-11-16_app-menu-show-all_brief-r2.md). Machine: <host> (Apple M5 Max, macOS 27.0.1). Previous wave: v032-g2-fixes (closed, tag v0.3.2 on 8c90e4d; its checkpoint is in git history at 6bdc3d9).
+Wave: v040-editor-shell (minor, version 0.4.0), made by the CueGlance goal run. Brief: ~/claude-handoffs/cueglance-rs_2026-11-16_goal-build-to-swap_brief.md (HOW TO WORK 4). Machine: <host>. Previous wave: 60hz-and-v033 (closed, tag v0.3.3 on 6816383; its checkpoint is in git history at aa8dd99).
 
 ## DONE
-- SCOPE read: both briefs, `docs/05-C2-RESULTS.md`, `tools/c2-measure.sh`, glance-rs `tools/swift-ref.sh` / `g2-runs.sh` menus section, `finish_app_menus`.
-- PART A, real 60 Hz (load corrected after the verifier: Arena, two Python processes up to 880 %, another session's rustc and tl-play runs, another project's app, Time Machine; nearly every run loaded): projector Panasonic PT-RZ570 (CG display 3, winit "Monitor #53534"), 1920x1200, 60.00 Hz, settings untouched. New proof option `--display <name>` (glance-ui `Host::move_to_display`, `display_name`; the report records the display); `tools/c2-measure.sh` takes paces and a display, logs CSV per refresh. Waited for another session's tl-play run to end (it restarted during the runs). 26 runs (C2's 13 x 2 passes, pace 1): **0 skipped, 11,139 shown**, presents p50 16.67 ms, max 27.56 ms; `docs/05-C2-RESULTS.md` §1a, `docs/data/v033-60hz/`. Parity item ticked (60 Hz met), roadmap C2 row updated.
-
-- PART B RED: bundled sample (scratch copy of `/Applications/Glance Sample.app`, v0.3.2 menu code, ad-hoc signed) vs Swift Glance a9dc601 (`com.amritus.glance.swiftref`, scratch build), both `open -a` with `tiles_dxt5.mov` outside ~/Documents, no app hidden: the one difference is Show All (Swift off, ours on) (`docs/data/v033/menus-red-*.txt`).
-- PART B fix: `finish_app_menus` turns AppKit validation on for the app menu (found by its `unhideAllApplications:` item); About / Set … as Default / Quit stay on (muda items are their own target). Version 0.3.3, README.
-- PART B GREEN: no app hidden, each app frontmost through its dump: equal but for the app name (`menus-green2-diff.txt` empty). Sample-only A/B, 5 + 5 alternating: Show All off 5/5 (v0.3.3) vs on 5/5 (v0.3.2) (`docs/data/v033/ab/`). The Window items (Minimize, Zoom, Move & Resize, Move to PT-RZ570) read off in some dumps of both builds (green1, green3, A/B runs 3–5; Move to PT-RZ570 missing): in both builds, so not this change; cause not established. Amrit chose "Hide Terminal": with Terminal hidden, Show All on in both, dumps equal but for the app name (`menus-hidden-terminal-*.txt`); Terminal shown again after. Scratch bundles unregistered (`lsregister-after.txt`).
-- Gates (working tree on 6bdc3d9): fmt ok, clippy -D warnings ok, `GLANCE_REQUIRE_GPU=1` tests 71 passed 0 failed, deny ok, build ok (`docs/data/v033/gates.txt`).
-
-- Committed 6816383, pushed; CI run 43957237691 green (lint, macos, windows); annotated tag v0.3.3 → 6816383, pushed. Note for glance-rs `~/claude-handoffs/glance-rs_2026-11-16_note-from-glance-core-v033-r2.md` (supersedes the first note: Window items and load corrected).
-- Verifier: 32 confirmed / 13 unproven / 5 wrong; all five corrected (load during the runs, Move to PT-RZ570 missing not off, Window-items cause not established, `--display` doc comment, checkpoint/handoff not closed). Session-only output saved in `docs/data/v033/session-evidence.txt`. Handoff `docs/handoffs/60hz-and-v033.md`, mailbox `~/claude-handoffs/glance-core_2026-11-16_60hz-and-v033-result.md`.
+- Editor shell: MenuBar / attach_menu_bar / take_chosen / ShellEvent::MenuItem / muda re-export; App::close_requested; install_terminate_guard / set_unsaved_work / PlatformEvent::QuitRequested; ShellConfig::frame_autosave / set_frame_autosave; Host::drop_position / pointer_in_window; open_path; dialog open_file / save_file / pick_folder / choose; finish_app_menus finds Edit by Undo or Copy; kit strip -S. Details: `docs/handoffs/v040-editor-shell.md`.
+- Gates `docs/data/v040/gates.txt`: all exit 0, 72 tests (GPU required). Proven in CueGlance RS (`docs/data/v040/quit-guard.txt`, `close-veto.txt`).
 
 ## NEXT
-- Nothing queued in glance-core. glance-rs: bump the pin to v0.3.3, re-run the menus run (its note).
+- Push, CI green, tag v0.4.0; cueglance-rs pins it. Nothing else queued here.
 
 ## STATE
-- Pins: DXVKit Plus `v0.11.0`; wgpu 30.0.x (wgpu-hal 30.0.2), egui 0.36.2, winit 0.30.13, muda 0.21.2.
-- The 2160p DXV clips of C2 are in the 2026-11-15 session scratchpad `<scratchpad>/synth/` (not in the repo).
-- One LaunchServices record left: `/Applications/Glance Sample.app` (v0.3.1).
-- GUI runs only with Amrit's go-ahead and the safe tools (memory: gui-input-tests-need-free-machine).
+- Pins: DXVKit Plus v0.11.0; wgpu 30.0.x, egui 0.36.2, winit 0.30.13, muda 0.21.2. glance-rs stays on v0.3.3 (bump notes in the handoff).
 
 ## OPEN
-- The drop crash (macOS CoreDrag): Apple report sent by Amrit 2026-11-16; no core work owed.
+- [ ] Push, CI green, tag v0.4.0
 
 ## IDEAS
-- Present timestamps from the OS (CAMetalLayer presented time) for the A/V estimate instead of "one refresh after drawing".
-- A camera + microphone A/V check (flash and click clip) to measure the absolute offset.
-- Stream the audio instead of decoding the whole track for very long clips.
-- Windows TaskDialog with Swift's button names once the C4 installer brings the comctl32 v6 manifest.
+- Present timestamps from the OS (CAMetalLayer presented time) for the A/V estimate.
+- The drop crash (macOS CoreDrag): Apple report sent by Amrit 2026-11-16; no core work owed.

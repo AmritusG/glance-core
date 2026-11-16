@@ -1,0 +1,15 @@
+launched pid 45237
+alert words:
+   Save changes to the current cues?
+   You have unsaved cue edits. Save them before closing, or discard them.
+   CueGlance
+pressed Cancel
+after Cancel: alive, windows: 1
+pressed Discard
+after Discard: exited
+events:
+   {"answer":2,"ask":"Close","event":"prompt","unix_ms":1794873325578}
+   {"allowed":false,"event":"close","unix_ms":1794873325578}
+   {"answer":1,"ask":"Close","event":"prompt","unix_ms":1794873328036}
+   {"allowed":true,"event":"close","unix_ms":1794873328036}
+saved frame: 314 147 1100 912 0 0 1728 1084 

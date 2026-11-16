@@ -111,8 +111,12 @@ pub enum ShellEvent {
     /// Files sent by the OS (Finder, Open With, the Dock, a second launch on Windows), a media
     /// key, the answer to "Set as Default".
     Platform(PlatformEvent),
-    /// The first file of a drop on the window (Swift opens the first dropped URL, any type).
+    /// The first file of a drop on the window (Swift opens the first dropped URL, any type); where it landed is
+    /// [`Host::drop_position`].
     Dropped(PathBuf),
+    /// A menu item the app added itself (its muda id): [`menu::MenuBar`].
+    #[cfg(any(target_os = "macos", windows))]
+    MenuItem(String),
 }
 
 /// What the host runs: one call per display refresh, and one per event before it.
@@ -126,8 +130,13 @@ pub trait App {
     fn event(&mut self, _event: ShellEvent, _host: &mut Host<'_>) {}
     /// The app's menu bar, attached once the window exists.
     #[cfg(any(target_os = "macos", windows))]
-    fn menu(&self) -> Option<&menu::GlanceMenu> {
+    fn menu(&self) -> Option<&dyn menu::MenuBar> {
         None
+    }
+    /// The window's close button or ⌘W (Close): `false` keeps the window and the app (an editor's Cancel in its
+    /// unsaved-work question, Swift's `windowShouldClose` veto). Closing the window ends the app.
+    fn close_requested(&mut self) -> bool {
+        true
     }
 }
 
@@ -148,9 +157,16 @@ pub struct Host<'a> {
     /// The window (none on the headless stage).
     window: Option<&'a Window>,
     quit: Option<&'a mut bool>,
+    drop_at: Option<(f64, f64)>,
 }
 
 impl Host<'_> {
+    /// Where the last drop on the window landed, in points from the content's top-left corner (macOS; `None`
+    /// elsewhere or before any drop).
+    pub fn drop_position(&self) -> Option<egui::Pos2> {
+        self.drop_at.map(|(x, y)| egui::pos2(x as f32, y as f32))
+    }
+
     /// Close the window and end the app after this frame.
     pub fn quit(&mut self) {
         if let Some(q) = self.quit.as_deref_mut() {
@@ -296,6 +312,8 @@ struct Running<A> {
     pending: Vec<ShellEvent>,
     /// A drop's first file was taken; the rest of that drop is ignored.
     drop_taken: bool,
+    /// Where it landed.
+    drop_at: Option<(f64, f64)>,
     quit: bool,
 }
 
@@ -315,6 +333,9 @@ impl<A: App> Running<A> {
         {
             let handle = window.window_handle().map_err(|e| e.to_string())?;
             glance_platform::set_single_window(handle.as_raw()).map_err(|e| e.to_string())?;
+            if let Some(name) = config.frame_autosave.as_deref() {
+                glance_platform::set_frame_autosave(handle.as_raw(), name).map_err(|e| e.to_string())?;
+            }
         }
         let surface = gpu.instance.create_surface(window.clone()).map_err(|e| e.to_string())?;
         let setup = WgpuConfiguration {
@@ -354,7 +375,7 @@ impl<A: App> Running<A> {
         }
         #[cfg(windows)]
         if let (Some(menu), Ok(handle)) = (app.menu(), window.window_handle()) {
-            glance_platform::attach_menu(&menu.menu, handle.as_raw()).map_err(|e| e.to_string())?;
+            glance_platform::attach_menu(menu.menu(), handle.as_raw()).map_err(|e| e.to_string())?;
         }
         window.focus_window();
         Ok(Running {
@@ -370,6 +391,7 @@ impl<A: App> Running<A> {
             last_interval: None,
             pending: Vec::new(),
             drop_taken: false,
+            drop_at: None,
             quit: false,
         })
     }
@@ -387,6 +409,10 @@ impl<A: App> Running<A> {
             WindowEvent::HoveredFile(_) => self.drop_taken = false,
             WindowEvent::DroppedFile(path) if !self.drop_taken => {
                 self.drop_taken = true;
+                #[cfg(target_os = "macos")]
+                {
+                    self.drop_at = self.window.window_handle().ok().and_then(|h| glance_platform::pointer_in_window(h.as_raw()).ok());
+                }
                 self.pending.push(ShellEvent::Dropped(path.clone()));
             }
             _ => {}
@@ -396,12 +422,23 @@ impl<A: App> Running<A> {
 
     fn redraw(&mut self) {
         #[cfg(any(target_os = "macos", windows))]
-        self.pending.extend(menu::GlanceMenu::take_commands().into_iter().map(ShellEvent::Menu));
+        self.pending.extend(menu::take_chosen().into_iter().map(|c| match c {
+            menu::Chosen::Glance(c) => ShellEvent::Menu(c),
+            menu::Chosen::Item(id) => ShellEvent::MenuItem(id),
+        }));
         self.pending.extend(glance_platform::take_events().into_iter().map(ShellEvent::Platform));
         let raw = self.input.take_egui_input(&self.window);
-        let Running { window, gpu, render, app, ctx, last_interval, pending, quit, .. } = self;
+        let Running { window, gpu, render, app, ctx, last_interval, pending, quit, drop_at, .. } = self;
         let refresh_millihertz = window.current_monitor().and_then(|m| m.refresh_rate_millihertz());
-        let mut host = Host { gpu, renderer: &render.renderer, last_interval: *last_interval, refresh_millihertz, window: Some(window), quit: Some(quit) };
+        let mut host = Host {
+            gpu,
+            renderer: &render.renderer,
+            last_interval: *last_interval,
+            refresh_millihertz,
+            window: Some(window),
+            quit: Some(quit),
+            drop_at: *drop_at,
+        };
         for event in pending.drain(..) {
             app.event(event, &mut host);
         }
@@ -494,7 +531,11 @@ impl<A: App, F: FnOnce(&Gpu) -> Result<A, String>> ApplicationHandler for Runner
     fn window_event(&mut self, el: &ActiveEventLoop, _id: WindowId, event: WindowEvent) {
         let Some(r) = self.running.as_mut() else { return };
         match event {
-            WindowEvent::CloseRequested => el.exit(),
+            WindowEvent::CloseRequested => {
+                if r.app.close_requested() {
+                    el.exit();
+                }
+            }
             WindowEvent::RedrawRequested => {
                 r.redraw();
                 if r.app.finished() || r.quit {
@@ -525,13 +566,16 @@ pub struct ShellConfig {
     pub min_size: Option<(f64, f64)>,
     /// Take the files the OS sends ([`glance_platform::install_open_handler`] on macOS).
     pub open_files: bool,
+    /// Save and restore the window's frame under this name (macOS: `NSWindow Frame <name>` in the app's
+    /// preferences, a SwiftUI `Window(id:)` scene's key; v0.4.0).
+    pub frame_autosave: Option<String>,
 }
 
 /// Open a window titled `title` (`size` in points), build the app with `make` once the GPU exists,
 /// and run until the window closes or the app says it has finished. Must be called on the main
 /// thread.
 pub fn run<A: App>(title: &str, size: (f64, f64), make: impl FnOnce(&Gpu) -> Result<A, String>) -> Result<(), String> {
-    run_shell(ShellConfig { title: title.into(), size, min_size: None, open_files: false }, make)
+    run_shell(ShellConfig { title: title.into(), size, min_size: None, open_files: false, frame_autosave: None }, make)
 }
 
 /// [`run`] with the shell: a minimum size, and with `open_files` the files the OS sends, delivered
@@ -552,6 +596,8 @@ pub fn run_shell<A: App>(config: ShellConfig, make: impl FnOnce(&Gpu) -> Result<
             glance_platform::install_open_handler().map_err(|e| e.to_string())?;
         }
         glance_platform::install_menu_key_monitor().map_err(|e| e.to_string())?;
+        // Inert until the app says it has unsaved work (glance_platform::set_unsaved_work).
+        glance_platform::install_terminate_guard().map_err(|e| e.to_string())?;
     }
     let mut runner = Runner { config, make: Some(make), running: None, error: None };
     el.run_app(&mut runner).map_err(|e| e.to_string())?;

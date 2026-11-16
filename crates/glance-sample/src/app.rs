@@ -356,7 +356,7 @@ impl Sample {
 }
 
 impl App for Sample {
-    fn menu(&self) -> Option<&GlanceMenu> {
+    fn menu(&self) -> Option<&dyn glance_ui::menu::MenuBar> {
         Some(&self.menu)
     }
 
@@ -388,6 +388,8 @@ impl App for Sample {
                 }
                 self.publish_now_playing();
             }
+            // The sample adds no menu items of its own and never says it has unsaved work.
+            ShellEvent::MenuItem(_) | ShellEvent::Platform(PlatformEvent::QuitRequested) => {}
             ShellEvent::Platform(PlatformEvent::DefaultHandlerSet(result)) => {
                 log(serde_json::json!({"event": "default-handler", "result": format!("{result:?}")}));
                 match result {
@@ -560,9 +562,10 @@ pub fn main() -> std::process::ExitCode {
         Ok(glance_platform::SingleInstance::Primary(lock)) => lock,
         Err(e) => return code(Err(e.to_string())),
     };
-    code(glance_ui::run_shell(ShellConfig { title: APP.into(), size: look::DEFAULT_SIZE, min_size: Some(look::MIN_SIZE), open_files: true }, move |gpu| {
-        Sample::new(gpu, first)
-    }))
+    code(glance_ui::run_shell(
+        ShellConfig { title: APP.into(), size: look::DEFAULT_SIZE, min_size: Some(look::MIN_SIZE), open_files: true, frame_autosave: None },
+        move |gpu| Sample::new(gpu, first),
+    ))
 }
 
 #[cfg(target_os = "macos")]

@@ -1,0 +1,17 @@
+launched pid 44996
+frontmost pid: 44996
+after c: 1 add-cue state(s); dirty=True
+alert words:
+   Save changes to the current cues?
+   You have unsaved cue edits. Save them before closing, or discard them.
+   CueGlance
+pressed Cancel
+after Cancel: alive
+pressed Discard
+after Discard: exited
+events:
+   {"event":"quit-requested","unix_ms":1794873271733}
+   {"answer":2,"ask":"Close","event":"prompt","unix_ms":1794873273714}
+   {"event":"quit-requested","unix_ms":1794873274808}
+   {"answer":1,"ask":"Close","event":"prompt","unix_ms":1794873276746}
+   {"event":"quit","unix_ms":1794873276746}
