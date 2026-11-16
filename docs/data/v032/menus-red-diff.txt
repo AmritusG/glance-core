@@ -23,16 +23,10 @@
 < View | Show Tab Bar |  |  | on
 < View | Show All Tabs | ' | 1 | off
 < View | --- |  |  | off
-39,43c37,40
-< View | Alpha Type > Premultiplied |  |  | on
-< View | Alpha Type > Straight |  |  | on
-< View | Toggle Alpha Type | A | 8 | on
+42,43c40
 < View | --- |  |  | off
 < View | Toggle Full Screen | F | 24 | on
 ---
-> View | Alpha Type > Premultiplied |  |  | off
-> View | Alpha Type > Straight |  |  | off
-> View | Toggle Alpha Type | A | 8 | off
 > View | Enter Full Screen | F | 24 | on
 89a87
 > Window | --- |  |  | off

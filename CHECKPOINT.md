@@ -10,9 +10,10 @@ Wave: v032-g2-fixes (patch, version 0.3.2; tag withheld, see NEXT). Brief: ~/cla
 - IMPLEMENT: File ▸ Close; muda's Toggle Full Screen removed (AppKit adds Enter Full Screen); window `tabbingMode` disallowed, excluded from the Window menu, `collectionBehavior` as Swift's; Edit and Window menus validated by AppKit (`autoenablesItems`); Edit ▸ Delete and the second separator (macOS); Help ▸ "<app> Help" ⌘? (`showHelp:`); `glance_platform::alert` gives Esc to the second of two buttons; parity Esc line; README; version 0.3.2.
 - BUILD + TEST (macOS): menu dump of the bundled sample equals Swift's but for the app name (`menus-green-diff.txt` empty); Help shows "Help isn't available for …" in both (`help-*.txt`); Esc on the two-button alert: v0.3.1 nothing (`red-alert-esc.txt`), v0.3.2 → 1 "Not Now", Return → 0 (`green-alert-*.txt`). Gates: fmt, clippy -D warnings, `GLANCE_REQUIRE_GPU=1` tests 71 passed 0 failed, deny ok, build ok. Probes deleted (sources kept in `docs/data/v032/probes/`).
 
+- Committed 8c90e4d on main, pushed; CI run 43902765934 green (lint, macos, windows). Verifier on the handoff draft: 49 confirmed / 14 unproven / 6 wrong. All six wrong ones corrected: winit history, which runs were safe, the three alive-but-not-opened tries, the repro steps, the stale RED diff (regenerated), and a stale `com.amritus.glancecore.swiftref` LaunchServices record from 2026-11-15 (unregistered). Session-only evidence saved to `docs/data/v032/session-evidence.txt`. Handoff `docs/handoffs/v032-g2-fixes.md` (STATUS BLOCKED), mailbox copy, note for glance-rs `~/claude-handoffs/glance-rs_2026-11-16_note-from-glance-core-v032.md`.
+
 ## NEXT
-- Commit + push this state, CI green, handoff `docs/handoffs/v032-g2-fixes.md` (STATUS BLOCKED) + mailbox copy + note for glance-rs.
-- Then Amrit decides the crash (one line in the handoff): tag v0.3.2 without a crash fix and report the CoreDrag bug to Apple, or hold the tag. The drop crash cannot reach 0/20 from the core without his call.
+- Amrit decides the crash (one line in the handoff): tag v0.3.2 without a crash fix and report the CoreDrag bug to Apple, or hold the tag. The drop crash cannot reach 0/20 from the core without his call.
 
 ## STATE
 - Drop fixtures: the repo's own `tests/fixtures/tiles_dxt1.mov`, `tiles_hap1.mov`, `tiles_dxt5.mov` (copies with `cp -p` outside ~/Documents for the Swift build, which asks for Documents access; that prompt was answered "Don't Allow").

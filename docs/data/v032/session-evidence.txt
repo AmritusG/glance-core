@@ -1,0 +1,54 @@
+v0.3.2 evidence copied from this session's tool output (2026-11-16). These lines were printed to the session
+transcript, not to files; they are quoted verbatim (whitespace trimmed).
+
+== The safe drop tool refusing (each time the run stopped; nothing was dropped)
+try 1: ABORT: start point is under Dock (pid 799), not this tool; title after drop [min]; app alive; new crash reports: 0
+  -> list-at.swift showed the Dock's screen-sized layer-20 overlay "Dock 20 1 Dock (0.0, 0.0, 1728.0, 1117.0)"; the
+     tool now skips only a Dock-owned window whose bounds equal the main display's.
+try 1: ABORT: start point is under Notification Centre (pid 1248), not this tool; title after drop [min]; app alive; new crash reports: 0
+try 3: ABORT: drop point is under UserNotificationCenter layer 8 (734.0, 203.0, 260.0, 334.0) (pid 92864), not pid 4955; title after drop [min]; app alive; new crash reports: 0
+  -> that window's text: "glance-sample quit unexpectedly., Click Reopen to open the application again. ..." buttons
+     Reopen, Ignore, Report…; dismissed with tools dismiss-crash.sh (Ignore): "1", then 0 left.
+
+== Crash dialog setting
+`defaults read com.apple.CrashReporter DialogType` before the write: "Could not find key 'DialogType' in domain
+'com.apple.CrashReporter'." (crashreporter-dialogtype-before.txt). After `write ... none` the dialog still appeared
+(above). `defaults delete` restored it; read after: "Could not find key".
+
+== Swift reference (scratch build of .ref/glance a9dc601, re-signed copy with get-task-allow), lldb, clip open via argv
+[[NSApp windowsMenu] itemArray]:
+  Minimize (performMiniaturize:), Zoom (performZoom:), separator, separator, Bring All to Front (arrangeInFront:)
+[[NSApp windows] valueForKey:]: className SwiftUI.AppKitWindow; title "Glance" (argv opened no clip);
+  tabbingMode 2; collectionBehavior 65664; excludedFromWindowsMenu 1; tabbingIdentifier SwiftUI-SingleWindow-player
+[NSWindow allowsAutomaticWindowTabbing]: 1
+After a menu dump (Window menu opened), both apps list:
+  "Remove Window from Set, action: _removeWindowFromStageManagerSet:"; Swift keyWindow/mainWindow class SwiftUI.AppKitWindow
+Our sample (before the Window-menu autoenable): windows WinitWindow, TUINSWindow; tabbingMode 2, 0;
+  collectionBehavior 65664, 0; excludedFromWindowsMenu 1, 0; visible 1, 0. Excluding TUINSWindow too left
+  "Window | Remove Window from Set |  |  | on" (so not the cause); AppKit validation of the Window menu was.
+
+== Opening the Swift reference
+Launched with a path in argv: window title "Glance", Alpha Type items off (no clip opened).
+`open -a "…/Glance SwiftRef.app" ~/Documents/…/tests/fixtures/tiles_dxt5.mov`: no window; on screen a
+UserNotificationCenter alert: "“Glance SwiftRef” would like to access files in your Documents folder." buttons
+Don’t Allow, Allow -> pressed "Don’t Allow" (nothing granted); then 0 windows left.
+`open -a` with a `cp -p` copy of the clip in the scratchpad: title "tiles_dxt5.mov  [DXV3 alpha]  [LOOP] – 128×72 · 30fps · 0:01".
+
+== HIServices disassembly (lldb `disassemble -n`, macOS 27.0.1), excerpts
+RemotePortInvalidationCallback: ... ldr x0, [x8, #0x358] ; bl CoreDragTerminate
+CoreDragTerminate: ... bl GetDragInfo ; cbz w0 -> mov w0, #-0x73a (-1850) ; ... tbnz w9, #0x2 ; mov w1, #0x0 ; bl CoreDragEndDragging
+CoreDragDisposeReceiver: b CoreDragDispose
+BuildIPCPackage: mov x20, x0 ; add x0, x0, #0x74 ; bl (the faulting AESizeOfFlattenedDesc, frame 0) ; ... later
+  add x0, x20, #0x74 ; bl … ; then the dictionary key @"IPCDropLocation_02" — the desc at DragInfo+0x74 feeds the
+  drop-location entry of the IPC package.
+
+== Alert probe, Return run that was discarded
+"STOP: frontmost pid 67128, probe 28103, buttons []: no key sent" while the probe had already printed "answer Ok(0)"
+(a key from outside the run reached it). Check without any key: "alert still up after 8 s with no key (good)".
+
+== Help on our sample
+help-check.sh's OK press did not close ours (the process then had 2 windows); the alert is in-process and went with
+`kill`; list-front.swift right after: first window "Dock 799 20 Dock" (nothing of ours or any alert on screen).
+
+== Swift Glance in G2
+glance-rs docs/data/g2-runs/drop-crash-1..3.txt: 0 crashes in 16 Swift tries (as quoted in the g2-findings-r2 brief).

@@ -1,0 +1,4 @@
+4883018712e04ddbbfaab7f287e25c1692ec5eea544c69d1814afba7139ce229 docs/data/v032/probes/menu-dump.swift
+4883018712e04ddbbfaab7f287e25c1692ec5eea544c69d1814afba7139ce229 ../glance-rs/tools/menu-dump.swift
+bfb63b0315241d66dcbe4a8dfb4e7a65013b172fea4c4429fe91acae4832ce5c docs/data/v032/probes/window-id.swift
+bfb63b0315241d66dcbe4a8dfb4e7a65013b172fea4c4429fe91acae4832ce5c ../glance-rs/tools/window-id.swift
