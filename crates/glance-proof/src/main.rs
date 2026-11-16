@@ -17,7 +17,8 @@
 //! for unattended measurements), `--no-audio` plays the picture on the wall clock, `--pace N`
 //! takes a new frame only every N-th display refresh (N = 2 on a 120 Hz display is a 60 Hz
 //! cadence), `--no-loop` stops at the last frame, `--display` opens the window centred on the display
-//! of that name (as `system_profiler SPDisplaysDataType` names it; the report records the display). `scrub` drags a clip's scrubber to a new random
+//! of that name as winit names it (macOS: "Monitor #<model number>"; a wrong name prints the names
+//! there; the report records the display). `scrub` drags a clip's scrubber to a new random
 //! frame every 8 ms without a window and times each request. `reroute` changes the output device's
 //! rate while a clip's sound plays and measures the sound's speed before and after ([`reroute`]).
 //! `verify` runs the 0-difference render harness without a window ([`verify`]); `hapq` measures

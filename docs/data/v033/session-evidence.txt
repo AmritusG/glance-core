@@ -1,0 +1,50 @@
+Session-only evidence, glance-core 60hz-and-v033 (2026-11-16, <session>). Copied verbatim from the
+session's command output; not saved to files at the time.
+
+== Amrit's answer (AskUserQuestion, about 22:07)
+Q: For the v0.3.3 Show All check with one app hidden (both Glance builds should then show Show All on): which of your apps
+   may I hide (Hide via System Events, then unhide it right after), or skip this check?
+A: "Hide Terminal"
+
+== Display names as winit 0.30 gives them (glance-proof --display x, 21:41)
+glance-proof: no display named x (displays: Monitor #41055, Monitor #53534)
+(41055 = built-in model number, 53534 = PT-RZ570 model number; displays.txt)
+
+== Wait before Part A
+21:4x: ps showed ./target/release/tl-play (cwd <another project>, another session) "run --file
+var/cache/media/hapy_1080_dxt5src.mov --mode genlock --frame-code --seconds 128"; the runs started after it ended and
+30 s with no rustc / cargo / tl-play (21:50:24). The other session started tl-play again during the runs (load.txt).
+
+== A/B, sample only, alternating, full dump 4 s after open -a (22:03-22:05; dumps in ab/)
+The frontmost app was read just before each dump (osascript System Events). The awk columns in the original
+print were wrong (empty); the Minimize / Show All values were re-read from the saved dumps right after:
+red 1 front=glance-sample   lines=94   | red-1 minimize=on showall=on
+green 1 front=glance-sample lines=94   | green-1 minimize=on showall=off
+red 2 front=glance-sample   lines=94   | red-2 minimize=on showall=on
+green 2 front=glance-sample lines=94   | green-2 minimize=on showall=off
+red 3 front=glance-sample   lines=89   | red-3 minimize=off showall=on
+green 3 front=Finder        lines=89   | green-3 minimize=off showall=off
+red 4 front=Finder          lines=89   | red-4 minimize=off showall=on
+green 4 front=Finder        lines=89   | green-4 minimize=off showall=off
+red 5 front=Finder          lines=89   | red-5 minimize=off showall=on
+green 5 front=Claude        lines=89   | green-5 minimize=off showall=off
+
+== winprobe.sh (22:02-22:03): System Events windows of the sample at ~1..8 s, then the Window menu at ~8 s
+green t~1s..t~8s (7 reads, identical): front=[glance-sample] wins=[tiles_dxt5.mov  [DXV3 Normal Quality With Alpha]  [LOOP] – 128×72 · 30fps · 0:01, true, true, 384, 123, 960, 648]
+Window | Minimize | M | 0 | on
+Window | Zoom |  |  | on
+Window | Full Screen Tile |  |  | on
+red t~1s..t~8s (7 reads, identical): front=[glance-sample] wins=[tiles_dxt5.mov  [DXV3 Normal Quality With Alpha]  [LOOP] – 128×72 · 30fps · 0:01, true, true, 384, 123, 960, 648]
+Window | Minimize | M | 0 | on
+Window | Zoom |  |  | on
+Window | Full Screen Tile |  |  | on
+(wins = name, AXMain, AXFocused, position, size)
+
+== Binaries
+GREEN sample: target/release/glance-sample built 22:00:39 after the finish_app_menus edit (macos.rs 22:00:37); it
+contains the string "no app menu (a Show All item) in the menu bar" (strings | grep -c: 1). The RED one does not.
+Later changes before the tag: cargo fmt (one glance-proof line), version 0.3.2 -> 0.3.3, README; no menu code.
+
+== Terminal hide / show (22:09)
+osascript System Events: set visible of process "Terminal" to false -> "Terminal visible: false"; dumps; set visible
+true (also in an EXIT trap) -> "Terminal visible after: true".

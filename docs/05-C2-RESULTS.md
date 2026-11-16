@@ -70,10 +70,13 @@ of the built-in display; its settings were not touched (`docs/data/v033-60hz/dis
 (`tools/c2-measure.sh <synth> <out> 1 "Monitor #53534"`), release build, plus one CSV row per refresh.
 Raw: `docs/data/v033-60hz/pass1/`, `pass2/`, `summary.txt`.
 
-Load (sampled every 5 s, `load.txt`): Arena open the whole time (25–46 % CPU; Arena untouched by
-this brief); another session's Rust builds (rustc up to 620 % CPU) and a Time Machine backup ran
-during about half of the runs, from 21:50 to 21:57. None of it started by this session. Not an
-idle machine.
+Load (`top`-style samples every 5 s, 84 samples, `load.txt`): Arena open the whole time (25–46 % CPU;
+untouched by this brief); two long-running Python processes up to 880 % (39 samples, 21:50–21:57);
+another session's Rust builds (rustc up to 624 %, 21:50:42–21:54:29; clang) and its `tl-play` playback
+runs again (21:53:23–28 and 21:55:24–21:57:30, after the wait for the first one to end); another project's app
+`tkapp_check` up to 170 % and `ui_crawl` 97 %; a Time Machine backup (`backupd` up to 122 %,
+21:51–21:55); Spotlight, photo analysis, Chrome. Load beyond Arena sat in nearly every run. Not an
+idle machine; nothing of it was started by the measuring.
 
 | Run (as above) | pass 1 skipped / shown | presents p95 / max (ms) | pass 2 skipped / shown | presents p95 / max (ms) |
 |---|---|---|---|---|
@@ -98,7 +101,8 @@ idle machine.
   1 in 4, 15 in one (hap1080-hap pass 2), with no skip.
 - Against the simulated cadence above (pace 2 on the 120 Hz display: 4 of 26 runs of passes 1–2
   skipped 1–3 frames): there the clock was asked for a frame every second *present*, so two late
-  presents in a row left a 33 ms gap; on the real 60 Hz display the clock is asked at every refresh,
+  presents in a row could leave a 33 ms gap (the mechanism of §1; those pass-1 runs have no
+  per-refresh log, so their skips are not matched to single presents); on the real 60 Hz display the clock is asked at every refresh,
   and the presents came steadily (p50 16.67 ms), so the bursts measured at 120 Hz did not occur here.
 
 ## 2. A/V offset
