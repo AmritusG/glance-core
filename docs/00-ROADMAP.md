@@ -90,7 +90,7 @@ is missing comes back as a brief to this repo.
   crates at the same tag). `Cargo.lock` is committed in every app repo. A core change an app needs
   is made in this repo, tagged, then the app bumps its pin in its own commit — the same discipline
   the Swift apps use for Glance and SendEhrKit pins.
-- **The core pins DXVKit Plus by tag** in the workspace `Cargo.toml` (now `v0.12.0`, 4343fe9: the encoders and the QuickTime writer; before `v0.11.0`, 29fa9f5: audio tracks and real frame
+- **The core pins DXVKit Plus by tag** in the workspace `Cargo.toml` (now 0.14.0 by commit, 59695e2: the Media Foundation reader, its tag to follow the Windows run; it holds `v0.13.0`, c61b1bc: MaCrate's AVFoundation track facts, plane reader and picture grab; before `v0.12.0`, 4343fe9: the encoders and the QuickTime writer; `v0.11.0`, 29fa9f5: audio tracks and real frame
   starts; C1 ran on `v0.8.0`, W0 on `v0.7.1`). Apps never
   depend on DXVKit Plus directly: one version of the decoders per app, chosen by the core.
 - **One wgpu major** across DXVKit Plus, glance-core, the apps and loombda-rs (now 30.x), and the

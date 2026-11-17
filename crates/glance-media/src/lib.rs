@@ -42,6 +42,14 @@ pub use dxvkit_plus_core::names::{self, unsupported_message};
 // The whole demuxer, DXV and HAP modules, for MaCrate's measurement scanner, which reads the stored blocks and texture
 // sections itself (the lab's 4-aligned layout, raw HAP sections) rather than a finished picture (v0.7.0).
 pub use dxvkit_plus_core::{container, dxv, hap};
+// AVFoundation's own view of a native clip, on the CPU, for MaCrate (DXVKit Plus v0.13.0, macOS): the first video
+// track's facts as Swift MaCrate's measurement source reads them (`track_facts`), its decoded frames' plane 0 — BGRA,
+// or the Y plane of 420v / 420f — in reading order (`PlaneReader`), and one picture at a time as the thumbnail grid
+// grabs it (`FrameGrabber`, `AVAssetImageGenerator` with the preferred transform, RGBA8). Failures carry the NSError.
+#[cfg(target_os = "macos")]
+pub use dxvkit_plus_apple::{
+    AvError, FrameGrabber, GrabAlpha, GrabbedImage, PlaneFormat, PlaneFrame, PlaneInfo, PlaneReader, THUMBNAIL_MAX_SIZE, TrackFacts, track_facts,
+};
 
 pub use dxvkit_plus_core::MediaError;
 pub use dxvkit_plus_core::audio::{AudioBlock, AudioCodec, AudioInfo, AudioReader};
