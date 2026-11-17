@@ -253,19 +253,19 @@ fn hostile_files_give_a_message_never_a_crash_or_a_hang() {
     assert!(cases > 2900 && refused > 500, "{cases} {refused}");
 }
 
-/// Amrit's own adversarial files and every other clip of the test folder (read-only; skipped on a
-/// machine without it): each comes back within the limit.
+/// Amrit's own adversarial files and every other clip of the test folder (read-only; skipped unless
+/// `GLANCE_TESTFILES` names it): each comes back within the limit.
 #[test]
 fn amrits_test_files_come_back() {
     let Some(root) = support::testfiles() else {
-        eprintln!("SKIP: Amrit's test media is not on this machine");
+        eprintln!("SKIP: GLANCE_TESTFILES does not name Amrit's test media folder");
         return;
     };
     let (files, refused) = within(Duration::from_secs(600), "Amrit's test files", move || {
         let (mut files, mut refused) = (0u32, Vec::new());
         for line in include_str!("../../../tests/data/swift-glance-testfiles.tsv").lines() {
             let name = line.split('\t').next().unwrap();
-            if let Err(e) = exercise(&root.join(name)) {
+            if let Err(e) = exercise(&support::testfile(&root, name)) {
                 refused.push(format!("{name}: {}", e.message));
             }
             files += 1;

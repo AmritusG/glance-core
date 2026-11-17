@@ -44,7 +44,7 @@ created in the wave that fills it, never as an empty stub.
    `todo`, `unreachable` denied) apply to all non-test code: every failure is a value.
 4. **Other repos are read-only.** `.ref/` holds clones for reading (gitignored). Work for another
    repo leaves as `~/claude-handoffs/<Repo>_<date>_<slug>_brief.md`.
-5. **Parity is judged against the Swift source, not its docs.** `docs/research/*.md` lists where
+5. **Parity is judged against the Swift source, not its docs.** `docs/research/*.md` (kept privately since the history was cleaned for publishing; `docs/research/README.md`) lists where
    they disagree; the code wins.
 6. **Alpha.** Frames are decoded as stored. DXV alpha is the user's per-clip Alpha Type
    (Premultiplied default / Straight); HAP alpha is straight; the choice is a uniform in the
@@ -71,8 +71,8 @@ cargo build --release
 The exactness bar is a test: the picture equals the CPU reference at max 0 (`crates/glance-gpu/tests/exact.rs`),
 window-scaled within 1 (`crates/glance-ui/tests/screen.rs`). A change that moves either is not done.
 GPU tests skip on a machine without a GPU; on the home machine run them with `GLANCE_REQUIRE_GPU=1`
-so a skip is a failure. Tests on Amrit's media skip where the folder is absent (`GLANCE_TESTFILES`
-names another one). CI (`.github/workflows/ci.yml`) runs the gates on every push; a tag is made
+so a skip is a failure. Tests on Amrit's media run only when `GLANCE_TESTFILES` names its folder (they skip otherwise;
+on the home machine set it for every gate run). CI (`.github/workflows/ci.yml`) runs the gates on every push; a tag is made
 only from a green `main`. Fixtures and their licences: `tests/fixtures/`, `ATTRIBUTION.md`.
 
 GUI runs: `pgrep -x glance-proof` / `pkill -9 -x glance-proof` before and after (exact name, never

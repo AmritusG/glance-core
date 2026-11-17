@@ -13,7 +13,7 @@ use std::path::Path;
 
 #[path = "../../../tests/support/movie.rs"]
 mod support;
-use support::{Kind, Scratch, fixtures, testfiles};
+use support::{Kind, Scratch, fixtures, testfile, testfiles};
 
 /// What was compared, to pin that nothing was skipped.
 #[derive(Debug, Default, PartialEq, Eq)]
@@ -31,7 +31,7 @@ fn compare(table: &str, root: &Path) -> Counts {
     for row in table.lines() {
         let col: Vec<&str> = row.split('\t').collect();
         let [name, swift_route, message, fourcc, shown_as, key, kind, look, samples, exceeding] = col[..] else { panic!("malformed line: {row}") };
-        let path = root.join(name);
+        let path = testfile(root, name);
         let mut check = |what: &str, ours: String, swift: &str| {
             if ours != swift {
                 wrong.push(format!("{name}: {what}: Rust {ours:?}, Swift {swift:?}"));
@@ -97,11 +97,11 @@ fn the_committed_fixtures_route_key_and_probe_as_in_swift_glance() {
     assert_eq!(counts, Counts { files: 52, keys: 35, hints: 12, unsupported: 3 });
 }
 
-/// The same on Amrit's own test media (174 files; skipped on a machine without the folder).
+/// The same on Amrit's own test media (174 files; skipped unless `GLANCE_TESTFILES` names the folder).
 #[test]
 fn amrits_test_files_route_key_and_probe_as_in_swift_glance() {
     let Some(root) = testfiles() else {
-        eprintln!("SKIP: Amrit's test media is not on this machine");
+        eprintln!("SKIP: GLANCE_TESTFILES does not name Amrit's test media folder");
         return;
     };
     let counts = compare(include_str!("../../../tests/data/swift-glance-testfiles.tsv"), &root);

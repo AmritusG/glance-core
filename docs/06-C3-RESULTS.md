@@ -71,8 +71,8 @@ the same clip. The fit rule is the same formula with the overlap 0.
 
 ## 4. The look against Swift Glance
 
-Side-by-side captures on `DXT5-DXV3.mov` at the default size: `docs/data/c3-look/` (for Amrit's
-review in G2; Claude judged numbers, not the pictures). Bands from the bottom of each window, the
+Side-by-side captures on `DXT5-DXV3.mov` at the default size, for Amrit's review in G2 (not in the
+public history: `docs/data/c3-look/README.md`; Claude judged numbers, not the pictures). Bands from the bottom of each window, the
 most common colour across each row (`tools/c3-look-stats.py`, `docs/data/c3-look/stats.txt`):
 
 | Band | Swift Glance | Rust (glance-sample) |

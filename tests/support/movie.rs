@@ -273,12 +273,51 @@ pub fn reserved_bc7(w: u32, h: u32) -> Vec<u8> {
 /// multiples of 16 (DXV's coded size), 1080p and 2160p.
 pub const SIZES: [(u32, u32); 9] = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 7), (15, 9), (17, 33), (1920, 1080), (3840, 2160)];
 
-/// Amrit's own test media (read-only, never copied into the repo), when this machine has it:
-/// `GLANCE_TESTFILES`, else the folder the W0 proof used.
+/// Amrit's own test media (read-only, never copied into the repo), when `GLANCE_TESTFILES` names
+/// its folder on this machine; unset, or not a folder: `None`, and the tests on it skip.
 pub fn testfiles() -> Option<PathBuf> {
-    let dir =
-        std::env::var_os("GLANCE_TESTFILES").map_or_else(|| PathBuf::from("<testfiles>"), PathBuf::from);
+    let dir = PathBuf::from(std::env::var_os("GLANCE_TESTFILES")?);
     dir.is_dir().then_some(dir)
+}
+
+/// The file of the test folder `root` that `tests/data/swift-glance-testfiles.tsv` names `name`.
+/// Most rows carry the file's own name. A few carry a neutral one, because the file's own name is
+/// not ours to publish: `tests/data/testfiles-by-content.tsv` (name, size, FNV-1a 64 of the first
+/// 64 KiB) finds those by their bytes, anywhere under `root`. Not found: `root/name`, which the
+/// test then reports as missing.
+pub fn testfile(root: &Path, name: &str) -> PathBuf {
+    let direct = root.join(name);
+    if direct.exists() {
+        return direct;
+    }
+    let wanted = include_str!("../data/testfiles-by-content.tsv").lines().find_map(|row| {
+        let mut col = row.split('\t');
+        if col.next()? != name {
+            return None;
+        }
+        Some((col.next()?.parse::<u64>().ok()?, u64::from_str_radix(col.next()?, 16).ok()?))
+    });
+    let Some((size, hash)) = wanted else { return direct };
+    let mut dirs = vec![root.to_path_buf()];
+    while let Some(dir) = dirs.pop() {
+        for entry in std::fs::read_dir(&dir).into_iter().flatten().flatten() {
+            let path = entry.path();
+            match entry.metadata() {
+                Ok(m) if m.is_dir() => dirs.push(path),
+                Ok(m) if m.len() == size && head_hash(&path) == Some(hash) => return path,
+                _ => {}
+            }
+        }
+    }
+    direct
+}
+
+/// FNV-1a 64 of a file's first 64 KiB.
+fn head_hash(path: &Path) -> Option<u64> {
+    use std::io::Read;
+    let mut head = Vec::new();
+    std::fs::File::open(path).ok()?.take(65_536).read_to_end(&mut head).ok()?;
+    Some(head.iter().fold(0xcbf2_9ce4_8422_2325_u64, |h, &b| (h ^ u64::from(b)).wrapping_mul(0x0000_0100_0000_01b3)))
 }
 
 /// The committed fixtures (`tests/fixtures`, CC0 and MIT: `ATTRIBUTION.md`).
