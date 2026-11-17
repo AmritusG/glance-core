@@ -19,7 +19,7 @@
 //!   window (no tabs, not listed in the Window menu) and the system menu items SwiftUI gives it;
 //! - [`install_terminate_guard`] / [`set_unsaved_work`]: a quit through AppKit waits for an editor's question
 //!   ([`PlatformEvent::QuitRequested`]); [`set_frame_autosave`]: the window's frame saved and restored by name;
-//!   [`pointer_in_window`]: where a drop landed; [`open_path`]: open a file or folder as Finder does (v0.4.0);
+//!   [`pointer_in_window`]: where a drop landed; [`open_path`]: open a file or folder as Finder does (v0.4.0); [`reveal_in_finder`] (v0.5.0);
 //! - [`movie_files`]: a folder's movies in Finder's order ([`localized_standard_compare`],
 //!   [`conforms_to_movie`]), hidden files left out.
 //!
@@ -44,8 +44,8 @@ mod macos;
 #[cfg(target_os = "macos")]
 pub use macos::{
     Defaults, MediaKeys, alert, conforms_to_movie, finish_app_menus, install_menu_key_monitor, install_open_handler, install_terminate_guard, is_default_for,
-    localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, set_default_for, set_frame_autosave, set_single_window, set_subtitle,
-    set_unsaved_work,
+    localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, reveal_in_finder, set_default_for, set_frame_autosave,
+    set_single_window, set_subtitle, set_unsaved_work,
 };
 
 #[cfg(windows)]

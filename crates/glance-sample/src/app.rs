@@ -364,6 +364,8 @@ impl App for Sample {
         match event {
             ShellEvent::Menu(c) => self.menu_command(c, host),
             ShellEvent::Dropped(p) => self.open(&p, "drop"),
+            // The sample opens the first file of a drop, as Swift Glance does.
+            ShellEvent::DroppedAll(_) => {}
             ShellEvent::Platform(PlatformEvent::Open(paths)) => {
                 // Several files: the last one wins (Swift's `application(_:open:)`).
                 log(serde_json::json!({"event": "os-open", "paths": paths.iter().map(|p| p.display().to_string()).collect::<Vec<_>>()}));

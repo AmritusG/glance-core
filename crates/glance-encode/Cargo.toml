@@ -1,0 +1,20 @@
+[package]
+name = "glance-encode"
+description = "GlEnc's encode engine: source routing and readers, crop / resize / letterbox, the alpha and frame-rate rules, trim, audio, and the DXV / HAP / platform sinks over DXVKit Plus's encoders."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+dxvkit-plus-core = { workspace = true }
+dxvkit-plus-enc = { workspace = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+dxvkit-plus-apple = { workspace = true }

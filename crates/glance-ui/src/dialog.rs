@@ -20,6 +20,12 @@ pub fn open_movie() -> Option<PathBuf> {
     FileDialog::new().add_filter("Movie", &MOVIE_EXTENSIONS).pick_file()
 }
 
+/// GlEnc's "Add files…" (`GlEncApp.swift:186-197`): several movie files, folders not choosable; `None` when cancelled
+/// (v0.5.0). rfd has no prompt-button setting, so the button reads the system's "Open" (Swift: "Add").
+pub fn open_movies(title: &str) -> Option<Vec<PathBuf>> {
+    FileDialog::new().set_title(title).add_filter("Movie", &MOVIE_EXTENSIONS).pick_files()
+}
+
 /// An open panel for one file, titled `title`, showing files with these extensions (none: every file).
 pub fn open_file(title: &str, filter_name: &str, extensions: &[&str]) -> Option<PathBuf> {
     let mut d = FileDialog::new().set_title(title);

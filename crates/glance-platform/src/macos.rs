@@ -470,6 +470,15 @@ pub fn open_path(path: &Path) -> Result<(), PlatformError> {
     if NSWorkspace::sharedWorkspace().openURL(&url) { Ok(()) } else { Err(PlatformError::Os(format!("could not open {}", path.display()))) }
 }
 
+/// Show a file selected in a Finder window (`NSWorkspace.shared.activateFileViewerSelecting([url])`, GlEnc's
+/// "Show" button, `JobCardView.swift:208`; v0.5.0).
+pub fn reveal_in_finder(path: &Path) -> Result<(), PlatformError> {
+    let url = NSURL::from_file_path(path).ok_or_else(|| PlatformError::Os(format!("not a file path: {}", path.display())))?;
+    let urls = NSArray::from_retained_slice(&[url]);
+    NSWorkspace::sharedWorkspace().activateFileViewerSelectingURLs(&urls);
+    Ok(())
+}
+
 /// The system items Swift Glance's menu bar has from SwiftUI / AppKit, added to the menu bar the
 /// app set (`NSApp.mainMenu`, Help menu set as `NSApp.helpMenu`):
 /// - the app, Edit (found by its Undo or, for an editor whose Undo is its own item, its Copy) and Window menus'

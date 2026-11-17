@@ -114,6 +114,9 @@ pub enum ShellEvent {
     /// The first file of a drop on the window (Swift opens the first dropped URL, any type); where it landed is
     /// [`Host::drop_position`].
     Dropped(PathBuf),
+    /// Every file of a drop on the window, in the order the OS gave them, delivered after [`ShellEvent::Dropped`]
+    /// (GlEnc queues them all; v0.5.0).
+    DroppedAll(Vec<PathBuf>),
     /// A menu item the app added itself (its muda id): [`menu::MenuBar`].
     #[cfg(any(target_os = "macos", windows))]
     MenuItem(String),
@@ -312,6 +315,8 @@ struct Running<A> {
     pending: Vec<ShellEvent>,
     /// A drop's first file was taken; the rest of that drop is ignored.
     drop_taken: bool,
+    /// The files of the current drop (winit sends one event per file).
+    drop_all: Vec<PathBuf>,
     /// Where it landed.
     drop_at: Option<(f64, f64)>,
     quit: bool,
@@ -391,6 +396,7 @@ impl<A: App> Running<A> {
             last_interval: None,
             pending: Vec::new(),
             drop_taken: false,
+            drop_all: Vec::new(),
             drop_at: None,
             quit: false,
         })
@@ -407,7 +413,9 @@ impl<A: App> Running<A> {
         }
         match event {
             WindowEvent::HoveredFile(_) => self.drop_taken = false,
+            WindowEvent::DroppedFile(path) if self.drop_taken => self.drop_all.push(path.clone()),
             WindowEvent::DroppedFile(path) if !self.drop_taken => {
+                self.drop_all = vec![path.clone()];
                 self.drop_taken = true;
                 #[cfg(target_os = "macos")]
                 {
@@ -427,6 +435,9 @@ impl<A: App> Running<A> {
             menu::Chosen::Item(id) => ShellEvent::MenuItem(id),
         }));
         self.pending.extend(glance_platform::take_events().into_iter().map(ShellEvent::Platform));
+        if !self.drop_all.is_empty() {
+            self.pending.push(ShellEvent::DroppedAll(std::mem::take(&mut self.drop_all)));
+        }
         let raw = self.input.take_egui_input(&self.window);
         let Running { window, gpu, render, app, ctx, last_interval, pending, quit, drop_at, .. } = self;
         let refresh_millihertz = window.current_monitor().and_then(|m| m.refresh_rate_millihertz());
