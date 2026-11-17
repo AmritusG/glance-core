@@ -64,9 +64,18 @@ main: 8e37377 → b187b6e (rewritten) + 4ae1791 (the publish tip). For v0.3.3, v
 |---|---|---|---|---|
 | glance-rs (1f20339) | v0.3.3 | 6816383 → ea3374f | 19 passed / 0 failed | 44087710651 green (lint, macos, windows) |
 | cueglance-rs (3261caf) | v0.4.0 | 0e8cb32 → 46b53e7 | 69 / 0 | 44088181135 green (lint, macos, windows) |
-| glenc-rs (8605aa5) | v0.5.0 | 65dfda7 → 49fdbe8 | 232 / 0 | 44131258624: lint, windows green; macos cancelled 3 times, never started ("not acquired by Runner of type hosted"; see the mailbox result) |
+| glenc-rs (8605aa5) | v0.5.0 | 65dfda7 → 49fdbe8 | 232 / 0 | 44131258624: lint, windows green; **macos cancelled 4 times, never started** ("not acquired by Runner of type hosted") |
 
 ## Deviations and notes
+
+- **OPEN: glenc-rs's macOS CI job never got a runner.** Four attempts (16:55–18:08 UTC) each queued 15 minutes and
+  were cancelled by GitHub ("The job was not acquired by Runner of type hosted even after multiple attempts"; "Due to
+  capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times"). In the same window the
+  public glance-core's macOS job (run 44140024833) ran and passed, and earlier glance-rs and cueglance-rs (private) did
+  too. GitHub status: all operational. So it looks like a limit on macOS runners for private repositories on this
+  account (Actions minutes or quota; reading the usage needs the `user` scope). The workflow is the same as
+  cueglance-rs's; glenc-rs's gates pass locally on macOS (232 / 0). Amrit: check Settings → Billing → Actions usage,
+  then re-run (`gh run rerun 44131258624 --failed -R AmritusG/glenc-rs`).
 
 - **Delete + re-create** instead of a plain visibility change (Amrit's choice, above). The brief's force-push and
   visibility steps were done first; the material was public for about 3 minutes before the repo went private again.
