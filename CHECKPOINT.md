@@ -8,13 +8,12 @@ Wave: v050-encode (minor, version 0.5.0), made by the GlEnc goal run. Brief: ~/c
 - Docs: CLAUDE.md layout, ROADMAP (crate table, v0.5.0 line, DXVKit pin), PARITY (writers straight alpha ticked).
 
 ## NEXT
-- Commit, push, CI green, annotated tag v0.5.0; glenc-rs pins v0.5.0.
+- Wave closed: 65dfda7 pushed, CI run 44053256996 green (lint, macos, windows), annotated tag v0.5.0 → 65dfda7. glenc-rs pins v0.5.0.
 
 ## STATE
 - glenc-rs drives this release; its CHECKPOINT holds the goal's state.
 
 ## OPEN
-- [ ] commit, push, CI green, tag v0.5.0
 
 ## IDEAS
 - Windows: Media Foundation reader / writer behind glance-encode's platform module (with DXVKit Plus's Windows backend).
