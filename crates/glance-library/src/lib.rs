@@ -10,6 +10,7 @@ pub mod roots;
 pub mod thumbkey;
 
 pub mod alpha_probe;
+pub mod brief_import;
 pub mod dump;
 pub mod error;
 pub mod filter;
