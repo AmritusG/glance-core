@@ -26,3 +26,14 @@ pacing in glance-ui (never an egui viewport), borderless fullscreen on a chosen 
 - Live, in GlancEhr on a virtual second screen (CGVirtualDisplay, GlancEhr's `tools/virtual-screen.swift`): sent at
   launch to the remembered screen, closed on unplug, sent again on replug (new display id, found by name), full
   screen with no menu bar (GlancEhr `docs/handoffs/w1-*.md`).
+
+## Addendum: unattended running (GlancEhr wave 3)
+
+- `glance-platform::unattended`: `StayAwake` (macOS IOPM `PreventUserIdleDisplaySleep`; Windows `PowerCreateRequest` +
+  `PowerSetRequest` display + system), `login_item` / `set_login_item` (macOS `SMAppService.mainApp`; Windows the
+  per-user Run key, `StartupApproved` read, never written). A new file, so it does not touch `macos.rs` work in flight.
+- Measured from GlancEhr: `pmset -g assertions` lists "GlancEhr is playing a show"; a test bundle registered (On) and
+  unregistered (Off). Windows: `cargo clippy -p glance-platform --target x86_64-pc-windows-msvc` clean here; the Windows
+  CI job builds it.
+- Seen while gating: `glance-library`'s `test_media_reads_as_swift_reads_it` fails on this Mac (182 files, expects 183)
+  with or without this change: for the v0.6.0 (MaCrate) wave.

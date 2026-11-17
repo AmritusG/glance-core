@@ -39,6 +39,9 @@ use std::sync::Mutex;
 mod value;
 pub use value::Value;
 
+mod unattended;
+pub use unattended::{LoginItem, StayAwake, login_item, set_login_item};
+
 #[cfg(target_os = "macos")]
 mod macos;
 #[cfg(target_os = "macos")]
