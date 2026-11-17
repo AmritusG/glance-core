@@ -530,7 +530,7 @@ checksum = "d8b14ccef22fc6f5a8f4d7d768562a182c04ce9a3b3157b91390b52ddfdf1a76"
 [[package]]
 name = "dxvkit-plus-apple"
 version = "0.14.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=7997ec6a146d9136c60425a5d76e46f48c683a37#7997ec6a146d9136c60425a5d76e46f48c683a37"
 dependencies = [
  "block2 0.6.2",
  "dxvkit-plus-core",
@@ -552,7 +552,7 @@ dependencies = [
 [[package]]
 name = "dxvkit-plus-core"
 version = "0.14.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=7997ec6a146d9136c60425a5d76e46f48c683a37#7997ec6a146d9136c60425a5d76e46f48c683a37"
 dependencies = [
  "png",
  "serde",
@@ -563,12 +563,12 @@ dependencies = [
 [[package]]
 name = "dxvkit-plus-enc"
 version = "0.14.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=7997ec6a146d9136c60425a5d76e46f48c683a37#7997ec6a146d9136c60425a5d76e46f48c683a37"
 
 [[package]]
 name = "dxvkit-plus-wgpu"
 version = "0.14.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=7997ec6a146d9136c60425a5d76e46f48c683a37#7997ec6a146d9136c60425a5d76e46f48c683a37"
 dependencies = [
  "bytemuck",
  "dxvkit-plus-core",
@@ -579,7 +579,7 @@ dependencies = [
 [[package]]
 name = "dxvkit-plus-windows"
 version = "0.14.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=7997ec6a146d9136c60425a5d76e46f48c683a37#7997ec6a146d9136c60425a5d76e46f48c683a37"
 dependencies = [
  "dxvkit-plus-core",
  "windows",

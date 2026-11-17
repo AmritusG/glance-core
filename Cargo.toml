@@ -25,12 +25,12 @@ glance-library = { path = "crates/glance-library" }
 glance-arena = { path = "crates/glance-arena" }
 # Decoders, demux, transport and BC upload are DXVKit Plus's (MIT, Amrit's own): the core never
 # carries a second copy of a decoder. Pinned by tag; bumped deliberately (docs/00-ROADMAP.md §4).
-dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "35fb002177259314d92802d6ce32eb6176806eff" }
-dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "35fb002177259314d92802d6ce32eb6176806eff" }
-dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "35fb002177259314d92802d6ce32eb6176806eff" }
-dxvkit-plus-enc = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "35fb002177259314d92802d6ce32eb6176806eff" }
+dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "7997ec6a146d9136c60425a5d76e46f48c683a37" }
+dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "7997ec6a146d9136c60425a5d76e46f48c683a37" }
+dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "7997ec6a146d9136c60425a5d76e46f48c683a37" }
+dxvkit-plus-enc = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "7997ec6a146d9136c60425a5d76e46f48c683a37" }
 # Windows: the Media Foundation reader (0.14.0, pinned by commit until its tag follows the Windows run).
-dxvkit-plus-windows = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "35fb002177259314d92802d6ce32eb6176806eff" }
+dxvkit-plus-windows = { git = "https://github.com/AmritusG/DXVKit-Plus", rev = "7997ec6a146d9136c60425a5d76e46f48c683a37" }
 # One wgpu major across DXVKit Plus, loombda-rs and egui 0.36 (which requires wgpu ^30).
 wgpu = "30.0.1"
 egui = { version = "0.36.2", default-features = false }
