@@ -1,0 +1,32 @@
+# glance-core public check, 2026-11-17 (after delete + re-create)
+$ gh repo view AmritusG/glance-core --json visibility,licenseInfo,createdAt
+{"createdAt":"2026-11-17T12:53:59Z","licenseInfo":{"key":"mit","name":"MIT License","nickname":""},"visibility":"PUBLIC"}
+$ env -i HOME=<empty> GIT_CONFIG_NOSYSTEM=1 GIT_TERMINAL_PROMPT=0 git ls-remote https://github.com/AmritusG/glance-core.git   (no credentials)
+4ae1791444f59ed1e25414625c4096c1dbea5a9d	HEAD
+4ae1791444f59ed1e25414625c4096c1dbea5a9d	refs/heads/main
+dce27bf368e3c12417e9ecebe1f7d3dcf2b697fd	refs/tags/v0.1.0
+39fde1a3bf79a5e02949da63037593dce060827f	refs/tags/v0.1.0^{}
+e95ca3d34d82bd3bcfa554b36159b4405204fda9	refs/tags/v0.2.0
+211e0b16561ec4de284bba1e6cd64ba7674153d0	refs/tags/v0.2.0^{}
+cac2072328f25a951b69548803f0f7687037aa4f	refs/tags/v0.3.0
+0ffe8a4461fedf07795cc1ee52ba42c65a2a030d	refs/tags/v0.3.0^{}
+3506a2f5e4de3826a6144f80c251eb246ae9c978	refs/tags/v0.3.1
+50a469b5b702c5deac97c0a28cf2c24b0894eaac	refs/tags/v0.3.1^{}
+3e5e079e495ffe0329b2fbfca8223f97a1113642	refs/tags/v0.3.2
+5a4d70080047033a3064d1d10d9b7f871fc87452	refs/tags/v0.3.2^{}
+19b376e1a774ef70ee4fd537d391a0d3b1446438	refs/tags/v0.3.3
+ea3374f6ea190dc97029e107b370319a4dc84cfd	refs/tags/v0.3.3^{}
+8f94cce7446ff4b8c68fc706c5bfecb690ec4122	refs/tags/v0.4.0
+46b53e73edccacbb9725897068f1e70b1dfe686c	refs/tags/v0.4.0^{}
+1fca8fa5a70b11b41fb9905ec8dad75cd48bb75f	refs/tags/v0.5.0
+49fdbe8a86acf7edae111fb21fb0b213df7336c2	refs/tags/v0.5.0^{}
+# old (pre-rewrite) commits, unauthenticated: API (422 = no commit found) / web
+old 8e37377: API 422, web 404
+old ed5ab5b: API 422, web 404
+old f4ea06a: API 422, web 404
+old 7f0b82e: API 422, web 404
+old 6816383: API 422, web 404
+old 0e8cb32: API 422, web 404
+old 65dfda7: API 422, web 404
+# events feed entries: 0 []
+# deploy keys: 0

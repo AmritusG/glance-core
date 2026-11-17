@@ -1,0 +1,10 @@
+$ cargo fmt --all --check
+ok
+$ cargo clippy --workspace --all-targets --release -- -D warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.75s
+$ GLANCE_TESTFILES=<testfiles> GLANCE_REQUIRE_GPU=1 cargo test --workspace --release
+passed 89, failed 0
+$ cargo deny check
+advisories ok, bans ok, licenses ok, sources ok
+$ cargo build --release
+    Finished `release` profile [optimized + debuginfo] target(s) in 1.13s

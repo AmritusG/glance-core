@@ -1,0 +1,56 @@
+# Removal scan: the same checks over every blob of every commit, before (mirror of 8e37377, 32 commits) and after (rewritten, 33 commits incl. the publish tip 4ae1791). Blobs outside docs/research for the path/name rows; tools/scan.py (session scratch).
+## before
+   140  blobs  test-folder path
+   185  blobs  test-folder name
+   322  blobs  account name
+   209  blobs  /Users/ path
+     8  blobs  /Volumes/ real
+    39  blobs  /private/var/folders
+    17  blobs  claude scratch
+     2  blobs  claude.ai session
+     4  blobs  lab path
+     6  blobs  Team ID
+     0  blobs  App Group
+     7  blobs  third-party name 1
+     1  blobs  third-party name 2
+    77  blobs  third-party name 3
+     4  blobs  third-party name 4
+    16  blobs  other-project name
+     6  blobs  docs/research blob path
+     2  blobs  c3-look PNG path
+     2  blobs  PNG sha256 (either)
+messages (commits + tags): 5 {'claude.ai session': 5}
+## after
+     0  blobs  test-folder path
+     0  blobs  test-folder name
+     0  blobs  account name
+     0  blobs  /Users/ path
+     0  blobs  /Volumes/ real
+     0  blobs  /private/var/folders
+     0  blobs  claude scratch
+     0  blobs  claude.ai session
+     0  blobs  lab path
+     0  blobs  Team ID
+     0  blobs  App Group
+     0  blobs  third-party name 1
+     0  blobs  third-party name 2
+     0  blobs  third-party name 3
+     0  blobs  third-party name 4
+     0  blobs  other-project name
+     0  blobs  docs/research blob path
+     0  blobs  c3-look PNG path
+     0  blobs  PNG sha256 (either)
+messages (commits + tags): 0 {}
+## gitleaks 8.30.1 over all refs, after
+INF 33 commits scanned.
+INF scanned ~3487396 bytes (3.49 MB) in 170ms
+INF no leaks found
+## replacement rules (filter-repo --replace-text and --replace-message, 21 regexes applied in order; the exact file is kept
+## privately next to the pre-rewrite bundle)
+- the test-media folder (absolute and ~/ forms) -> <testfiles>
+- the session scratchpad paths -> <scratchpad>; the per-user temporary folder -> $TMPDIR
+- the workspace folder -> <workspace>/; paths of other local projects, and one other project's name -> <another project>
+- toolchain caches under the home folder -> ~/.rustup/, ~/.cargo/; any other home path -> <home>; the account name -> <user>
+- claude.ai session URLs (blobs and commit messages) -> <session>
+- third-party clip names -> neutral names (std_film_*, clipS_ProRes 4444.mov; others "a third-party clip")
+## paths dropped from all history: docs/research/ (6 files, kept in private AmritusG/glance-research), docs/data/c3-look/{swift-glance,glance-sample}_DXT5-DXV3_default.png

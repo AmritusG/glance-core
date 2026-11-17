@@ -1,0 +1,20 @@
+# glenc-public v1.7.0 builds from public repos alone (2026-11-17)
+# fresh clone from GitHub into an empty folder; env -i, empty HOME and CARGO_HOME, no git credentials (GIT_TERMINAL_PROMPT=0), rustup's stable toolchain
+$ git clone --branch v1.7.0 https://github.com/AmritusG/glenc-public.git && git log --oneline -1
+9668f4c Re-seed public mirror to v1.7.0 — GlEnc rebuilt in Rust (egui + wgpu) on glance-core and DXVKit Plus
+$ cargo build --release   (filtered by grep "Updating git|Finished|error": the git sources and the result; "thiserror" matches the filter)
+    Updating git repository `https://github.com/AmritusG/glance-core`
+    Updating git repository `https://github.com/AmritusG/DXVKit-Plus`
+  Downloaded thiserror-impl v2.0.21
+  Downloaded thiserror v2.0.21
+   Compiling thiserror v2.0.21
+   Compiling thiserror-impl v2.0.21
+    Finished `release` profile [optimized] target(s) in 53.81s
+exit 0
+$ ls -l target/release/GlEnc target/release/glenc-cli
+14340992 target/release/GlEnc   (Mach-O 64-bit executable arm64)
+1279312 target/release/glenc-cli
+# git sources fetched into the empty CARGO_HOME:
+dxvkit-plus-62dca8666923fcd7
+glance-core-791d411069f08bdb
+# seed: 53 files = glenc-rs 8605aa5 (code identical to the release build 2e4625a outside #[cfg(test)]): workspace files, crates/glenc/{Cargo.toml,src,bundle}, tools/package, LICENSE, README.md (new). Left out: tests, examples (settings check), docs/, CHECKPOINT/CLAUDE, test and oracle tools, CI.

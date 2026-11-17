@@ -8,7 +8,7 @@ name and bundle id; order core → Glance → CueGlance → GlEnc → MaCrate; G
 core is built; iCrate stays Swift; no FFmpeg.
 
 The 16 decisions W0 left open are closed in `docs/01-RESEARCH.md` §9, each with Amrit's words
-or Cowork's technical ruling; this plan carries them: glance-core is MIT (the repo stays private);
+or Cowork's technical ruling; this plan carries them: glance-core is MIT (private until 2026-11-17, then public: Amrit 2026-11-17 08:46, "public");
 Windows 11 only; universal macOS builds (arm64 + x86_64); no ProRes on Windows until Apple
 answers; the quirks of the Swift apps are fixed, not reproduced; GlancEhr also targets iPhone and
 iPad.
@@ -16,7 +16,10 @@ iPad.
 ## 1. Repos
 
 All under `<workspace>/`, each its own Claude Code window, each private
-on GitHub until Amrit says otherwise. glance-core's licence is MIT (Amrit 2026-11-14: "MIT").
+on GitHub until Amrit says otherwise. glance-core's licence is MIT (Amrit 2026-11-14: "MIT"), and glance-core is
+public since 2026-11-17 (Amrit 2026-11-17 08:46: "public"; the history was cleaned first:
+`docs/handoffs/clean-history-and-publish.md`). The Windows-only parity items of every app stay open for the Windows
+milestone (§7).
 
 | Folder | GitHub | What | Replaces |
 |---|---|---|---|
