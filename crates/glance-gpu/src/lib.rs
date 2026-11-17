@@ -190,7 +190,7 @@ pub struct ClipView {
     /// The as-stored texture the bind group was built for.
     bound: Option<(wgpu::Texture, wgpu::BindGroup)>,
     target: Option<wgpu::Texture>,
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
     importer: Option<dxvkit_plus_apple::surface::TextureCacheImporter>,
 }
 
@@ -215,7 +215,7 @@ impl ClipView {
             uniform,
             bound: None,
             target: None,
-            #[cfg(target_os = "macos")]
+            #[cfg(any(target_os = "macos", target_os = "ios"))]
             importer: None,
         }
     }
@@ -264,7 +264,7 @@ impl ClipView {
         self.target.as_ref().ok_or_else(|| GpuError::Invalid("no picture".into()))
     }
 
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
     fn render_native(&mut self, gpu: &Gpu, native: &glance_media::NativeFrame) -> Result<wgpu::Texture, GpuError> {
         use dxvkit_plus_apple::surface::TextureCacheImporter;
         let platform = |e: glance_media::MediaError| GpuError::Device(e.to_string());
@@ -278,9 +278,9 @@ impl ClipView {
         Ok(self.renderer.render_native(&gpu.device, &gpu.queue, &planes)?.clone())
     }
 
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(not(any(target_os = "macos", target_os = "ios")))]
     fn render_native(&mut self, _gpu: &Gpu, _native: &glance_media::NativeFrame) -> Result<wgpu::Texture, GpuError> {
-        Err(GpuError::Unsupported("native frames need a platform backend (Windows: DXVKit Plus's Media Foundation backend, not built yet)".into()))
+        Err(GpuError::Unsupported("native frames are imported on Apple platforms only (Windows' Media Foundation frames arrive as RGBA planes)".into()))
     }
 
     fn present(&mut self, gpu: &Gpu, presenter: &Presenter, enc: &mut wgpu::CommandEncoder, stored: &wgpu::Texture, alpha: AlphaView) {

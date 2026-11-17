@@ -37,3 +37,12 @@ pacing in glance-ui (never an egui viewport), borderless fullscreen on a chosen 
   CI job builds it.
 - Seen while gating: `glance-library`'s `test_media_reads_as_swift_reads_it` fails on this Mac (182 files, expects 183)
   with or without this change: for the v0.6.0 (MaCrate) wave.
+
+## Addendum: decode on Windows and iOS (GlancEhr wave 5)
+
+- DXVKit Plus pinned by commit 59695e2 (0.14.0: the Media Foundation reader `dxvkit-plus-windows`, on top of MaCrate's
+  0.13.0); `glance-media` picks Media Foundation on Windows and the Apple backend on iOS as well as macOS;
+  `glance-gpu`'s native import builds for iOS too. Windows frames come in as RGBA8 planes (DXVKit's `CpuFrame`), so
+  glance-gpu needs no Windows code.
+- Gates: as before; `cargo check --target aarch64-apple-ios` ok; the Windows build is CI's (zstd-sys needs MSVC).
+  The same glance-library parity test fails here as before (media count), unrelated.

@@ -529,8 +529,8 @@ checksum = "d8b14ccef22fc6f5a8f4d7d768562a182c04ce9a3b3157b91390b52ddfdf1a76"
 
 [[package]]
 name = "dxvkit-plus-apple"
-version = "0.12.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.12.0#8e1be720bdb8d164c57347a79b60dff0ad69c221"
+version = "0.14.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
 dependencies = [
  "block2 0.6.2",
  "dxvkit-plus-core",
@@ -539,6 +539,7 @@ dependencies = [
  "objc2-avf-audio",
  "objc2-core-audio-types",
  "objc2-core-foundation",
+ "objc2-core-graphics",
  "objc2-core-media",
  "objc2-core-video",
  "objc2-foundation 0.3.2",
@@ -550,8 +551,8 @@ dependencies = [
 
 [[package]]
 name = "dxvkit-plus-core"
-version = "0.12.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.12.0#8e1be720bdb8d164c57347a79b60dff0ad69c221"
+version = "0.14.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
 dependencies = [
  "png",
  "serde",
@@ -561,18 +562,27 @@ dependencies = [
 
 [[package]]
 name = "dxvkit-plus-enc"
-version = "0.12.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.12.0#8e1be720bdb8d164c57347a79b60dff0ad69c221"
+version = "0.14.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
 
 [[package]]
 name = "dxvkit-plus-wgpu"
-version = "0.12.0"
-source = "git+https://github.com/AmritusG/DXVKit-Plus?tag=v0.12.0#8e1be720bdb8d164c57347a79b60dff0ad69c221"
+version = "0.14.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
 dependencies = [
  "bytemuck",
  "dxvkit-plus-core",
  "pollster",
  "wgpu",
+]
+
+[[package]]
+name = "dxvkit-plus-windows"
+version = "0.14.0"
+source = "git+https://github.com/AmritusG/DXVKit-Plus?rev=35fb002177259314d92802d6ce32eb6176806eff#35fb002177259314d92802d6ce32eb6176806eff"
+dependencies = [
+ "dxvkit-plus-core",
+ "windows",
 ]
 
 [[package]]
@@ -898,6 +908,7 @@ version = "0.6.0"
 dependencies = [
  "dxvkit-plus-apple",
  "dxvkit-plus-core",
+ "dxvkit-plus-windows",
  "sha2",
 ]
 
@@ -1767,10 +1778,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e022c9d066895efa1345f8e33e584b9f958da2fd4cd116792e15e07e4720a807"
 dependencies = [
  "bitflags 2.13.2",
+ "block2 0.6.2",
  "dispatch2",
+ "libc",
  "objc2 0.6.5",
  "objc2-core-foundation",
  "objc2-io-surface",
+ "objc2-metal 0.3.2",
 ]
 
 [[package]]

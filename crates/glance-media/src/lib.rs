@@ -53,12 +53,19 @@ pub use dxvkit_plus_core::time::{FrameRate, TICKS_PER_SECOND, Tick};
 pub use dxvkit_plus_core::timing::{AudioTiming, FrameTiming, MediaTime};
 pub use dxvkit_plus_core::transport;
 
-#[cfg(target_os = "macos")]
+/// The platform's decoder: AVFoundation / VideoToolbox on macOS and iOS (iOS: GlancEhr, v0.6.0), Media Foundation on
+/// Windows (DXVKit Plus 0.14.0, v0.6.0); none elsewhere.
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 fn platform_backend() -> Option<std::sync::Arc<dyn dxvkit_plus_core::backend::Backend>> {
     Some(std::sync::Arc::new(dxvkit_plus_apple::AppleBackend))
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(windows)]
+fn platform_backend() -> Option<std::sync::Arc<dyn dxvkit_plus_core::backend::Backend>> {
+    Some(std::sync::Arc::new(dxvkit_plus_windows::MediaFoundationBackend))
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "ios", windows)))]
 fn platform_backend() -> Option<std::sync::Arc<dyn dxvkit_plus_core::backend::Backend>> {
     None
 }
