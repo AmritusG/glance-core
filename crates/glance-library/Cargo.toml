@@ -7,13 +7,14 @@ license.workspace = true
 authors.workspace = true
 repository.workspace = true
 publish.workspace = true
-description = "MaCrate's library: the SQLite twin of Swift MaCrate's database, sidecars, stash files, clip_id, header reader and folder rules"
+description = "MaCrate's library: the SQLite twin of Swift MaCrate's database, sidecars, stash files, clip_id, header reader, folder rules, indexer and thumbnails"
 
 [lints]
 workspace = true
 
 [dependencies]
 glance-media = { workspace = true }
+image = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 sha2 = { workspace = true }
@@ -28,3 +29,7 @@ rusqlite = { workspace = true }
 rusqlite = { workspace = true, features = ["bundled"] }
 
 [dev-dependencies]
+
+# The real macOS bookmarks in the root-store test (tests/roots_store_tests.rs), as the app wires them.
+[target.'cfg(target_os = "macos")'.dev-dependencies]
+glance-platform = { workspace = true }

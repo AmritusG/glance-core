@@ -59,6 +59,9 @@ uuid = { version = "1", features = ["v4"] }
 # Unicode NFC / NFD / NFKD for MaCrate's path and name rules. Pinned: 0.1.25 is MIT OR Apache-2.0; 0.1.26
 # adds Unicode-3.0, which deny.toml does not allow.
 unicode-normalization = "=0.1.25"
+# MaCrate's thumbnail cache: JPEG encode (quality 0.85) and decode (zune-jpeg), Lanczos downscale. MIT OR Apache-2.0;
+# only the JPEG codec, no other formats, no threads.
+image = { version = "0.25.10", default-features = false, features = ["jpeg"] }
 
 # Never-crash rules, the same set DXVKit Plus and loombda-rs build under.
 [workspace.lints.rust]

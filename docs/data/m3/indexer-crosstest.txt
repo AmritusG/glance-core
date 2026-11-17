@@ -1,0 +1,116 @@
+glance-library cross-test against Swift MaCrate 0.16.4 (wave M3: indexer, watcher filter, thumbnails)
+=====================================================================================================
+Modules: indexer, hashing, watch_filter, duplicates, roots_store, folder_tree, thumbnails (crates/glance-library/src/).
+Date: 2026-11-17. Home machine: macOS 27.0.1, Apple Swift 6.4.2. Swift side: MaCrate 0.16.4's own CrateCore /
+CrateKit (LibraryIndexer, FSEventsWatcher.ascendWithinRoot, MetadataStore, ThumbnailExtractor) with GlanceCore
+f0b917a, resolved by MaCrate's Package.swift, in a scratch copy of its source. Rust side: glance-library over
+DXVKit Plus 0.14.0 @ 303825a (through glance-media; same numbers on @ 59695e2). Test media: the GLANCE_TESTFILES folder, read only, never
+copied; described here by counts only.
+
+Commands
+--------
+  # Swift oracle: a scratch copy of the MaCrate source plus one executable target (IndexerOracle.swift)
+  tools/swift-library-oracle/indexer-oracle.sh <macrate-src> <work>
+  # Everything below, both sides, HOME and CFFIXED_USER_HOME in <work>/home for every Swift process
+  tools/swift-library-oracle/indexer-crosstest.sh <macrate-src> <work> [<test-media>]
+The library tree lives on a scratch APFS disk image (<work>/vol.sparseimage, mounted at /Volumes/GlanceM3X): the
+indexer refuses roots under /private, /tmp and /var (Swift's denylist), which is where scratch folders are.
+
+1. The indexer on one library, three passes
+-------------------------------------------
+Tree (crates/glance-library/examples/indexer_twin.rs `gen`): two roots. Root A: seven of glance-core's fixture
+movies (DXT1, H.264, HAP, ProRes 422, YG10 in a subfolder, ...), generated clips (.mov .MOV .mp4 .mkv .webm), a
+composed (NFC) and a decomposed (NFD) file name, a copy of a clip in another folder (same content), a hidden clip,
+a clip inside a package (Thing.app), a symbolic link to a clip, a text file, sidecars found by name, a sidecar
+whose clip is missing, a sidecar naming another file whose clip id is a live clip (found by content), an excluded
+folder holding a clip and a sidecar, `.crate-stashes.json` with one stash. Root B: a clip with A's content
+(cross-root duplicate), plain clips, a HAP Q Alpha fixture. Every file time fixed (nanoseconds included).
+
+  pass 1  indexRoot A, indexRoot B (the launch rebuild), excluded = {A/excluded}; settle
+  change  rename a clip without its sidecar; delete a clip; add a movie; rewrite a clip that has a sidecar (new
+          content id, sidecar found by name); move a subfolder within the root; a sidecar newer than its row
+          (reconciled on the cache hit); an older sidecar written "by another host"; delete the excluded clip
+  pass 2  FSEvents for A, A/sub, A/moved_deep, A/hap, A/sub/deep (one folder per event), then the external sidecar
+          (handleExternalSidecar); settle
+  change  move a clip from root B to root A; delete a clip; a new clip in the (to be re-included) folder
+  pass 3  FSEvents for A and B with no exclusions (re-include), indexRoot A/excluded, indexRoot A, indexRoot B
+          (Refresh); settle
+
+"settle" is ContentView's store work when a pass finishes: retireOrphansWithLiveTwin, then deleteRows under each
+excluded folder; the oracle also prints clipIDsWithDuplicates. Each side starts from a fresh copy of the same tree
+at the same path and gets the same changes; the two library.sqlite files are compared with glance-library's dump
+(every row, every value with its storage class; created_at / updated_at stamped by the runs' wall clock masked).
+
+Last run (with the test media, for section 3):
+  pass 1 events  6 / 6 lines, 0 differing      (progress line, settle: retired, purged, duplicates)
+  pass 2 events 12 / 12 lines, 0 differing     (external rename, external sidecar change, settle)
+  pass 3 events  9 / 9 lines, 0 differing
+  wall-clock stamps masked: 28 / 28 (created_at / updated_at of rows made without a sidecar)
+  clips          21 / 21 rows, 0 differing    (paths, content ids, sizes, mtimes, orphan flags, durations, rates,
+                                               video sizes, user fields, sidecar times)
+  clip_tags       9 / 9 rows,  0 differing
+  stashes 1 / 1, stash_clips 2 / 2, grdb_migrations 12 / 12, clip_search_config, clip_alpha, saved_filters: 0 differing
+  clip_search (FTS5): the same 21 documents; 8 rows of the FTS shadow tables differ by document id only
+                 (content / docsize: 1 + 1 rows; data: 2 + 2 index pages); 0 differing with docids ignored.
+  ascend (FSEventsWatcher.ascendWithinRoot): 30 lines, 0 differing (volume root, nested roots, `..`, a sibling
+                 named like the root, a path under no root)
+
+Cause of the FTS docid difference: Swift iterates its sidecar dictionary in a random order (a Swift `Dictionary`
+is seeded per process), so the orphan rows step 7 re-writes (each upsert deletes and re-inserts the FTS document)
+get document ids in a different order from run to run. Measured: the script runs the Swift side twice. Over three runs
+on the same inputs, Swift against itself: 0, 8, 8 differing rows; Swift against Rust: 8, 0, 8 — always these FTS
+shadow rows, 0 once docids are ignored. The Rust side visits sidecars in path order. Searches are unaffected.
+
+What the indexer does as Swift does (each checked by the run above or by tests/indexer_tests.rs):
+- Cache hit `size == && |mtime - row| < 0.001`; on a hit, the false orphan flag cleared, the backfill queued when
+  duration / rate / size is NULL, the sidecar applied when its updated_at > row's + 0.001.
+- Miss: hashed four at a time (one session at a time; a new one cancels the old, whose un-hashed clips are skipped
+  in that pass); the header read for duration (NULL when none), rate and size (0 when none); sidecar by the clip's
+  own sidecar name, else by content id; created_at from the sidecar, else now; an external rename reported for
+  every other row with that content.
+- Sidecar without its clip: an orphan row from the sidecar (size from the clip id, mtime 0) unless the content is
+  live at another path, never under an excluded folder. Row without its file: orphan flag, unless a sidecar is at
+  its path, one level only for a one-level scan, never under an excluded folder.
+- FSEvents: a folder with no row under it is walked recursively, else one level; folders outside the roots, gone
+  or excluded are dropped; the denylist (/, /Users, /Volumes exactly; /System ... /tmp and below) refuses indexRoot.
+- External sidecar: applied to the row at the clip path it names, no timestamp comparison; no row, nothing.
+- Swift compares paths as `String`s (canonical equivalence) in its sets and maps, and the sidecar map as `URL`s
+  (literal): kept (NFC keys / literal keys), exercised by the NFC- and NFD-named clips.
+
+2. The watcher filter
+---------------------
+watch_filter::classify is FSEventsWatcher's callback body (noise names, sidecars and the self-write tracker,
+dot-files, folder / file / vanished paths, unmount and root-changed flags); its rules are unit tests
+(src/watch_filter.rs). The ascent it uses for vanished paths is cross-tested above (30 / 30). The stream itself is
+glance-platform's FolderWatch.
+
+3. Thumbnails
+-------------
+Each side's extractor (walk, decode, Alpha Type, checkerboard bake; before the 1280 px downscale and the JPEG,
+which need not match Apple's bytes) on: glance-core's fixtures (tiles_* DXV / HAP / native, the HAP R and HAP HDR
+synthetics, the DXVKit streams in tests/fixtures/dxvkit/streams: odd and tiny sizes, legacy DXV) and the test
+media (103 DXV and 67 HAP files in all, 46 native), DXV with both Alpha Types. 319 extractions:
+  274 exact (every byte)
+   15 within 1        HAP Q / HAP Q Alpha (YCoCg colour: GlanceCore's CPU conversion against DXVKit Plus's),
+                      one DXV and one HAP Alpha clip: decoder rounding, same frame
+   19 within 2        HAP Q / HAP Q Alpha clips of the test media, same cause
+    1 outcome differs a HAP Q Alpha-labelled file whose stream is HAP Alpha: Swift fails, DXVKit Plus decodes it
+    1 within 28       one 1920x1080 H.264 clip (133 104 of 8 294 400 bytes; each side gives the same bytes run after
+                      run). Its first frame is near black (mean 0.0024) and contentful only by a few bright pixels
+                      (max 0.408): the two walks most likely took different near-identical frames. Not resolved.
+    9 fail on both sides (damaged and truncated files, HAP R and HAP HDR: Swift sends those to AVFoundation, which
+                      cannot open them; so does the Rust port)
+Native clips go through DXVKit Plus's AVFoundation grab (glance_library::thumbnails::AvFoundationThumbnails, the
+premultiplied bytes Core Graphics drew).
+
+The frame statistics that pick the frame (32 x 32, mean > 0.10 or brightest channel > 0.30): Swift's own
+`imageStats` code (copied verbatim into the oracle, it is private) against thumbnails::frame_stats on the first
+two decoded frames of every DXV / HAP test-media clip, as stored, labelled as the extractor labels them:
+  266 frames: 210 exact (both numbers bit for bit), largest mean difference 0.0016, largest max difference 0,
+  0 contentful decisions differ.
+How Core Graphics reduces a frame to 32 x 32 was measured with the oracle's `reduce` mode on noise pictures of 13
+sizes and column-coded pictures of 43 widths: point sampling at ceil((i + 1/2) * size / 32) - 1, the last sample at
+the last pixel when Float(32 / size) * size < 32 (1080, 2160, 700 ...; not 1920, 720, 3840), pictures under 192 px
+interpolated (approximated by an area average here); and its compositing works four pixels at a time, leaving a
+group of four fully transparent pixels untouched (a premultiplied colour under alpha 0 is added only beside a
+visible pixel). The checkerboard greys come out 224 / 181 (CGColor(gray: 0.85 / 0.65) matched into DeviceRGB).
