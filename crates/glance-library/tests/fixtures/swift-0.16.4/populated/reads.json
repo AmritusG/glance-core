@@ -1,0 +1,2187 @@
+{
+  "allGenres" : [
+    "ambient",
+    "house",
+    "techno"
+  ],
+  "allMoods" : [
+    "bright",
+    "calm",
+    "dark"
+  ],
+  "allTags" : [
+    "and",
+    "blue",
+    "café",
+    "café",
+    "dup",
+    "gone",
+    "intro",
+    "local",
+    "loop",
+    "odd",
+    "renamed",
+    "rock",
+    "zeta"
+  ],
+  "byID" : {
+    "5555555555555555555555555555555555555555555555555555555555555555:11000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/movement.MOV"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/movement.MOV",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/movement.MOV"
+      ],
+      "tags" : [
+        "and",
+        "rock"
+      ]
+    },
+    "3333333333333333333333333333333333333333333333333333333333333333:9000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/private\/var\/fixture\/local\/RedForm_4k_01.mov"
+      ],
+      "fetchClipID" : "\/private\/var\/fixture\/local\/RedForm_4k_01.mov",
+      "measurement" : {
+        "approx_cycle" : null,
+        "black_share" : null,
+        "centre_share" : null,
+        "clip_id" : "3333333333333333333333333333333333333333333333333333333333333333:9000",
+        "cuts" : null,
+        "cycle_rule" : null,
+        "cycle_s" : null,
+        "flashes" : null,
+        "flicker" : null,
+        "flow_mean" : null,
+        "is_loop" : 0,
+        "join_step" : null,
+        "lab_key" : "lab-l",
+        "lab_reason" : "why l",
+        "lab_status" : "not a loop",
+        "measure_version" : null,
+        "measured_at" : null,
+        "moves" : null,
+        "pass1_score" : null,
+        "provenance" : "lab",
+        "source" : null,
+        "text_checked" : 0,
+        "text_found" : null,
+        "xfade_score" : null
+      },
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/private\/var\/fixture\/local\/RedForm_4k_01.mov"
+      ],
+      "tags" : [
+
+      ]
+    },
+    "1111111111111111111111111111111111111111111111111111111111111111:7000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/gone-dismissed.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/gone-dismissed.mov",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/gone-dismissed.mov"
+      ],
+      "tags" : [
+        "gone"
+      ]
+    },
+    "4444444444444444444444444444444444444444444444444444444444444444:10" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/edge\/.hidden"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/edge\/.hidden"
+      ],
+      "tags" : [
+
+      ]
+    },
+    "4444444444444444444444444444444444444444444444444444444444444444:11" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/edge\/name."
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/edge\/name.",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/edge\/name."
+      ],
+      "tags" : [
+
+      ]
+    },
+    "4444444444444444444444444444444444444444444444444444444444444444:12" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov"
+      ],
+      "tags" : [
+
+      ]
+    },
+    "4444444444444444444444444444444444444444444444444444444444444444:13" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/edge\/no_ext"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/edge\/no_ext"
+      ],
+      "tags" : [
+
+      ]
+    },
+    "4444444444444444444444444444444444444444444444444444444444444444:14" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz"
+      ],
+      "tags" : [
+
+      ]
+    },
+    "4444444444444444444444444444444444444444444444444444444444444444:15" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov"
+      ],
+      "tags" : [
+
+      ]
+    },
+    "2222222222222222222222222222222222222222222222222222222222222222:8000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/after rename.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/after rename.mov",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/after rename.mov"
+      ],
+      "tags" : [
+        "renamed",
+        "zeta"
+      ]
+    },
+    "9999999999999999999999999999999999999999999999999999999999999999:1" : {
+      "alphaType" : null,
+      "currentPaths" : [
+
+      ],
+      "fetchClipID" : null,
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+
+      ],
+      "tags" : [
+
+      ]
+    },
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000" : {
+      "alphaType" : "straight",
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/blue_intro.mov",
+      "measurement" : {
+        "approx_cycle" : 0,
+        "black_share" : 0.90000000000000002,
+        "centre_share" : 0.45000000000000001,
+        "clip_id" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000",
+        "cuts" : 0,
+        "cycle_rule" : "whole file loops",
+        "cycle_s" : 4,
+        "flashes" : 0,
+        "flicker" : 0.012,
+        "flow_mean" : 0.5,
+        "is_loop" : 1,
+        "join_step" : 1.25,
+        "lab_key" : "native-a",
+        "lab_reason" : "loops cleanly",
+        "lab_status" : "measured",
+        "measure_version" : "native v2 (wave 98 rules)",
+        "measured_at" : "2026-11-14T16:37:09Z",
+        "moves" : 1,
+        "pass1_score" : 0.41999999999999998,
+        "provenance" : "native",
+        "source" : "native scanner",
+        "text_checked" : 1,
+        "text_found" : 0,
+        "xfade_score" : 0.10000000000000001
+      },
+      "probe" : "choosable:looksStraight:1234:0.25",
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+      ],
+      "tags" : [
+        "blue",
+        "intro",
+        "loop"
+      ]
+    },
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "measurement" : null,
+      "probe" : "stated:straight:HAP",
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+      ],
+      "tags" : [
+        "café"
+      ]
+    },
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "measurement" : null,
+      "probe" : "none",
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+      ],
+      "tags" : [
+        "café"
+      ]
+    },
+    "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000" : {
+      "alphaType" : "premultiplied",
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov"
+      ],
+      "tags" : [
+        "odd"
+      ]
+    },
+    "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture Two\/Backup\/one.mov",
+        "\/Volumes\/Fixture\/Library\/dup\/one.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+      "measurement" : {
+        "approx_cycle" : 1,
+        "black_share" : 0.10000000000000001,
+        "centre_share" : 0.20000000000000001,
+        "clip_id" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+        "cuts" : 1,
+        "cycle_rule" : null,
+        "cycle_s" : 12,
+        "flashes" : 2,
+        "flicker" : null,
+        "flow_mean" : null,
+        "is_loop" : 1,
+        "join_step" : 3,
+        "lab_key" : "lab-e",
+        "lab_reason" : "why e",
+        "lab_status" : "measured",
+        "measure_version" : "ltx-lab screen (wave 98 rules)",
+        "measured_at" : "2026-11-01T10:00:00Z",
+        "moves" : 0,
+        "pass1_score" : 1.8999999999999999,
+        "provenance" : "lab",
+        "source" : "lab wave 98",
+        "text_checked" : 0,
+        "text_found" : null,
+        "xfade_score" : null
+      },
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture Two\/Backup\/one.mov",
+        "\/Volumes\/Fixture\/Library\/dup\/one.mov"
+      ],
+      "tags" : [
+        "dup",
+        "local"
+      ]
+    },
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff:6000" : {
+      "alphaType" : null,
+      "currentPaths" : [
+        "\/Volumes\/Fixture\/Library\/gone.mov"
+      ],
+      "fetchClipID" : "\/Volumes\/Fixture\/Library\/gone.mov",
+      "measurement" : null,
+      "probe" : null,
+      "rowsForClipID" : [
+        "\/Volumes\/Fixture\/Library\/gone.mov"
+      ],
+      "tags" : [
+
+      ]
+    }
+  },
+  "byPath" : [
+    [
+      "\/Volumes\/Fixture\/Library\/blue_intro.mov",
+      {
+        "alphaType" : "straight",
+        "fetchAt" : {
+          "bpm" : 128.5,
+          "brief" : "Path-like brief a\/b \"quoted\"",
+          "clipID" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000",
+          "createdAt" : 1731600000.1229999,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/blue_intro.mov",
+          "durationSec" : 12.5,
+          "energy" : 7,
+          "fileMtime" : 1731500000.25,
+          "fileSize" : 1000,
+          "frameRate" : 29.969999999999999,
+          "genre" : "techno",
+          "isOrphan" : false,
+          "mood" : "dark",
+          "rating" : 5,
+          "updatedAt" : 1731600500.5,
+          "videoHeight" : 1080,
+          "videoWidth" : 1920
+        },
+        "fetchByPath" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000",
+        "tags" : [
+          "blue",
+          "intro",
+          "loop"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 2000,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+        "tags" : [
+          "café"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 3000,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000",
+        "tags" : [
+          "café"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov",
+      {
+        "alphaType" : "premultiplied",
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : "   ",
+          "clipID" : "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov",
+          "durationSec" : null,
+          "energy" : 1,
+          "fileMtime" : 1700000000,
+          "fileSize" : 4000,
+          "frameRate" : 0,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 1,
+          "updatedAt" : 1700000000,
+          "videoHeight" : 0,
+          "videoWidth" : 0
+        },
+        "fetchByPath" : "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+        "tags" : [
+          "odd"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+          "createdAt" : 1700000050,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 5000,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000060,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+        "tags" : [
+          "dup",
+          "local"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture Two\/Backup\/one.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture Two\/Backup\/one.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 5000,
+          "frameRate" : null,
+          "genre" : "ambient",
+          "isOrphan" : false,
+          "mood" : "calm",
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+        "tags" : [
+          "dup"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/gone-dismissed.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "1111111111111111111111111111111111111111111111111111111111111111:7000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/gone-dismissed.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 7000,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : true,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "1111111111111111111111111111111111111111111111111111111111111111:7000",
+        "tags" : [
+          "gone"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/gone.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff:6000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/gone.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 6000,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : true,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff:6000",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/after rename.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "2222222222222222222222222222222222222222222222222222222222222222:8000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/after rename.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 8000,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : "volatile",
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "2222222222222222222222222222222222222222222222222222222222222222:8000",
+        "tags" : [
+          "renamed",
+          "zeta"
+        ]
+      }
+    ],
+    [
+      "\/private\/var\/fixture\/local\/RedForm_4k_01.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : 100,
+          "brief" : null,
+          "clipID" : "3333333333333333333333333333333333333333333333333333333333333333:9000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/private\/var\/fixture\/local\/RedForm_4k_01.mov",
+          "durationSec" : 5,
+          "energy" : 3,
+          "fileMtime" : 1700000000,
+          "fileSize" : 9000,
+          "frameRate" : null,
+          "genre" : "house",
+          "isOrphan" : false,
+          "mood" : "bright",
+          "rating" : 3,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "3333333333333333333333333333333333333333333333333333333333333333:9000",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/movement.MOV",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : 140,
+          "brief" : null,
+          "clipID" : "5555555555555555555555555555555555555555555555555555555555555555:11000",
+          "createdAt" : 1700000000,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/movement.MOV",
+          "durationSec" : 60.25,
+          "energy" : 10,
+          "fileMtime" : 1700000000,
+          "fileSize" : 11000,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "5555555555555555555555555555555555555555555555555555555555555555:11000",
+        "tags" : [
+          "and",
+          "rock"
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:10",
+          "createdAt" : 1700000100,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+          "durationSec" : 3.5,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 10,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "4444444444444444444444444444444444444444444444444444444444444444:10",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/name.",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:11",
+          "createdAt" : 1700000101,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/name.",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 11,
+          "frameRate" : 25,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "4444444444444444444444444444444444444444444444444444444444444444:11",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:12",
+          "createdAt" : 1700000102,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 12,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : 360,
+          "videoWidth" : 640
+        },
+        "fetchByPath" : "4444444444444444444444444444444444444444444444444444444444444444:12",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:13",
+          "createdAt" : 1700000103,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 13,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "4444444444444444444444444444444444444444444444444444444444444444:13",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:14",
+          "createdAt" : 1700000104,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 14,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "4444444444444444444444444444444444444444444444444444444444444444:14",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+      {
+        "alphaType" : null,
+        "fetchAt" : {
+          "bpm" : null,
+          "brief" : null,
+          "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:15",
+          "createdAt" : 1700000105,
+          "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+          "durationSec" : null,
+          "energy" : null,
+          "fileMtime" : 1700000000,
+          "fileSize" : 15,
+          "frameRate" : null,
+          "genre" : null,
+          "isOrphan" : false,
+          "mood" : null,
+          "rating" : 0,
+          "updatedAt" : 1700000000,
+          "videoHeight" : null,
+          "videoWidth" : null
+        },
+        "fetchByPath" : "4444444444444444444444444444444444444444444444444444444444444444:15",
+        "tags" : [
+
+        ]
+      }
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/missing.mov",
+      {
+        "alphaType" : null,
+        "fetchAt" : null,
+        "fetchByPath" : null,
+        "tags" : [
+
+        ]
+      }
+    ]
+  ],
+  "cellMetadata" : {
+    "\/private\/var\/fixture\/local\/RedForm_4k_01.mov" : {
+      "bpm" : 100,
+      "brief" : null,
+      "clipID" : "3333333333333333333333333333333333333333333333333333333333333333:9000",
+      "durationSec" : 5,
+      "energy" : 3,
+      "frameRate" : null,
+      "genre" : "house",
+      "mood" : "bright",
+      "rating" : 3,
+      "tags" : [
+
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture Two\/Backup\/one.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : "ambient",
+      "mood" : "calm",
+      "rating" : 0,
+      "tags" : [
+        "dup"
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/after rename.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "2222222222222222222222222222222222222222222222222222222222222222:8000",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+        "renamed",
+        "zeta"
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/blue_intro.mov" : {
+      "bpm" : 128.5,
+      "brief" : "Path-like brief a\/b \"quoted\"",
+      "clipID" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000",
+      "durationSec" : 12.5,
+      "energy" : 7,
+      "frameRate" : 29.969999999999999,
+      "genre" : "techno",
+      "mood" : "dark",
+      "rating" : 5,
+      "tags" : [
+        "blue",
+        "intro",
+        "loop"
+      ],
+      "videoHeight" : 1080,
+      "videoWidth" : 1920
+    },
+    "\/Volumes\/Fixture\/Library\/dup\/one.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+        "dup",
+        "local"
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/edge\/.hidden" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:10",
+      "durationSec" : 3.5,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:12",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+
+      ],
+      "videoHeight" : 360,
+      "videoWidth" : 640
+    },
+    "\/Volumes\/Fixture\/Library\/edge\/name." : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:11",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : 25,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/edge\/no_ext" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:13",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:15",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:14",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/gone-dismissed.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "1111111111111111111111111111111111111111111111111111111111111111:7000",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+        "gone"
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/gone.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff:6000",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/movement.MOV" : {
+      "bpm" : 140,
+      "brief" : null,
+      "clipID" : "5555555555555555555555555555555555555555555555555555555555555555:11000",
+      "durationSec" : 60.25,
+      "energy" : 10,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+        "and",
+        "rock"
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov" : {
+      "bpm" : null,
+      "brief" : "   ",
+      "clipID" : "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+      "durationSec" : null,
+      "energy" : 1,
+      "frameRate" : 0,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 1,
+      "tags" : [
+        "odd"
+      ],
+      "videoHeight" : 0,
+      "videoWidth" : 0
+    },
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+        "café"
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    }
+  },
+  "cellMetadataNFD" : {
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov" : {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000",
+      "durationSec" : null,
+      "energy" : null,
+      "frameRate" : null,
+      "genre" : null,
+      "mood" : null,
+      "rating" : 0,
+      "tags" : [
+        "café"
+      ],
+      "videoHeight" : null,
+      "videoWidth" : null
+    }
+  },
+  "clipIDsWithDuplicates" : [
+    "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000"
+  ],
+  "clipIDsWithTag" : [
+    [
+      "and",
+      [
+        "5555555555555555555555555555555555555555555555555555555555555555:11000"
+      ]
+    ],
+    [
+      "blue",
+      [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+      ]
+    ],
+    [
+      "café",
+      [
+        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000"
+      ]
+    ],
+    [
+      "café",
+      [
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000"
+      ]
+    ],
+    [
+      "dup",
+      [
+        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000"
+      ]
+    ],
+    [
+      "gone",
+      [
+        "1111111111111111111111111111111111111111111111111111111111111111:7000"
+      ]
+    ],
+    [
+      "intro",
+      [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+      ]
+    ],
+    [
+      "local",
+      [
+        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000"
+      ]
+    ],
+    [
+      "loop",
+      [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+      ]
+    ],
+    [
+      "odd",
+      [
+        "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000"
+      ]
+    ],
+    [
+      "renamed",
+      [
+        "2222222222222222222222222222222222222222222222222222222222222222:8000"
+      ]
+    ],
+    [
+      "rock",
+      [
+        "5555555555555555555555555555555555555555555555555555555555555555:11000"
+      ]
+    ],
+    [
+      "zeta",
+      [
+        "2222222222222222222222222222222222222222222222222222222222222222:8000"
+      ]
+    ],
+    [
+      "nope",
+      [
+
+      ]
+    ]
+  ],
+  "countDismissedOrphans" : 1,
+  "countOrphans" : 1,
+  "fetchAll" : [
+    {
+      "bpm" : 128.5,
+      "brief" : "Path-like brief a\/b \"quoted\"",
+      "clipID" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000",
+      "createdAt" : 1731600000.1229999,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/blue_intro.mov",
+      "durationSec" : 12.5,
+      "energy" : 7,
+      "fileMtime" : 1731500000.25,
+      "fileSize" : 1000,
+      "frameRate" : 29.969999999999999,
+      "genre" : "techno",
+      "isOrphan" : false,
+      "mood" : "dark",
+      "rating" : 5,
+      "updatedAt" : 1731600500.5,
+      "videoHeight" : 1080,
+      "videoWidth" : 1920
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 2000,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 3000,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : "   ",
+      "clipID" : "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov",
+      "durationSec" : null,
+      "energy" : 1,
+      "fileMtime" : 1700000000,
+      "fileSize" : 4000,
+      "frameRate" : 0,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 1,
+      "updatedAt" : 1700000000,
+      "videoHeight" : 0,
+      "videoWidth" : 0
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+      "createdAt" : 1700000050,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 5000,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000060,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture Two\/Backup\/one.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 5000,
+      "frameRate" : null,
+      "genre" : "ambient",
+      "isOrphan" : false,
+      "mood" : "calm",
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "1111111111111111111111111111111111111111111111111111111111111111:7000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/gone-dismissed.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 7000,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : true,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff:6000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/gone.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 6000,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : true,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "2222222222222222222222222222222222222222222222222222222222222222:8000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/after rename.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 8000,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : "volatile",
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : 100,
+      "brief" : null,
+      "clipID" : "3333333333333333333333333333333333333333333333333333333333333333:9000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/private\/var\/fixture\/local\/RedForm_4k_01.mov",
+      "durationSec" : 5,
+      "energy" : 3,
+      "fileMtime" : 1700000000,
+      "fileSize" : 9000,
+      "frameRate" : null,
+      "genre" : "house",
+      "isOrphan" : false,
+      "mood" : "bright",
+      "rating" : 3,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:10",
+      "createdAt" : 1700000100,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+      "durationSec" : 3.5,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 10,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:11",
+      "createdAt" : 1700000101,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/name.",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 11,
+      "frameRate" : 25,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:12",
+      "createdAt" : 1700000102,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 12,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : 360,
+      "videoWidth" : 640
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:13",
+      "createdAt" : 1700000103,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 13,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:14",
+      "createdAt" : 1700000104,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 14,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : null,
+      "brief" : null,
+      "clipID" : "4444444444444444444444444444444444444444444444444444444444444444:15",
+      "createdAt" : 1700000105,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+      "durationSec" : null,
+      "energy" : null,
+      "fileMtime" : 1700000000,
+      "fileSize" : 15,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    },
+    {
+      "bpm" : 140,
+      "brief" : null,
+      "clipID" : "5555555555555555555555555555555555555555555555555555555555555555:11000",
+      "createdAt" : 1700000000,
+      "currentPath" : "\/Volumes\/Fixture\/Library\/movement.MOV",
+      "durationSec" : 60.25,
+      "energy" : 10,
+      "fileMtime" : 1700000000,
+      "fileSize" : 11000,
+      "frameRate" : null,
+      "genre" : null,
+      "isOrphan" : false,
+      "mood" : null,
+      "rating" : 0,
+      "updatedAt" : 1700000000,
+      "videoHeight" : null,
+      "videoWidth" : null
+    }
+  ],
+  "fetchAllUnderRoot" : [
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+    "\/Volumes\/Fixture\/Library\/after rename.mov",
+    "\/Volumes\/Fixture\/Library\/blue_intro.mov",
+    "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+    "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+    "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+    "\/Volumes\/Fixture\/Library\/edge\/name.",
+    "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+    "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+    "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+    "\/Volumes\/Fixture\/Library\/gone-dismissed.mov",
+    "\/Volumes\/Fixture\/Library\/gone.mov",
+    "\/Volumes\/Fixture\/Library\/movement.MOV",
+    "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov"
+  ],
+  "fetchDismissedOrphans" : [
+    "\/Volumes\/Fixture\/Library\/gone-dismissed.mov"
+  ],
+  "fetchDuplicates" : [
+    "\/Volumes\/Fixture Two\/Backup\/one.mov"
+  ],
+  "fetchOrphans" : [
+    "\/Volumes\/Fixture\/Library\/gone.mov"
+  ],
+  "fetchRowsClipIDs" : [
+    "\/Volumes\/Fixture\/Library\/gone-dismissed.mov",
+    "\/Volumes\/Fixture\/Library\/after rename.mov",
+    "\/private\/var\/fixture\/local\/RedForm_4k_01.mov",
+    "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+    "\/Volumes\/Fixture\/Library\/edge\/name.",
+    "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+    "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+    "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+    "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+    "\/Volumes\/Fixture\/Library\/movement.MOV",
+    "\/Volumes\/Fixture\/Library\/blue_intro.mov",
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+    "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov",
+    "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+    "\/Volumes\/Fixture\/Library\/gone.mov"
+  ],
+  "fetchRowsPaths" : [
+    "\/Volumes\/Fixture Two\/Backup\/one.mov",
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+    "\/Volumes\/Fixture\/Library\/after rename.mov",
+    "\/Volumes\/Fixture\/Library\/blue_intro.mov",
+    "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+    "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+    "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+    "\/Volumes\/Fixture\/Library\/edge\/name.",
+    "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+    "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+    "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+    "\/Volumes\/Fixture\/Library\/gone-dismissed.mov",
+    "\/Volumes\/Fixture\/Library\/gone.mov",
+    "\/Volumes\/Fixture\/Library\/movement.MOV",
+    "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov",
+    "\/private\/var\/fixture\/local\/RedForm_4k_01.mov"
+  ],
+  "presets" : [
+    {
+      "createdAt" : "volatile",
+      "filter" : {
+        "bpmRange" : null,
+        "centreHeavy" : null,
+        "cycleRange" : null,
+        "energyRange" : null,
+        "exactCyclesOnly" : null,
+        "genre" : null,
+        "ground" : null,
+        "hasDuplicates" : false,
+        "joinStepMax" : null,
+        "loopsOnly" : null,
+        "measuredBy" : null,
+        "mood" : null,
+        "movesState" : null,
+        "noFlashes" : null,
+        "noHardCuts" : null,
+        "noText" : null,
+        "ratingMin" : 2,
+        "tags" : [
+
+        ],
+        "tagsLogic" : "and"
+      },
+      "name" : "Empty",
+      "sort" : "ratingDesc"
+    },
+    {
+      "createdAt" : "volatile",
+      "filter" : {
+        "bpmRange" : [
+          100.5,
+          130
+        ],
+        "centreHeavy" : {
+          "includeNotMeasured" : true
+        },
+        "cycleRange" : {
+          "includeNotMeasured" : true,
+          "value" : [
+            2,
+            8.5
+          ]
+        },
+        "energyRange" : [
+          3,
+          7
+        ],
+        "exactCyclesOnly" : {
+          "includeNotMeasured" : false
+        },
+        "genre" : "techno",
+        "ground" : {
+          "includeNotMeasured" : true,
+          "value" : "onBlack"
+        },
+        "hasDuplicates" : true,
+        "joinStepMax" : {
+          "includeNotMeasured" : true,
+          "value" : 2.5
+        },
+        "loopsOnly" : {
+          "includeNotMeasured" : true
+        },
+        "measuredBy" : "lab",
+        "mood" : "dark",
+        "movesState" : {
+          "includeNotMeasured" : false,
+          "value" : "moves"
+        },
+        "noFlashes" : {
+          "includeNotMeasured" : false
+        },
+        "noHardCuts" : {
+          "includeNotMeasured" : true
+        },
+        "noText" : {
+          "includeNotMeasured" : true
+        },
+        "ratingMin" : 2,
+        "tags" : [
+          "blue",
+          "intro"
+        ],
+        "tagsLogic" : "or"
+      },
+      "name" : "Everything",
+      "sort" : "cycleDesc"
+    },
+    {
+      "createdAt" : "volatile",
+      "filter" : {
+        "bpmRange" : null,
+        "centreHeavy" : null,
+        "cycleRange" : null,
+        "energyRange" : null,
+        "exactCyclesOnly" : null,
+        "genre" : null,
+        "ground" : null,
+        "hasDuplicates" : false,
+        "joinStepMax" : null,
+        "loopsOnly" : null,
+        "measuredBy" : null,
+        "mood" : null,
+        "movesState" : null,
+        "noFlashes" : null,
+        "noHardCuts" : null,
+        "noText" : null,
+        "ratingMin" : null,
+        "tags" : [
+
+        ],
+        "tagsLogic" : "and"
+      },
+      "name" : "Renamed",
+      "sort" : "random"
+    }
+  ],
+  "stashes" : [
+    {
+      "clips" : [
+
+      ],
+      "createdAt" : 1700000000,
+      "id" : "0A1B2C3D-4E5F-4A6B-8C7D-9E0F1A2B3C4D",
+      "name" : "Empty Stash",
+      "updatedAt" : 1700000000
+    },
+    {
+      "clips" : [
+        [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000",
+          "blue_intro.mov"
+        ],
+        [
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+          "odd name #%&?'\" .mov"
+        ],
+        [
+          "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+          "dup\/one.mov"
+        ]
+      ],
+      "createdAt" : 1731600000.1229999,
+      "id" : "8F2C0D6E-1B7A-4C3D-9E8F-0A1B2C3D4E5F",
+      "name" : "Set A (renamed)",
+      "updatedAt" : 1731601000.75
+    }
+  ],
+  "tagsByClipID" : {
+    "5555555555555555555555555555555555555555555555555555555555555555:11000" : [
+      "and",
+      "rock"
+    ],
+    "1111111111111111111111111111111111111111111111111111111111111111:7000" : [
+      "gone"
+    ],
+    "2222222222222222222222222222222222222222222222222222222222222222:8000" : [
+      "renamed",
+      "zeta"
+    ],
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000" : [
+      "blue",
+      "intro",
+      "loop"
+    ],
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000" : [
+      "café"
+    ],
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000" : [
+      "café"
+    ],
+    "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000" : [
+      "odd"
+    ],
+    "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000" : [
+      "dup",
+      "local"
+    ]
+  },
+  "tagsByPath" : {
+    "\/Volumes\/Fixture Two\/Backup\/one.mov" : [
+      "dup"
+    ],
+    "\/Volumes\/Fixture\/Library\/after rename.mov" : [
+      "renamed",
+      "zeta"
+    ],
+    "\/Volumes\/Fixture\/Library\/blue_intro.mov" : [
+      "blue",
+      "intro",
+      "loop"
+    ],
+    "\/Volumes\/Fixture\/Library\/dup\/one.mov" : [
+      "dup",
+      "local"
+    ],
+    "\/Volumes\/Fixture\/Library\/gone-dismissed.mov" : [
+      "gone"
+    ],
+    "\/Volumes\/Fixture\/Library\/movement.MOV" : [
+      "and",
+      "rock"
+    ],
+    "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov" : [
+      "odd"
+    ],
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov" : [
+      "café"
+    ]
+  },
+  "tagsByPathNFD" : {
+    "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov" : [
+      "café"
+    ]
+  },
+  "unbriefedCountIn" : 15,
+  "unbriefedEntriesIn" : [
+    [
+      "2222222222222222222222222222222222222222222222222222222222222222:8000",
+      "\/Volumes\/Fixture\/Library\/after rename.mov"
+    ],
+    [
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+      "\/Volumes\/Fixture Two\/Backup\/one.mov"
+    ],
+    [
+      "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff:6000",
+      "\/Volumes\/Fixture\/Library\/gone.mov"
+    ],
+    [
+      "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+      "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov"
+    ],
+    [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000",
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+    ],
+    [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+    ],
+    [
+      "5555555555555555555555555555555555555555555555555555555555555555:11000",
+      "\/Volumes\/Fixture\/Library\/movement.MOV"
+    ],
+    [
+      "4444444444444444444444444444444444444444444444444444444444444444:15",
+      "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov"
+    ],
+    [
+      "4444444444444444444444444444444444444444444444444444444444444444:14",
+      "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz"
+    ],
+    [
+      "4444444444444444444444444444444444444444444444444444444444444444:13",
+      "\/Volumes\/Fixture\/Library\/edge\/no_ext"
+    ],
+    [
+      "4444444444444444444444444444444444444444444444444444444444444444:12",
+      "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov"
+    ],
+    [
+      "4444444444444444444444444444444444444444444444444444444444444444:11",
+      "\/Volumes\/Fixture\/Library\/edge\/name."
+    ],
+    [
+      "4444444444444444444444444444444444444444444444444444444444444444:10",
+      "\/Volumes\/Fixture\/Library\/edge\/.hidden"
+    ],
+    [
+      "3333333333333333333333333333333333333333333333333333333333333333:9000",
+      "\/private\/var\/fixture\/local\/RedForm_4k_01.mov"
+    ],
+    [
+      "1111111111111111111111111111111111111111111111111111111111111111:7000",
+      "\/Volumes\/Fixture\/Library\/gone-dismissed.mov"
+    ]
+  ],
+  "underPrefix" : {
+    "\/nowhere" : {
+      "hasAnyRow" : false,
+      "totalFileSize" : 0,
+      "unbriefedCount" : 0,
+      "unbriefedEntries" : [
+
+      ]
+    },
+    "\/private\/var\/fixture" : {
+      "hasAnyRow" : true,
+      "totalFileSize" : 9000,
+      "unbriefedCount" : 1,
+      "unbriefedEntries" : [
+        [
+          "3333333333333333333333333333333333333333333333333333333333333333:9000",
+          "\/private\/var\/fixture\/local\/RedForm_4k_01.mov"
+        ]
+      ]
+    },
+    "\/Volumes\/Fix" : {
+      "hasAnyRow" : false,
+      "totalFileSize" : 0,
+      "unbriefedCount" : 0,
+      "unbriefedEntries" : [
+
+      ]
+    },
+    "\/Volumes\/Fixture" : {
+      "hasAnyRow" : true,
+      "totalFileSize" : 34075,
+      "unbriefedCount" : 12,
+      "unbriefedEntries" : [
+        [
+          "2222222222222222222222222222222222222222222222222222222222222222:8000",
+          "\/Volumes\/Fixture\/Library\/after rename.mov"
+        ],
+        [
+          "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+          "\/Volumes\/Fixture\/Library\/dup\/one.mov"
+        ],
+        [
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+          "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov"
+        ],
+        [
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000",
+          "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+        ],
+        [
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+          "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+        ],
+        [
+          "5555555555555555555555555555555555555555555555555555555555555555:11000",
+          "\/Volumes\/Fixture\/Library\/movement.MOV"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:15",
+          "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:14",
+          "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:13",
+          "\/Volumes\/Fixture\/Library\/edge\/no_ext"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:12",
+          "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:11",
+          "\/Volumes\/Fixture\/Library\/edge\/name."
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:10",
+          "\/Volumes\/Fixture\/Library\/edge\/.hidden"
+        ]
+      ]
+    },
+    "\/Volumes\/Fixture Two" : {
+      "hasAnyRow" : true,
+      "totalFileSize" : 5000,
+      "unbriefedCount" : 1,
+      "unbriefedEntries" : [
+        [
+          "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+          "\/Volumes\/Fixture Two\/Backup\/one.mov"
+        ]
+      ]
+    },
+    "\/Volumes\/Fixture\/Library" : {
+      "hasAnyRow" : true,
+      "totalFileSize" : 34075,
+      "unbriefedCount" : 12,
+      "unbriefedEntries" : [
+        [
+          "2222222222222222222222222222222222222222222222222222222222222222:8000",
+          "\/Volumes\/Fixture\/Library\/after rename.mov"
+        ],
+        [
+          "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+          "\/Volumes\/Fixture\/Library\/dup\/one.mov"
+        ],
+        [
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+          "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov"
+        ],
+        [
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000",
+          "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+        ],
+        [
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+          "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+        ],
+        [
+          "5555555555555555555555555555555555555555555555555555555555555555:11000",
+          "\/Volumes\/Fixture\/Library\/movement.MOV"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:15",
+          "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:14",
+          "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:13",
+          "\/Volumes\/Fixture\/Library\/edge\/no_ext"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:12",
+          "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:11",
+          "\/Volumes\/Fixture\/Library\/edge\/name."
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:10",
+          "\/Volumes\/Fixture\/Library\/edge\/.hidden"
+        ]
+      ]
+    },
+    "\/Volumes\/Fixture\/Library\/edge" : {
+      "hasAnyRow" : true,
+      "totalFileSize" : 75,
+      "unbriefedCount" : 6,
+      "unbriefedEntries" : [
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:15",
+          "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:14",
+          "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:13",
+          "\/Volumes\/Fixture\/Library\/edge\/no_ext"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:12",
+          "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov"
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:11",
+          "\/Volumes\/Fixture\/Library\/edge\/name."
+        ],
+        [
+          "4444444444444444444444444444444444444444444444444444444444444444:10",
+          "\/Volumes\/Fixture\/Library\/edge\/.hidden"
+        ]
+      ]
+    }
+  },
+  "unmeasuredClips" : [
+    [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/after rename.mov",
+      "2222222222222222222222222222222222222222222222222222222222222222:8000"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+      "4444444444444444444444444444444444444444444444444444444444444444:10"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+      "4444444444444444444444444444444444444444444444444444444444444444:12"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/name.",
+      "4444444444444444444444444444444444444444444444444444444444444444:11"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+      "4444444444444444444444444444444444444444444444444444444444444444:13"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+      "4444444444444444444444444444444444444444444444444444444444444444:15"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+      "4444444444444444444444444444444444444444444444444444444444444444:14"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/movement.MOV",
+      "5555555555555555555555555555555555555555555555555555555555555555:11000"
+    ]
+  ],
+  "unmeasuredClipsIn" : [
+    [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:3000"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/after rename.mov",
+      "2222222222222222222222222222222222222222222222222222222222222222:8000"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/.hidden",
+      "4444444444444444444444444444444444444444444444444444444444444444:10"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+      "4444444444444444444444444444444444444444444444444444444444444444:12"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/name.",
+      "4444444444444444444444444444444444444444444444444444444444444444:11"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/no_ext",
+      "4444444444444444444444444444444444444444444444444444444444444444:13"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov",
+      "4444444444444444444444444444444444444444444444444444444444444444:15"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz",
+      "4444444444444444444444444444444444444444444444444444444444444444:14"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/movement.MOV",
+      "5555555555555555555555555555555555555555555555555555555555555555:11000"
+    ],
+    [
+      "\/Volumes\/Fixture\/Library\/odd name #%&?'\" .mov",
+      "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000"
+    ]
+  ]
+}

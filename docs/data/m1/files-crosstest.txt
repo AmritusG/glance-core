@@ -1,0 +1,112 @@
+glance-library cross-test against Swift MaCrate 0.16.4 (wave M1, files layer)
+==============================================================================
+Modules: clip_id, header, enumerate, roots, thumbkey (crates/glance-library/src/).
+Date: 2026-11-17. Home machine: macOS 27.0.1, Apple Swift 6.4.2, an English-language user locale (collation
+is English / ICU root). Swift side: MaCrate 0.16.4's own CrateKit / CrateCore with GlanceCore f0b917a
+(DXVKit 1.0.0), resolved by MaCrate's Package.swift. Rust side: glance-library over DXVKit Plus v0.12.0
+(through glance-media). Test media: Amrit's test folder, read only, never copied; identified here by counts
+and content ids only.
+
+Commands
+--------
+  # Swift oracle (scratch copy of the MaCrate source + one executable target, built -enable-testing)
+  tools/swift-library-oracle/files-oracle.sh <macrate-src> <work>
+  # Both sides on every input, line-by-line diff counts
+  tools/swift-library-oracle/files-crosstest.sh <macrate-src> <work> [<test-media>]
+  # Rust against the committed Swift output (crates/glance-library/tests/data/files/)
+  GLANCE_TESTFILES=<test-media> cargo test -p glance-library --release --test files_swift_parity
+
+Last run of files-crosstest.sh (committed inputs + generated folder and movies + fixtures + test media)
+-----------------------------------------------------------------------------------------------------
+  doubles            3907 lines, 0 differing   (405 of them exact ties between two shortest candidates)
+  names               145 lines, 1 differing   (the ß / ss quirk, below)
+  paths                52 lines, 0 differing
+  clipsize            305 lines, 0 differing
+  downscale           312 lines, 0 differing
+  tree-enum            82 lines, 1 differing   (BundleBit, below)
+  tree-enum-excluded   78 lines, 1 differing   (BundleBit)
+  tree-linkdir          1 line,  0 differing   (a root that is a symbolic link: listing fails, walk empty)
+  tree-package-root     1 line,  0 differing
+  tree-sub              4 lines, 0 differing
+  tree-files           72 lines, 0 differing
+  headers              51 lines, 1 differing   (hap-width0.mov, below)
+  fixtures             98 lines, 0 differing   (glance-core tests/fixtures: tiles_*, frame-timing, dxvkit streams)
+  media-files         199 lines, 0 differing
+  media-enum          232 lines, 0 differing
+Enumeration and file lines carry the thumbnail key, so keys are compared in all of them. The Swift oracle runs
+with HOME and CFFIXED_USER_HOME in the work folder (CrateDiag's log lands there). Earlier development runs of
+the oracle, before that was set, appended lines to the home machine's own MaCrate diag.log (reported to the lead).
+
+Path bytes: the walk's paths (what becomes clips.current_path) are compared byte for byte; the tree holds
+café.mov composed (nfc/) and decomposed (nfd/) and Swedish / Vietnamese letters stored composed: Swift's
+clip.url.path keeps each on-disk form (c3 a9 for é stays c3 a9), and so does Rust. Only paths built from a string
+(URL(fileURLWithPath:)) are decomposed, and the files-mode keys above, which hash such a URL, match through
+glance_library::unicode::file_system_representation.
+
+Also measured during the port (scratch inputs, same oracle)
+-----------------------------------------------------------
+  Swift Double description   13,233 + 34,194 values (random bit patterns, subnormals, powers of 2 and 10,
+                             integers around 2^53 / 2^54, mtime-shaped values, k x 2^-m tie hunters;
+                             ~410 exact ties): 0 differences.
+  Foundation mtime           315 (sec, nsec) dates from 1906 to 9999: 0 differences with
+                             ((sec - 978307200) + 1e-9 * nsec) + 978307200; 91 with sec + nsec / 1e9.
+  Path forms                 107 probes (standardizedFileURL.path, canonicalPath, isDangerousRoot,
+                             lastPathComponent: symlinks before and after "..", /private, /tmp, /var,
+                             automount, dangling links, NFC / NFD names, missing paths, "~/", relative): 0.
+  Walk quirk fuzz            300 flat + 200 nested generated folders (991 clips; links, hidden and UF_HIDDEN
+                             folders, packages, empty folders): 0 differences.
+  Names                      988 single characters + "a" (punctuation, symbols, currency, digits, Latin,
+                             Greek, Cyrillic): 964 in Swift's place; 201 test-media names: 0 differences;
+                             57 pairwise comparisons: 4 differ (all ß / ss).
+  JSON                       400 random library-roots.json lines + 18 edge lines written by Swift's
+                             JSONEncoder: Rust reads every one and writes every field with the same text.
+  Swift MaCrate's own test fixtures (Tests/CrateTests/Fixtures VideoSize + frame-timing, 11 movies,
+                             scratch copy only): 0 differences.
+  Contained                  12 pairs (LibraryRootStore.isContained, symlinks, NFC/NFD, "/"): 0.
+  Packages                   3,508 candidate extensions (every extension tag and document binding in Launch
+                             Services' registry) tested as empty folders: 177 are packages.
+
+Test media by family (first video track's sample-entry FourCC): 75 DXV, 60 HAP, 26 H.264, 4 ProRes 4444,
+1 ProRes 422, 2 HEVC, 31 with no readable video track (sidecars, stills, adversarial files). 22 of the
+DXV / HAP files read differently through the demuxer than through the container reader, and match Swift on
+both. 15 contents occur at two paths each (183 distinct clip ids).
+
+Differences, and why
+--------------------
+1. ß / ss (names). Core Foundation compares the case-folded strings first and hands only the rest from the
+   first difference to ICU, which reorders a few names around ß (Swift: "ss.mov" < "ß-straße.mxf",
+   "ßa" > "ssb"). The Rust comparison is a whole-string UCA at the secondary level; not reproduced.
+2. Collation residue (names). 24 of 988 single characters land elsewhere: Ŀ ŀ, ſ, ȸ, ŉ, the Ø Ǿ group,
+   compatibility symbols ⅍ ₧, archaic Greek letters (Ͱ Ͳ Ͷ Ϗ Ϳ ͺ ͻ ͼ ͽ) and final sigma. Clip names in the test
+   media sort identically.
+3. BundleBit (walk). A folder with Finder's "has bundle" bit is a package to Foundation and is not entered;
+   the bit lives in the com.apple.FinderInfo extended attribute, which std cannot read without unsafe. Same
+   for package types an app registers after the measurement. Launch Services through glance-platform would
+   answer both.
+4. hap-width0.mov (header). A HAP track whose sample entry says 0 x 0: DXVKit Plus's demux refuses the track
+   (no duration, rate or size); GlanceCore's HAP demuxer falls back to the tkhd size (0 here) and still
+   reports duration and rate. Unplayable in both families.
+
+Not differences, but worth knowing (all reproduced)
+---------------------------------------------------
+- Walk quirk: Swift MaCrate calls skipDescendants() on every symbolic link; Foundation applies it to the next
+  folder entry of the same listing (hidden folders and packages count; it lapses at the end of the listing).
+  A folder that follows a link in directory order is never indexed by Swift MaCrate.
+- Paths the walk reports are under the folder's real path (/tmp -> /private/tmp, on-disk case and Unicode
+  form); a root that is itself a symbolic link lists nothing.
+- standardizedFileURL.path drops a leading /private when the rest exists, resolves ".." through the real
+  path, and returns Apple's decomposed (NFD) text; URL(fileURLWithPath:).lastPathComponent is decomposed too
+  (a new root's displayName).
+- Thumbnail keys hash url.path: the on-disk form for clips found by listing a folder, the decomposed form for
+  URLs built from a stored path; for an NFC-named clip Swift's cache can hold both keys.
+- JSONEncoder's key order changes from object to object within one run; readers must not depend on it.
+- Swift Double description: exact ties keep the even last digit, except where the lower candidate does not
+  read back (2^-24 stays 5.960464477539063e-08); every NaN is "nan".
+
+Not reproduced, adversarial only (where Swift traps or DXVKit 1.0 / GlanceCore parse differently from
+DXVKit Plus): box sizes whose end overflows Int64 and stsc runs ending before they start (Swift traps; Rust
+returns nothing); a DXV moov with a malformed atom after the DXV track, a non-DXV video track with a sample
+entry under 86 bytes before a DXV one, a DXV sample over 300 MB, a uniform-size stsz whose size x count
+exceeds the file (DXVKit 1.0 and Plus disagree); a HAP stts whose count overruns its atom (GlanceCore drops
+the whole table, DXVKit Plus keeps the whole entries), an mdhd version 1 of 24 to 35 bytes, a video trak
+without hdlr before the real video track.

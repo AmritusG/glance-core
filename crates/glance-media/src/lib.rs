@@ -32,7 +32,12 @@ pub use alpha::{
 pub use route::{Clip, NotPlayable, Route, route};
 
 pub use dxvkit_plus_core::container::first_video_fourcc;
+// The demuxed tables (sample count, `stts`, media time scale and duration, sample-entry size) and the DXV packet
+// header check, for MaCrate's header read (glance-library `header`), which reports a DXV / HAP clip's duration,
+// rate and size as Swift MaCrate's GlanceCore demuxers do.
+pub use dxvkit_plus_core::container::{Codec, Movie, VideoTrack};
 pub use dxvkit_plus_core::dxv::Variant as DxvVariant;
+pub use dxvkit_plus_core::dxv::parse_header as parse_dxv_header;
 pub use dxvkit_plus_core::names::{self, unsupported_message};
 
 pub use dxvkit_plus_core::MediaError;

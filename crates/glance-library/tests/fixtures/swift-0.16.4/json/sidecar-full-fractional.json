@@ -1,0 +1,20 @@
+{
+  "bpm" : 128.5,
+  "brief" : "Path a\/b \"quoted\" \\ back\ttab\nnewline \u0001    😀 café",
+  "clip_id" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+  "created_at" : 1731600000.123,
+  "energy" : 7,
+  "genre" : "techno",
+  "mood" : "dark\/\"moody\"",
+  "rating" : 5,
+  "tags" : [
+    "blue",
+    "intro",
+    "ünï",
+    "日本",
+    "a\/b",
+    "café"
+  ],
+  "updated_at" : 1731600500.5,
+  "version" : 1
+}

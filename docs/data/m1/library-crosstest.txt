@@ -1,0 +1,84 @@
+glance-library cross-test against Swift MaCrate 0.16.4 (wave M1, persistence layer)
+=====================================================================================
+Date: 2026-11-17. Home machine: macOS 27.0.1, Apple Swift 6.4.2, system SQLite 3.54.0 (both sides link it),
+GRDB 7.10.0 (resolved by MaCrate 0.16.4's Package.swift), rusqlite 0.41.1 + libsqlite3-sys 0.39.1, linking /usr/lib/libsqlite3.dylib on macOS (otool -L).
+Data: synthetic only (paths under /Volumes/Fixture and /private/var/fixture). No real library, sidecar or
+stash file was opened.
+
+Commands
+--------
+  # Swift writes the goldens (copies MaCrate's source into <work>, adds one test target, runs it with HOME and
+  # CFFIXED_USER_HOME pointed at <work>/home)
+  tools/swift-library-oracle/run.sh goldens <MaCrate 0.16.4 src> <work> <golden>
+  # -> crates/glance-library/tests/fixtures/swift-0.16.4 (rsync -a, *.bak left out), src/unicode_tables.rs
+
+  # Rust reads Swift
+  cargo test -p glance-library --release
+
+  # Swift reads Rust, writes on a Rust-made library, Rust re-reads it
+  cargo run -p glance-library --release --example write-fixtures -- <rust>
+  tools/swift-library-oracle/run.sh verify <MaCrate 0.16.4 src> <work> <rust> <golden> <report>
+  cargo run -p glance-library --release --example write-fixtures -- --check-swift-writes <report>
+
+Rust reads Swift (tests/swift_fixtures.rs: 10 tests, all pass)
+--------------------------------------------------------------
+  Dumps (sqlite_master text, 8 file pragmas incl. page_count / freelist_count, table_xinfo, index_list,
+  foreign_key_list, index_xinfo, every row of every table incl. FTS5 shadow tables with storage class, REALs
+  by bit pattern) of 6 Swift files read by the Rust dumper == Swift's own dumps: 6/6.
+  Rust-created empty library + measurements.sqlite == Swift's, byte-level dump identical (no masking).
+  Rust-built populated library (same 60-odd API steps) == Swift's dump, identical after masking the "now" stamps
+  (renamed row updated_at, dismissed_at, 3 preset created_at, 4 clip_alpha updated_at) and comparing
+  filter_json decoded (Swift's JSONEncoder key order varies run to run). measurements.sqlite identical unmasked.
+  page_count equal, FTS5 data/idx/content/docsize/config rows equal.
+  Legacy v7 library (duplicate-path rows) upgraded by Rust == upgraded by Swift: dump identical, re-index flag
+  true on both, 2 duplicate rows removed, FTS backfilled 5 rows, both backups byte-equal to the original.
+  Reads: 28 read groups (every public read of MetadataStore over 17 paths and 17 clip ids) equal on the Swift-made
+  and on the Rust-made file.
+  Queries: 77 cases (30 filters x filenameAZ, 16 sorts, 28 searches, 3 combinations): plan SQL text identical,
+  bound arguments identical in type and value (with and without the mount clause), result paths and ids equal
+  (random sort compared as sets), on both files. Search: 28 queries, sanitised expression, paths, ids equal.
+  JSON: 5 sidecar cases byte-identical (decode + re-encode, and built from Rust values); 20 sidecar decode
+  inputs accept/refuse and re-encode as Swift; stash file (3 stashes, and empty) byte-identical; 8 stash decode
+  inputs; 5 filter encodings equal parsed and in length; 13 filter decode inputs.
+  Rules: 7 sidecar names, 10 sidecar->clip names, 24 FTS filename tokens, 44 sanitiser inputs, 9 trims,
+  20 file-system representations, 30 Double descriptions, 15 + 6 Alpha probe strings, 5 shuffles, 9-name sort.
+
+Swift reads Rust (LibraryOracleTests.testReadRustWritten: pass, 0 failures)
+--------------------------------------------------------------------------
+  empty / populated / legacy-v7-upgraded made by Rust, opened with MetadataStore(location: .file):
+    migrations 12 before and after (none re-ran), whole-file dump unchanged by Swift's open, integrity_check ok,
+    foreign_key_check 0, FTS rows == clips rows (0/0, 17/17, 5/5), FTS5 'integrity-check' ok.
+  Reads of the Rust-made populated library by Swift == Swift's golden reads: 28/28 groups.
+  Queries by Swift on it == golden: 77/77 (paths, ids, SQL, arguments). searchPaths == golden.
+  Rust-written sidecars: 5/5 decode and re-encode to the same bytes, and equal Swift's own bytes.
+  Rust-written stash files (full, empty): decode to the expected stashes, re-encode to the same bytes.
+  Sidecar tree written by the Rust writer, scanned by SidecarStore.scanSidecars: 8 sidecars, same set as the Rust
+  scan (hidden folder included, package and symlink handling, the corrupt sidecar skipped).
+  Swift writes on a Rust-made library (upsert with tags, setPath, deleteRows(underPathPrefix:) of 6 rows,
+  savePreset): clips 12 == FTS 12, integrity ok; Rust re-opens it: no migration, no backfill, the new row and its
+  tags, tags moved by ON UPDATE CASCADE, FTS rows moved and removed, the preset decoded: ok.
+
+Rust unit tests (ports of the Swift tests, same inputs and expectations)
+-----------------------------------------------------------------------
+  tests/store_tests.rs 47 (MetadataStoreTests, RetireOrphansTests, MeasuredFilterQueryTests,
+  NativeMeasurementStoreTests store rules), tests/format_tests.rs 14 (ClipMetadataTests, SidecarStoreTests,
+  StashOrderingTests, ClipFilterTests, ClipSortingTests), module tests in json / unicode / search / measurements.
+
+Differences found, and their cause
+----------------------------------
+  1. Swift's URL(fileURLWithPath:) returns paths in the HFS+ decomposition (NFD except U+2000-2FFF, F900-FAFF,
+     2F800-2FAFF, an older table: U+11099 not decomposed), reordering marks only inside a stretch that starts at an
+     input starter. It reaches the FTS filename column and sidecar file names (café.mov -> .café.mov...),
+     and every current_path MaCrate stores from url.path. Reproduced from tables generated out of Foundation.
+  2. FileManager's enumerator applies skipDescendants() called on a symbolic link to the next folder it reaches,
+     so scanSidecars misses that folder's sidecars. Reproduced (pre-order walk in readdir order).
+  3. Swift MaCrate 0.16.4 traps in searchClipIDs (Dictionary(uniqueKeysWithValues:)) when an NFC and an NFD
+     spelling of a path both match: Swift String equality is canonical equivalence. The Rust port keys by exact
+     path and does not trap. Swift's batched path maps (cellMetadataByPath, tagsByPath) merge such twins; the
+     oracle asks for them apart.
+  4. Foundation's JSON decoders keep the first value of a repeated key (serde_json keeps the last): the Rust
+     parser keeps the first.
+
+Re-run after the rusqlite 0.37 -> 0.41.1 bump (RUSTSEC-2026-0459): Rust 101 tests pass (lib 30, swift_fixtures 10,
+store_tests 47, format_tests 14); Swift verify 0 failures (28 reads, 77 queries); Rust re-read of Swift writes ok;
+cargo deny check: advisories, bans, licenses, sources ok.

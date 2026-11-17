@@ -32,6 +32,7 @@ pinned by tag (`Cargo.toml`).
 | `tests/fixtures/dxvkit/` (`vectors.tsv` + 34 streams, sidecars) | DXVKit 1.0.0's test vectors (GlEnc / synthetic / invalid groups) with their reference SHA-256 rows; copied unchanged from DXVKit Plus v0.8.0 | MIT (`LICENSES/DXVKit-MIT.txt`) |
 | `tests/data/swift-glance-*.tsv` | text only: what Swift Glance's own code (GlanceCore @ a9dc601) returns for the fixtures above and for Amrit's test files, by name (14 under a neutral name, found by their
 bytes through `tests/data/testfiles-by-content.tsv`: sizes and hashes only) — routes, messages, FourCCs, clip keys, hint counts, frame hashes; made by `tools/swift-crosstest`. No media | our own |
+| `crates/glance-library/tests/data/files/` | text only: what Swift MaCrate 0.16.4's own code (`tools/swift-library-oracle/FilesOracle.swift`) prints for generated inputs (doubles, names, paths, the folder and movies `crates/glance-library/tests/files_support/` writes), for the fixtures above by name, and for Amrit's test files by content id only (no names). No media | our own |
 
 No third-party media, and none of Amrit's footage, is in this repository or its history (the history
 was cleaned before publishing, 2026-11-17). The sidecar

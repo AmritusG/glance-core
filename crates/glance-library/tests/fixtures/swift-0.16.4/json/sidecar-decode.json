@@ -1,0 +1,90 @@
+[
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : null,\n  \"brief\" : null,\n  \"clip_id\" : \"x:1\",\n  \"created_at\" : 1,\n  \"energy\" : null,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 0,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : 2,\n  \"version\" : 1\n}"
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"created_at\":1,\"updated_at\":2}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"rating\":null,\"tags\":null,\"version\":null,\"bpm\":null}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : null,\n  \"brief\" : null,\n  \"clip_id\" : \"x:1\",\n  \"created_at\" : 1,\n  \"energy\" : null,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 0,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : 2,\n  \"version\" : 1\n}"
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":\"1\",\"updated_at\":2}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"rating\":4.0}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : null,\n  \"brief\" : null,\n  \"clip_id\" : \"x:1\",\n  \"created_at\" : 1,\n  \"energy\" : null,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 4,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : 2,\n  \"version\" : 1\n}"
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"rating\":4.5}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"energy\":7.0,\"bpm\":120}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : 120,\n  \"brief\" : null,\n  \"clip_id\" : \"x:1\",\n  \"created_at\" : 1,\n  \"energy\" : 7,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 0,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : 2,\n  \"version\" : 1\n}"
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"loop_start_sec\":1.5,\"unknown\":{\"a\":[1,2]}}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : null,\n  \"brief\" : null,\n  \"clip_id\" : \"x:1\",\n  \"created_at\" : 1,\n  \"energy\" : null,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 0,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : 2,\n  \"version\" : 1\n}"
+  },
+  {
+    "input" : "{\"clip_id\":1,\"created_at\":1,\"updated_at\":2}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"tags\":[\"a\",1]}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"rating\":true}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1e3,\"updated_at\":-2.5e-1,\"version\":7}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : null,\n  \"brief\" : null,\n  \"clip_id\" : \"x:1\",\n  \"created_at\" : 1000,\n  \"energy\" : null,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 0,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : -0.25,\n  \"version\" : 7\n}"
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"clip_id\":\"y:2\"}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : null,\n  \"brief\" : null,\n  \"clip_id\" : \"x:1\",\n  \"created_at\" : 1,\n  \"energy\" : null,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 0,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : 2,\n  \"version\" : 1\n}"
+  },
+  {
+    "input" : "{}",
+    "ok" : false
+  },
+  {
+    "input" : "[]",
+    "ok" : false
+  },
+  {
+    "input" : "not json",
+    "ok" : false
+  },
+  {
+    "input" : "",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"x:1\",\"created_at\":1,\"updated_at\":2,\"rating\":9223372036854775808}",
+    "ok" : false
+  },
+  {
+    "input" : "{\"clip_id\":\"é😀\\\/\",\"created_at\":1,\"updated_at\":2}",
+    "ok" : true,
+    "reencoded" : "{\n  \"bpm\" : null,\n  \"brief\" : null,\n  \"clip_id\" : \"é😀\\\/\",\n  \"created_at\" : 1,\n  \"energy\" : null,\n  \"genre\" : null,\n  \"mood\" : null,\n  \"rating\" : 0,\n  \"tags\" : [\n\n  ],\n  \"updated_at\" : 2,\n  \"version\" : 1\n}"
+  }
+]

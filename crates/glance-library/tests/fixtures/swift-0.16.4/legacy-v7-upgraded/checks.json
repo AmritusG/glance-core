@@ -1,0 +1,22 @@
+{
+  "clip_search" : 5,
+  "clips" : 5,
+  "foreign_key_check" : 0,
+  "integrity_check" : [
+    "ok"
+  ],
+  "migrations" : [
+    "v1_initial_schema",
+    "v2_clip_search_fts5",
+    "v3_clip_duration",
+    "v4_saved_filters",
+    "v5_orphan_dismissed",
+    "v6_clip_brief",
+    "v7_drop_loop_markers",
+    "v8_path_primary_key",
+    "v9_stashes",
+    "v10_clip_frame_rate",
+    "v11_clip_video_size",
+    "v12_clip_alpha"
+  ]
+}

@@ -404,6 +404,10 @@ impl App for Sample {
                     }
                 }
             }
+            // MaCrate's workspace events (v0.6.0): the sample does not observe the workspace.
+            ShellEvent::Platform(
+                PlatformEvent::VolumeMounted(_) | PlatformEvent::VolumeUnmounted(_) | PlatformEvent::AppLaunched(_) | PlatformEvent::AppTerminated(_),
+            ) => {}
         }
     }
 

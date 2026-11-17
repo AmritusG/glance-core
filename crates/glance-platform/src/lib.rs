@@ -47,6 +47,14 @@ pub use macos::{
     localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, reveal_in_finder, screen_names, set_cursor_hidden, set_default_for,
     set_frame_autosave, set_show_window, set_single_window, set_subtitle, set_unsaved_work,
 };
+#[cfg(target_os = "macos")]
+mod macos_library;
+#[cfg(target_os = "macos")]
+pub use macos_library::{
+    DragItem, FS_EVENT_FLAG_ROOT_CHANGED, FS_EVENT_FLAG_UNMOUNT, FolderWatch, FsEvent, ResolvedBookmark, app_for_bundle_id, apps_to_open, bookmark_create,
+    bookmark_resolve, bundle_id_of, copy_paths, is_app_running, keychain_delete, keychain_get, keychain_set, localized_case_insensitive_compare,
+    observe_workspace, open_with, precomposed, reveal_all_in_finder, start_file_drag,
+};
 
 #[cfg(windows)]
 mod windows;
@@ -86,6 +94,12 @@ pub enum PlatformEvent {
     /// The OS asked the app to quit (the Dock, a quit Apple Event, log out) while it had unsaved work
     /// ([`set_unsaved_work`]); the quit was held back so the app can ask about the work and quit itself.
     QuitRequested,
+    /// A volume was mounted / unmounted: its path (`/Volumes/<name>`), from NSWorkspace (v0.6.0, MaCrate).
+    VolumeMounted(PathBuf),
+    VolumeUnmounted(PathBuf),
+    /// An app was launched / quit: its bundle id (v0.6.0, Send to Arena's "is Arena running").
+    AppLaunched(String),
+    AppTerminated(String),
 }
 
 /// How an alert looks (`NSAlert.Style`; on Windows the message box's icon).

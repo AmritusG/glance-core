@@ -1,0 +1,7 @@
+glance-arena
+Copyright (c) 2026 Amrit Rosell
+
+This crate is a Rust port of SendEhrKit 1.1.2 (the "Send to Arena" kit for Resolume Arena),
+written by Amrit Rosell. Its author, Amrit Rosell, relicensed SendEhrKit under the MIT licence
+for the Glance family on 2026-11-14. This port, like the rest of glance-core, is licensed under
+the MIT licence (see the repository's LICENSE).

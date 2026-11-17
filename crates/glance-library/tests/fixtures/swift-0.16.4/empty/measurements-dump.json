@@ -1,0 +1,1038 @@
+{
+  "indexes" : {
+    "sqlite_autoindex_clip_measurements_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "clip_id"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "sqlite_autoindex_scan_skips_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "clip_id"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ]
+  },
+  "pragma_application_id" : [
+    "integer",
+    "0"
+  ],
+  "pragma_auto_vacuum" : [
+    "integer",
+    "0"
+  ],
+  "pragma_encoding" : [
+    "text",
+    "UTF-8"
+  ],
+  "pragma_freelist_count" : [
+    "integer",
+    "0"
+  ],
+  "pragma_journal_mode" : [
+    "text",
+    "delete"
+  ],
+  "pragma_page_count" : [
+    "integer",
+    "5"
+  ],
+  "pragma_page_size" : [
+    "integer",
+    "4096"
+  ],
+  "pragma_user_version" : [
+    "integer",
+    "0"
+  ],
+  "sqlite_master" : [
+    {
+      "name" : [
+        "text",
+        "clip_measurements"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE clip_measurements (\n    clip_id         TEXT PRIMARY KEY NOT NULL,\n    lab_key         TEXT NOT NULL,\n    lab_status      TEXT NOT NULL,\n    lab_reason      TEXT,\n    pass1_score     REAL,\n    is_loop         INTEGER,\n    cycle_s         REAL,\n    cycle_rule      TEXT,\n    approx_cycle    INTEGER,\n    join_step       REAL,\n    cuts            INTEGER,\n    flashes         INTEGER,\n    flicker         REAL,\n    flow_mean       REAL,\n    moves           INTEGER,\n    text_checked    INTEGER NOT NULL DEFAULT 0,\n    text_found      INTEGER,\n    black_share     REAL,\n    centre_share    REAL,\n    xfade_score     REAL,\n    measure_version TEXT,\n    source          TEXT,\n    measured_at     TEXT,\n    provenance      TEXT NOT NULL DEFAULT 'lab'\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_measurements"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_clip_measurements_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "clip_measurements"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "scan_skips"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE scan_skips (\n    clip_id         TEXT PRIMARY KEY NOT NULL,\n    reason          TEXT NOT NULL,\n    scanner_version TEXT NOT NULL,\n    skipped_at      TEXT NOT NULL\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "scan_skips"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_scan_skips_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "scan_skips"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    }
+  ],
+  "tables" : {
+    "clip_measurements" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_clip_measurements_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "clip_id"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "lab_key"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "lab_status"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "lab_reason"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "4"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "pass1_score"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "5"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "is_loop"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "6"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "cycle_s"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "7"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "cycle_rule"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "8"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "approx_cycle"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "9"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "join_step"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "10"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "cuts"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "11"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "flashes"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "12"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "flicker"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "13"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "flow_mean"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "14"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "moves"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "15"
+          ],
+          "dflt_value" : [
+            "text",
+            "0"
+          ],
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "text_checked"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "16"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "text_found"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "17"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "black_share"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "18"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "centre_share"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "19"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "xfade_score"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "20"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "measure_version"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "21"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "source"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "22"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "measured_at"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "23"
+          ],
+          "dflt_value" : [
+            "text",
+            "'lab'"
+          ],
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "provenance"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        }
+      ]
+    },
+    "scan_skips" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_scan_skips_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "clip_id"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "reason"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "scanner_version"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "skipped_at"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        }
+      ]
+    }
+  }
+}

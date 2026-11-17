@@ -1,0 +1,42 @@
+glance-arena ⇄ SendEhrKit 1.1.2 cross-test (Swift oracle: tools/swift-arena-oracle)
+date: 2026-11-17T19:04Z   machine: arm64, macOS 27.0.1   Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+oracle: SendEhrKit at tag v1.1.2 (scratch copy), swift build -c release
+rust:   cargo test -p glance-arena --release --test swift_oracle -- --nocapture  (GLANCE_ARENA_ORACLE=<oracle binary>)
+
+How bytes are compared: Swift's JSONEncoder writes object keys in a per-process hash-seeded
+order (measured: 4 runs of one program, 4 different key orders), so its production bytes are
+not reproducible even by Swift. The oracle therefore also writes each sample with .sortedKeys;
+Rust's sorted encoding (swift_json::to_vec_sorted) is compared byte for byte with it. Value
+formatting (\/ escapes, control escapes, integral doubles without .0, e+16 / e-07 exponents,
+Date via the 2001 reference date) is identical in both orders. Rust's production files write
+keys in declaration order.
+
+files settings-default: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files settings-full: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files recents: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files request-load: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files request-setting: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files setting-changes: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files statuses: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files cache: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+files cache-empty: Swift sorted bytes == Rust sorted bytes, Swift file decodes to the Rust sample: yes
+swift decode settings-default: ok, equal to the Swift sample: true
+swift decode settings-full: ok, equal to the Swift sample: true
+swift decode recents: ok, equal to the Swift sample: true
+swift decode request-load: ok, equal to the Swift sample: true
+swift decode request-setting: ok, equal to the Swift sample: true
+swift decode setting-changes: ok, equal to the Swift sample: true
+swift decode statuses: ok, equal to the Swift sample: true
+swift decode cache: ok, equal to the Swift sample: true
+swift decode cache-empty: ok, equal to the Swift sample: true
+compositions: 16/16 decode identically (snapshot bytes or error text)
+file URLs: 11/11 encode and decode identically
+name order: 4489/4489 pairs agree with localizedStandardCompare
+settings decoding: 18/18 inputs give the same settings (or both refuse)
+
+Checks per file sample: (1) Swift .sortedKeys bytes == Rust sorted bytes; (2) Swift's production
+file decodes in Rust to the Rust sample; (3) Swift decodes Rust's production file, compares it
+with its own sample (Date equality = Swift's), re-encodes it sorted: same bytes as Swift's own.
+Samples: settings (default, every field set), recents (every Destination case, dates incl. 0.1
+and 1e9), load request (ClosedRange, UUID), setting request, every SettingChange, every
+ArenaStatus / ArenaError coded form, cache.json with and without a snapshot.

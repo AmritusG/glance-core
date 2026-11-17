@@ -1,0 +1,3584 @@
+{
+  "indexes" : {
+    "idx_clip_tags_tag" : [
+      {
+        "cid" : [
+          "integer",
+          "1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "tag"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "idx_clips_clip_id" : [
+      {
+        "cid" : [
+          "integer",
+          "1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "clip_id"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "idx_clips_orphan" : [
+      {
+        "cid" : [
+          "integer",
+          "14"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "is_orphan"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "idx_clips_rating" : [
+      {
+        "cid" : [
+          "integer",
+          "4"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "rating"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "idx_stash_clips_clip_id" : [
+      {
+        "cid" : [
+          "integer",
+          "1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "clip_id"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "sqlite_autoindex_clip_alpha_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "clip_id"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "sqlite_autoindex_clip_tags_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "current_path"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "tag"
+        ],
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "2"
+        ]
+      }
+    ],
+    "sqlite_autoindex_clips_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "current_path"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "sqlite_autoindex_grdb_migrations_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "identifier"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "sqlite_autoindex_saved_filters_1" : [
+      {
+        "cid" : [
+          "integer",
+          "1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "name"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ],
+    "sqlite_autoindex_stash_clips_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "stash_id"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "clip_id"
+        ],
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "2"
+        ]
+      }
+    ],
+    "sqlite_autoindex_stashes_1" : [
+      {
+        "cid" : [
+          "integer",
+          "0"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "1"
+        ],
+        "name" : [
+          "text",
+          "id"
+        ],
+        "seqno" : [
+          "integer",
+          "0"
+        ]
+      },
+      {
+        "cid" : [
+          "integer",
+          "-1"
+        ],
+        "coll" : [
+          "text",
+          "BINARY"
+        ],
+        "desc" : [
+          "integer",
+          "0"
+        ],
+        "key" : [
+          "integer",
+          "0"
+        ],
+        "name" : null,
+        "seqno" : [
+          "integer",
+          "1"
+        ]
+      }
+    ]
+  },
+  "pragma_application_id" : [
+    "integer",
+    "0"
+  ],
+  "pragma_auto_vacuum" : [
+    "integer",
+    "0"
+  ],
+  "pragma_encoding" : [
+    "text",
+    "UTF-8"
+  ],
+  "pragma_freelist_count" : [
+    "integer",
+    "0"
+  ],
+  "pragma_journal_mode" : [
+    "text",
+    "delete"
+  ],
+  "pragma_page_count" : [
+    "integer",
+    "26"
+  ],
+  "pragma_page_size" : [
+    "integer",
+    "4096"
+  ],
+  "pragma_user_version" : [
+    "integer",
+    "0"
+  ],
+  "sqlite_master" : [
+    {
+      "name" : [
+        "text",
+        "grdb_migrations"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE grdb_migrations (identifier TEXT NOT NULL PRIMARY KEY)"
+      ],
+      "tbl_name" : [
+        "text",
+        "grdb_migrations"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_grdb_migrations_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "grdb_migrations"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "saved_filters"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE saved_filters (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL UNIQUE,\n    filter_json TEXT NOT NULL,\n    sort_value TEXT NOT NULL,\n    created_at REAL NOT NULL\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "saved_filters"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_saved_filters_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "saved_filters"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_sequence"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE sqlite_sequence(name,seq)"
+      ],
+      "tbl_name" : [
+        "text",
+        "sqlite_sequence"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clips"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE \"clips\" (\n    current_path TEXT PRIMARY KEY,\n    clip_id TEXT NOT NULL,\n    file_size INTEGER NOT NULL,\n    file_mtime REAL NOT NULL,\n    rating INTEGER NOT NULL DEFAULT 0,\n    bpm REAL,\n    mood TEXT,\n    genre TEXT,\n    energy INTEGER,\n    brief TEXT,\n    duration_sec REAL,\n    dismissed_at REAL,\n    created_at REAL NOT NULL,\n    updated_at REAL NOT NULL,\n    is_orphan INTEGER NOT NULL DEFAULT 0\n, frame_rate REAL, video_width INTEGER, video_height INTEGER)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clips"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_clips_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "clips"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "idx_clips_clip_id"
+      ],
+      "sql" : [
+        "text",
+        "CREATE INDEX idx_clips_clip_id ON clips(clip_id)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clips"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "idx_clips_rating"
+      ],
+      "sql" : [
+        "text",
+        "CREATE INDEX idx_clips_rating  ON clips(rating)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clips"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "idx_clips_orphan"
+      ],
+      "sql" : [
+        "text",
+        "CREATE INDEX idx_clips_orphan  ON clips(is_orphan)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clips"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_tags"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE \"clip_tags\" (\n    current_path TEXT NOT NULL,\n    tag TEXT NOT NULL,\n    PRIMARY KEY (current_path, tag),\n    FOREIGN KEY (current_path)\n        REFERENCES clips(current_path)\n        ON DELETE CASCADE\n        ON UPDATE CASCADE\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_tags"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_clip_tags_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "clip_tags"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "idx_clip_tags_tag"
+      ],
+      "sql" : [
+        "text",
+        "CREATE INDEX idx_clip_tags_tag ON clip_tags(tag)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_tags"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_search"
+      ],
+      "sql" : [
+        "text",
+        "CREATE VIRTUAL TABLE clip_search USING fts5(\n    current_path UNINDEXED,\n    filename,\n    tags,\n    mood,\n    genre,\n    brief,\n    tokenize = 'unicode61'\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_search"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_search_data"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE 'clip_search_data'(id INTEGER PRIMARY KEY, block BLOB)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_search_data"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_search_idx"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE 'clip_search_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_search_idx"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_search_content"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE 'clip_search_content'(id INTEGER PRIMARY KEY, c0, c1, c2, c3, c4, c5)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_search_content"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_search_docsize"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE 'clip_search_docsize'(id INTEGER PRIMARY KEY, sz BLOB)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_search_docsize"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_search_config"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE 'clip_search_config'(k PRIMARY KEY, v) WITHOUT ROWID"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_search_config"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "stashes"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE stashes (\n    id TEXT PRIMARY KEY,\n    name TEXT NOT NULL,\n    created_at REAL NOT NULL,\n    updated_at REAL NOT NULL\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "stashes"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_stashes_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "stashes"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "stash_clips"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE stash_clips (\n    stash_id TEXT NOT NULL,\n    clip_id TEXT NOT NULL,\n    relative_path_hint TEXT NOT NULL,\n    position INTEGER NOT NULL,\n    PRIMARY KEY (stash_id, clip_id),\n    FOREIGN KEY (stash_id) REFERENCES stashes(id) ON DELETE CASCADE\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "stash_clips"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_stash_clips_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "stash_clips"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "idx_stash_clips_clip_id"
+      ],
+      "sql" : [
+        "text",
+        "CREATE INDEX idx_stash_clips_clip_id ON stash_clips(clip_id)"
+      ],
+      "tbl_name" : [
+        "text",
+        "stash_clips"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "clip_alpha"
+      ],
+      "sql" : [
+        "text",
+        "CREATE TABLE clip_alpha (\n    clip_id TEXT PRIMARY KEY,\n    probe TEXT,\n    alpha_type TEXT,\n    updated_at REAL NOT NULL\n)"
+      ],
+      "tbl_name" : [
+        "text",
+        "clip_alpha"
+      ],
+      "type" : [
+        "text",
+        "table"
+      ]
+    },
+    {
+      "name" : [
+        "text",
+        "sqlite_autoindex_clip_alpha_1"
+      ],
+      "sql" : null,
+      "tbl_name" : [
+        "text",
+        "clip_alpha"
+      ],
+      "type" : [
+        "text",
+        "index"
+      ]
+    }
+  ],
+  "tables" : {
+    "clip_alpha" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_clip_alpha_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "clip_id"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "probe"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "alpha_type"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "updated_at"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        }
+      ]
+    },
+    "clip_search" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "current_path"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "filename"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "tags"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "mood"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "4"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "genre"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "5"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "brief"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "6"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "1"
+          ],
+          "name" : [
+            "text",
+            "clip_search"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "7"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "1"
+          ],
+          "name" : [
+            "text",
+            "rank"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        }
+      ]
+    },
+    "clip_search_config" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_clip_search_config_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+        {
+          "k" : [
+            "text",
+            "version"
+          ],
+          "v" : [
+            "integer",
+            "4"
+          ]
+        }
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "k"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "v"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        }
+      ]
+    },
+    "clip_search_content" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "id"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "c0"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "c1"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "c2"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "4"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "c3"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "5"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "c4"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "6"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "c5"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        }
+      ]
+    },
+    "clip_search_data" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+
+      ],
+      "rows" : [
+        {
+          "__rowid" : [
+            "integer",
+            "1"
+          ],
+          "block" : [
+            "blob",
+            ""
+          ],
+          "id" : [
+            "integer",
+            "1"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "10"
+          ],
+          "block" : [
+            "blob",
+            "00000000000000"
+          ],
+          "id" : [
+            "integer",
+            "10"
+          ]
+        }
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "id"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "block"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "BLOB"
+          ]
+        }
+      ]
+    },
+    "clip_search_docsize" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "id"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "sz"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "BLOB"
+          ]
+        }
+      ]
+    },
+    "clip_search_idx" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_clip_search_idx_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "segid"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "term"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "2"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "pgno"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        }
+      ]
+    },
+    "clip_tags" : {
+      "foreign_key_list" : [
+        {
+          "from" : [
+            "text",
+            "current_path"
+          ],
+          "id" : [
+            "integer",
+            "0"
+          ],
+          "match" : [
+            "text",
+            "NONE"
+          ],
+          "on_delete" : [
+            "text",
+            "CASCADE"
+          ],
+          "on_update" : [
+            "text",
+            "CASCADE"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "table" : [
+            "text",
+            "clips"
+          ],
+          "to" : [
+            "text",
+            "current_path"
+          ]
+        }
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "idx_clip_tags_tag"
+          ],
+          "origin" : [
+            "text",
+            "c"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "0"
+          ]
+        },
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_clip_tags_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "1"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "current_path"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "tag"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "2"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        }
+      ]
+    },
+    "clips" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "idx_clips_orphan"
+          ],
+          "origin" : [
+            "text",
+            "c"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "0"
+          ]
+        },
+        {
+          "name" : [
+            "text",
+            "idx_clips_rating"
+          ],
+          "origin" : [
+            "text",
+            "c"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "1"
+          ],
+          "unique" : [
+            "integer",
+            "0"
+          ]
+        },
+        {
+          "name" : [
+            "text",
+            "idx_clips_clip_id"
+          ],
+          "origin" : [
+            "text",
+            "c"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "2"
+          ],
+          "unique" : [
+            "integer",
+            "0"
+          ]
+        },
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_clips_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "3"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "current_path"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "clip_id"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "file_size"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "file_mtime"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "4"
+          ],
+          "dflt_value" : [
+            "text",
+            "0"
+          ],
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "rating"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "5"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "bpm"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "6"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "mood"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "7"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "genre"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "8"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "energy"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "9"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "brief"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "10"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "duration_sec"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "11"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "dismissed_at"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "12"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "created_at"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "13"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "updated_at"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "14"
+          ],
+          "dflt_value" : [
+            "text",
+            "0"
+          ],
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "is_orphan"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "15"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "frame_rate"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "16"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "video_width"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "17"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "video_height"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        }
+      ]
+    },
+    "grdb_migrations" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_grdb_migrations_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+        {
+          "__rowid" : [
+            "integer",
+            "10"
+          ],
+          "identifier" : [
+            "text",
+            "v10_clip_frame_rate"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "11"
+          ],
+          "identifier" : [
+            "text",
+            "v11_clip_video_size"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "12"
+          ],
+          "identifier" : [
+            "text",
+            "v12_clip_alpha"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "1"
+          ],
+          "identifier" : [
+            "text",
+            "v1_initial_schema"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "2"
+          ],
+          "identifier" : [
+            "text",
+            "v2_clip_search_fts5"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "3"
+          ],
+          "identifier" : [
+            "text",
+            "v3_clip_duration"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "4"
+          ],
+          "identifier" : [
+            "text",
+            "v4_saved_filters"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "5"
+          ],
+          "identifier" : [
+            "text",
+            "v5_orphan_dismissed"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "6"
+          ],
+          "identifier" : [
+            "text",
+            "v6_clip_brief"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "7"
+          ],
+          "identifier" : [
+            "text",
+            "v7_drop_loop_markers"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "8"
+          ],
+          "identifier" : [
+            "text",
+            "v8_path_primary_key"
+          ]
+        },
+        {
+          "__rowid" : [
+            "integer",
+            "9"
+          ],
+          "identifier" : [
+            "text",
+            "v9_stashes"
+          ]
+        }
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "identifier"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        }
+      ]
+    },
+    "saved_filters" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_saved_filters_1"
+          ],
+          "origin" : [
+            "text",
+            "u"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "id"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "name"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "filter_json"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "sort_value"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "4"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "created_at"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        }
+      ]
+    },
+    "sqlite_sequence" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "name"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "seq"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            ""
+          ]
+        }
+      ]
+    },
+    "stash_clips" : {
+      "foreign_key_list" : [
+        {
+          "from" : [
+            "text",
+            "stash_id"
+          ],
+          "id" : [
+            "integer",
+            "0"
+          ],
+          "match" : [
+            "text",
+            "NONE"
+          ],
+          "on_delete" : [
+            "text",
+            "CASCADE"
+          ],
+          "on_update" : [
+            "text",
+            "NO ACTION"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "table" : [
+            "text",
+            "stashes"
+          ],
+          "to" : [
+            "text",
+            "id"
+          ]
+        }
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "idx_stash_clips_clip_id"
+          ],
+          "origin" : [
+            "text",
+            "c"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "0"
+          ]
+        },
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_stash_clips_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "1"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "stash_id"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "clip_id"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "2"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "relative_path_hint"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "position"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "INTEGER"
+          ]
+        }
+      ]
+    },
+    "stashes" : {
+      "foreign_key_list" : [
+
+      ],
+      "index_list" : [
+        {
+          "name" : [
+            "text",
+            "sqlite_autoindex_stashes_1"
+          ],
+          "origin" : [
+            "text",
+            "pk"
+          ],
+          "partial" : [
+            "integer",
+            "0"
+          ],
+          "seq" : [
+            "integer",
+            "0"
+          ],
+          "unique" : [
+            "integer",
+            "1"
+          ]
+        }
+      ],
+      "rows" : [
+
+      ],
+      "table_xinfo" : [
+        {
+          "cid" : [
+            "integer",
+            "0"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "id"
+          ],
+          "notnull" : [
+            "integer",
+            "0"
+          ],
+          "pk" : [
+            "integer",
+            "1"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "1"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "name"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "TEXT"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "2"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "created_at"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        },
+        {
+          "cid" : [
+            "integer",
+            "3"
+          ],
+          "dflt_value" : null,
+          "hidden" : [
+            "integer",
+            "0"
+          ],
+          "name" : [
+            "text",
+            "updated_at"
+          ],
+          "notnull" : [
+            "integer",
+            "1"
+          ],
+          "pk" : [
+            "integer",
+            "0"
+          ],
+          "type" : [
+            "text",
+            "REAL"
+          ]
+        }
+      ]
+    }
+  }
+}

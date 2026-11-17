@@ -1,0 +1,15 @@
+{
+  "bpm" : 1e+16,
+  "brief" : null,
+  "clip_id" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+  "created_at" : -1.5,
+  "energy" : null,
+  "genre" : null,
+  "mood" : null,
+  "rating" : 0,
+  "tags" : [
+
+  ],
+  "updated_at" : 123456789.000001,
+  "version" : 1
+}

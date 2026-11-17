@@ -1,0 +1,69 @@
+[
+  {
+    "input" : "{\"stashes\":[]}",
+    "stashes" : [
+
+    ]
+  },
+  {
+    "input" : "{\"stashes\":[{\"id\":\"A\",\"name\":\"n\",\"createdAt\":1,\"updatedAt\":2,\"clips\":[{\"clipID\":\"c\",\"relativePathHint\":\"h\"}]}]}",
+    "stashes" : [
+      {
+        "clips" : [
+          [
+            "c",
+            "h"
+          ]
+        ],
+        "createdAt" : 1,
+        "id" : "A",
+        "name" : "n",
+        "updatedAt" : 2
+      }
+    ]
+  },
+  {
+    "input" : "{\"stashes\":[{\"id\":\"A\",\"name\":\"n\",\"createdAt\":1,\"updatedAt\":2}]}",
+    "stashes" : [
+
+    ]
+  },
+  {
+    "input" : "{\"stashes\":[{\"id\":\"A\",\"name\":\"n\",\"createdAt\":1,\"updatedAt\":2,\"clips\":[{\"clipID\":\"c\"}]}]}",
+    "stashes" : [
+
+    ]
+  },
+  {
+    "input" : "{\"stashes\":[{\"id\":\"A\",\"name\":\"n\",\"createdAt\":1,\"updatedAt\":2,\"clips\":[],\"extra\":1}],\"more\":true}",
+    "stashes" : [
+      {
+        "clips" : [
+
+        ],
+        "createdAt" : 1,
+        "id" : "A",
+        "name" : "n",
+        "updatedAt" : 2
+      }
+    ]
+  },
+  {
+    "input" : "{}",
+    "stashes" : [
+
+    ]
+  },
+  {
+    "input" : "[]",
+    "stashes" : [
+
+    ]
+  },
+  {
+    "input" : "garbage",
+    "stashes" : [
+
+    ]
+  }
+]

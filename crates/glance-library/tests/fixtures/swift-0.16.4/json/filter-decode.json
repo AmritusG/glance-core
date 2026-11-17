@@ -1,0 +1,223 @@
+[
+  {
+    "filter" : {
+      "bpmRange" : null,
+      "centreHeavy" : null,
+      "cycleRange" : null,
+      "energyRange" : null,
+      "exactCyclesOnly" : null,
+      "genre" : null,
+      "ground" : null,
+      "hasDuplicates" : false,
+      "joinStepMax" : null,
+      "loopsOnly" : null,
+      "measuredBy" : null,
+      "mood" : null,
+      "movesState" : null,
+      "noFlashes" : null,
+      "noHardCuts" : null,
+      "noText" : null,
+      "ratingMin" : null,
+      "tags" : [
+
+      ],
+      "tagsLogic" : "and"
+    },
+    "input" : "{\"tags\":[],\"tagsLogic\":\"and\"}"
+  },
+  {
+    "filter" : {
+      "bpmRange" : null,
+      "centreHeavy" : null,
+      "cycleRange" : null,
+      "energyRange" : null,
+      "exactCyclesOnly" : null,
+      "genre" : null,
+      "ground" : null,
+      "hasDuplicates" : false,
+      "joinStepMax" : null,
+      "loopsOnly" : null,
+      "measuredBy" : null,
+      "mood" : null,
+      "movesState" : null,
+      "noFlashes" : null,
+      "noHardCuts" : null,
+      "noText" : null,
+      "ratingMin" : null,
+      "tags" : [
+
+      ],
+      "tagsLogic" : "and"
+    },
+    "input" : "{}"
+  },
+  {
+    "filter" : {
+      "bpmRange" : null,
+      "centreHeavy" : null,
+      "cycleRange" : {
+        "includeNotMeasured" : true,
+        "value" : [
+          2,
+          8
+        ]
+      },
+      "energyRange" : null,
+      "exactCyclesOnly" : null,
+      "genre" : null,
+      "ground" : null,
+      "hasDuplicates" : false,
+      "joinStepMax" : null,
+      "loopsOnly" : {
+        "includeNotMeasured" : true
+      },
+      "measuredBy" : null,
+      "mood" : null,
+      "movesState" : null,
+      "noFlashes" : null,
+      "noHardCuts" : null,
+      "noText" : null,
+      "ratingMin" : null,
+      "tags" : [
+
+      ],
+      "tagsLogic" : "and"
+    },
+    "input" : "{\"tags\":[],\"tagsLogic\":\"and\",\"loopsOnly\":{},\"cycleRange\":{\"value\":[2,8]}}"
+  },
+  {
+    "filter" : {
+      "bpmRange" : null,
+      "centreHeavy" : null,
+      "cycleRange" : null,
+      "energyRange" : null,
+      "exactCyclesOnly" : null,
+      "genre" : null,
+      "ground" : null,
+      "hasDuplicates" : false,
+      "joinStepMax" : null,
+      "loopsOnly" : null,
+      "measuredBy" : null,
+      "mood" : null,
+      "movesState" : null,
+      "noFlashes" : null,
+      "noHardCuts" : null,
+      "noText" : null,
+      "ratingMin" : 3,
+      "tags" : [
+        "a",
+        "b"
+      ],
+      "tagsLogic" : "or"
+    },
+    "input" : "{\"tags\":[\"a\",\"a\",\"b\"],\"tagsLogic\":\"or\",\"ratingMin\":3}"
+  },
+  {
+    "filter" : null,
+    "input" : "{\"bpmRange\":[130,120]}"
+  },
+  {
+    "filter" : null,
+    "input" : "{\"bpmRange\":[120]}"
+  },
+  {
+    "filter" : null,
+    "input" : "{\"tagsLogic\":\"xor\"}"
+  },
+  {
+    "filter" : null,
+    "input" : "{\"cycleRange\":{\"includeNotMeasured\":false}}"
+  },
+  {
+    "filter" : {
+      "bpmRange" : null,
+      "centreHeavy" : null,
+      "cycleRange" : null,
+      "energyRange" : null,
+      "exactCyclesOnly" : null,
+      "genre" : null,
+      "ground" : null,
+      "hasDuplicates" : false,
+      "joinStepMax" : null,
+      "loopsOnly" : null,
+      "measuredBy" : "native",
+      "mood" : null,
+      "movesState" : null,
+      "noFlashes" : null,
+      "noHardCuts" : null,
+      "noText" : null,
+      "ratingMin" : null,
+      "tags" : [
+
+      ],
+      "tagsLogic" : "and"
+    },
+    "input" : "{\"measuredBy\":\"native\",\"hasDuplicates\":false}"
+  },
+  {
+    "filter" : null,
+    "input" : "{\"energyRange\":[1.5,3]}"
+  },
+  {
+    "filter" : {
+      "bpmRange" : null,
+      "centreHeavy" : null,
+      "cycleRange" : null,
+      "energyRange" : null,
+      "exactCyclesOnly" : null,
+      "genre" : null,
+      "ground" : {
+        "includeNotMeasured" : true,
+        "value" : "fullFrame"
+      },
+      "hasDuplicates" : false,
+      "joinStepMax" : null,
+      "loopsOnly" : null,
+      "measuredBy" : null,
+      "mood" : null,
+      "movesState" : {
+        "includeNotMeasured" : false,
+        "value" : "still"
+      },
+      "noFlashes" : null,
+      "noHardCuts" : null,
+      "noText" : null,
+      "ratingMin" : null,
+      "tags" : [
+
+      ],
+      "tagsLogic" : "and"
+    },
+    "input" : "{\"ground\":{\"value\":\"fullFrame\"},\"movesState\":{\"value\":\"still\",\"includeNotMeasured\":false}}"
+  },
+  {
+    "filter" : {
+      "bpmRange" : null,
+      "centreHeavy" : null,
+      "cycleRange" : null,
+      "energyRange" : null,
+      "exactCyclesOnly" : null,
+      "genre" : null,
+      "ground" : null,
+      "hasDuplicates" : false,
+      "joinStepMax" : null,
+      "loopsOnly" : null,
+      "measuredBy" : null,
+      "mood" : null,
+      "movesState" : null,
+      "noFlashes" : null,
+      "noHardCuts" : null,
+      "noText" : null,
+      "ratingMin" : null,
+      "tags" : [
+
+      ],
+      "tagsLogic" : "and"
+    },
+    "input" : "{\"ratingMin\":null,\"mood\":null}"
+  },
+  {
+    "filter" : null,
+    "input" : "nope"
+  }
+]

@@ -1,0 +1,284 @@
+[
+  {
+    "expression" : "",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : ""
+  },
+  {
+    "expression" : "",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : "   "
+  },
+  {
+    "expression" : "\"blue\"*",
+    "ids" : [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+    ],
+    "search" : "blue"
+  },
+  {
+    "expression" : "\"blu\"*",
+    "ids" : [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+    ],
+    "search" : "blu"
+  },
+  {
+    "expression" : "\"café\"*",
+    "ids" : "swift-traps",
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+    ],
+    "search" : "café"
+  },
+  {
+    "expression" : "\"café\"*",
+    "ids" : "swift-traps",
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+    ],
+    "search" : "café"
+  },
+  {
+    "expression" : "",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : "&"
+  },
+  {
+    "expression" : "",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : "()"
+  },
+  {
+    "expression" : "\"rock\"* \"AND\"*",
+    "ids" : [
+      "5555555555555555555555555555555555555555555555555555555555555555:11000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/movement.MOV"
+    ],
+    "search" : "rock AND"
+  },
+  {
+    "expression" : "\"RedForm\"* \"4k\"*",
+    "ids" : [
+      "3333333333333333333333333333333333333333333333333333333333333333:9000"
+    ],
+    "paths" : [
+      "\/private\/var\/fixture\/local\/RedForm_4k_01.mov"
+    ],
+    "search" : "RedForm_4k"
+  },
+  {
+    "expression" : "\"mov\"*",
+    "ids" : [
+      "5555555555555555555555555555555555555555555555555555555555555555:11000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/movement.MOV"
+    ],
+    "search" : "mov"
+  },
+  {
+    "expression" : "\"dup\"* \"one\"*",
+    "ids" : [
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+      "\/Volumes\/Fixture Two\/Backup\/one.mov"
+    ],
+    "search" : "dup one"
+  },
+  {
+    "expression" : "",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : "#%&?"
+  },
+  {
+    "expression" : "\"a\"* \"b\"*",
+    "ids" : [
+      "4444444444444444444444444444444444444444444444444444444444444444:12",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/edge\/a.b.c.mov",
+      "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+    ],
+    "search" : "a.b"
+  },
+  {
+    "expression" : "\"ünï\"*",
+    "ids" : "swift-traps",
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+    ],
+    "search" : "ünï"
+  },
+  {
+    "expression" : "\"Üni\"*",
+    "ids" : "swift-traps",
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov",
+      "\/Volumes\/Fixture\/Library\/Sub Dir\/Ünïcödé café.mov"
+    ],
+    "search" : "Üni"
+  },
+  {
+    "expression" : "\"dark\"*",
+    "ids" : [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+    ],
+    "search" : "dark"
+  },
+  {
+    "expression" : "\"zeta\"*",
+    "ids" : [
+      "2222222222222222222222222222222222222222222222222222222222222222:8000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/after rename.mov"
+    ],
+    "search" : "zeta"
+  },
+  {
+    "expression" : "\"renamed\"*",
+    "ids" : [
+      "2222222222222222222222222222222222222222222222222222222222222222:8000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/after rename.mov"
+    ],
+    "search" : "renamed"
+  },
+  {
+    "expression" : "\"path\"* \"quoted\"*",
+    "ids" : [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+    ],
+    "search" : "path quoted"
+  },
+  {
+    "expression" : "\"edge\"*",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : "edge"
+  },
+  {
+    "expression" : "\"hidden\"*",
+    "ids" : [
+      "4444444444444444444444444444444444444444444444444444444444444444:10"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/edge\/.hidden"
+    ],
+    "search" : "hidden"
+  },
+  {
+    "expression" : "\"tar\"*",
+    "ids" : [
+      "4444444444444444444444444444444444444444444444444444444444444444:14"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/edge\/x.tar.gz"
+    ],
+    "search" : "tar"
+  },
+  {
+    "expression" : "\"ace\"*",
+    "ids" : [
+      "4444444444444444444444444444444444444444444444444444444444444444:15"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/edge\/sp ace.m ov"
+    ],
+    "search" : "ace"
+  },
+  {
+    "expression" : "\"1920\"*",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : "1920"
+  },
+  {
+    "expression" : "\"OŃE\"*",
+    "ids" : [
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/dup\/one.mov",
+      "\/Volumes\/Fixture Two\/Backup\/one.mov"
+    ],
+    "search" : "OŃE"
+  },
+  {
+    "expression" : "\"́blue\"*",
+    "ids" : [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000"
+    ],
+    "paths" : [
+      "\/Volumes\/Fixture\/Library\/blue_intro.mov"
+    ],
+    "search" : "́blue"
+  },
+  {
+    "expression" : "\"x\"* \"y\"*",
+    "ids" : [
+
+    ],
+    "paths" : [
+
+    ],
+    "search" : "x ́y"
+  }
+]

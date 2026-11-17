@@ -1,0 +1,5 @@
+{
+  "forceFullReindex" : true,
+  "preMeasurementsBackupIsOriginal" : true,
+  "preV8BackupIsOriginal" : true
+}

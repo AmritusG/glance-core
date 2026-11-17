@@ -417,6 +417,10 @@ pub fn set_subtitle(handle: raw_window_handle::RawWindowHandle, text: &str) -> R
 }
 
 /// The NSWindow behind a raw window handle. Main thread only.
+pub(crate) fn window_of_handle(handle: raw_window_handle::RawWindowHandle) -> Result<Retained<NSWindow>, PlatformError> {
+    window_of(handle)
+}
+
 fn window_of(handle: raw_window_handle::RawWindowHandle) -> Result<Retained<NSWindow>, PlatformError> {
     MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
     let raw_window_handle::RawWindowHandle::AppKit(h) = handle else {

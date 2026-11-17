@@ -1,0 +1,45 @@
+{
+  "stashes" : [
+    {
+      "clips" : [
+        {
+          "clipID" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:1000",
+          "relativePathHint" : "blue_intro.mov"
+        },
+        {
+          "clipID" : "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:4000",
+          "relativePathHint" : "odd name #%&?'\" .mov"
+        },
+        {
+          "clipID" : "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee:5000",
+          "relativePathHint" : "dup\/one.mov"
+        }
+      ],
+      "createdAt" : 1731600000.123,
+      "id" : "8F2C0D6E-1B7A-4C3D-9E8F-0A1B2C3D4E5F",
+      "name" : "Set A",
+      "updatedAt" : 1731600500.5
+    },
+    {
+      "clips" : [
+
+      ],
+      "createdAt" : 1700000000,
+      "id" : "0A1B2C3D-4E5F-4A6B-8C7D-9E0F1A2B3C4D",
+      "name" : "Empty Stash",
+      "updatedAt" : 1700000000
+    },
+    {
+      "clips" : [
+        {
+          "clipID" : "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:2000",
+          "relativePathHint" : "Sub Dir\/Ünïcödé café.mov"
+        }
+      ],
+      "createdAt" : 0.5,
+      "id" : "FFFFFFFF-0000-4000-8000-000000000000",
+      "name" : "Ünïcödé \/ set \"x\"",
+      "updatedAt" : 1e-05
+    }
+  ]
+}
