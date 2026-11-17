@@ -301,3 +301,15 @@ fn shuffle_and_name_order_match_swift() {
     shuffled.rotate_left(3);
     assert_eq!(names(&apply(&shuffled, ClipSort::FilenameAZ, 0)), want);
 }
+
+#[test]
+fn seventeen_digit_timestamps_read_as_foundation_reads_them() {
+    // Sidecars written by other tools carry 17 significant digits; Foundation parses them exactly rounded.
+    for text in ["1778925862.2037559", "1731600000.1234567", "1700000000.0000001", "1778925862.2037558"] {
+        let want: f64 = text.parse().unwrap();
+        let json = format!(r#"{{"clip_id":"00:1","created_at":{text},"updated_at":{text}}}"#);
+        let meta = glance_library::ClipMetadata::decode(json.as_bytes()).unwrap();
+        assert_eq!(meta.updated_at.to_bits(), want.to_bits(), "{text}");
+        assert_eq!(meta.created_at.to_bits(), want.to_bits(), "{text}");
+    }
+}

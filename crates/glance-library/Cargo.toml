@@ -16,7 +16,9 @@ workspace = true
 glance-media = { workspace = true }
 image = { workspace = true }
 serde = { workspace = true }
-serde_json = { workspace = true }
+# Exactly rounded number parsing: Foundation reads 17-digit timestamps (as other tools write them in sidecars)
+# to the nearest double; serde_json's default parser can be one unit in the last place off.
+serde_json = { workspace = true, features = ["float_roundtrip"] }
 sha2 = { workspace = true }
 uuid = { workspace = true }
 unicode-normalization = { workspace = true }
