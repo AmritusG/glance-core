@@ -505,3 +505,17 @@ pub fn start_file_drag(handle: raw_window_handle::RawWindowHandle, items: &[Drag
     std::mem::forget(source);
     Ok(())
 }
+
+// ---------------------------------------------------------------------------------------------
+// File dates
+
+/// When the file was added to its folder (`URLResourceKey.addedToDirectoryDateKey`), seconds since 1970 — the
+/// Finder's "Date Added", Send to Arena's Sort By Date Added (v0.7.0). `None` when the volume does not record it.
+pub fn date_added(path: &Path) -> Option<f64> {
+    let url = file_url(path).ok()?;
+    // SAFETY: NSURLAddedToDirectoryDateKey is Foundation's static key.
+    let key = unsafe { objc2_foundation::NSURLAddedToDirectoryDateKey };
+    let values = url.resourceValuesForKeys_error(&NSArray::from_slice(&[key])).ok()?;
+    let date = values.objectForKey(key)?.downcast::<objc2_foundation::NSDate>().ok()?;
+    Some(date.timeIntervalSince1970())
+}

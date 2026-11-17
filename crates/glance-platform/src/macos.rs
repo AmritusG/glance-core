@@ -551,6 +551,7 @@ pub fn finish_app_menus(app: &str) -> Result<(), PlatformError> {
         .find(|menu| menu.itemArray().iter().any(|i| i.action() == Some(sel!(undo:)) || i.action() == Some(sel!(copy:))))
         .ok_or(PlatformError::Os("no Edit menu (an Undo or Copy item) in the menu bar".into()))?;
     edit.setAutoenablesItems(true);
+    install_item_validation()?;
     ns_app.windowsMenu().ok_or(PlatformError::Os("no Window menu set".into()))?.setAutoenablesItems(true);
     let help = ns_app.helpMenu().ok_or(PlatformError::Os("no Help menu set".into()))?;
     let title = NSString::from_str(&format!("{app} Help"));
@@ -559,6 +560,45 @@ pub fn finish_app_menus(app: &str) -> Result<(), PlatformError> {
     let item = unsafe { NSMenuItem::initWithTitle_action_keyEquivalent(NSMenuItem::alloc(mtm), &title, Some(sel!(showHelp:)), &NSString::from_str("?")) };
     help.addItem(&item);
     Ok(())
+}
+
+/// The enabled state an app wants for its own items in a menu AppKit validates (the Edit menu, where
+/// `autoenablesItems` makes AppKit ask each item's target instead of keeping `setEnabled:`), by title. Items not
+/// named here stay on (v0.7.0).
+static VALIDATED: std::sync::Mutex<BTreeMap<String, bool>> = std::sync::Mutex::new(BTreeMap::new());
+
+/// Keep an app-defined item of an autoenabled menu (the Edit menu) on or off, by its title — MaCrate's Undo Rename,
+/// off when there is nothing to undo (`.disabled(lastRename == nil)`). muda's own `set_enabled` is overridden by
+/// AppKit's validation in such a menu. Any thread; read when the menu opens or a key equivalent is checked.
+pub fn set_menu_item_enabled(title: &str, enabled: bool) {
+    if let Ok(mut m) = VALIDATED.lock() {
+        m.insert(title.to_string(), enabled);
+    }
+}
+
+/// `-[NSMenuItem validateMenuItem:]` for muda's item class (each item is its own target): the state the app set
+/// with [`set_menu_item_enabled`], else on.
+extern "C-unwind" fn validate_menu_item(_this: &AnyObject, _cmd: Sel, item: &NSMenuItem) -> objc2::runtime::Bool {
+    let title = item.title().to_string();
+    let on = VALIDATED.lock().ok().and_then(|m| m.get(&title).copied()).unwrap_or(true);
+    objc2::runtime::Bool::new(on)
+}
+
+fn install_item_validation() -> Result<(), PlatformError> {
+    let Some(class) = AnyClass::get(c"MudaNSMenuItem") else { return Ok(()) };
+    if class.instance_method(sel!(validateMenuItem:)).is_some_and(|m| m.implementation() as *const () == validate_menu_item as *const ()) {
+        return Ok(());
+    }
+    let handler: extern "C-unwind" fn(&AnyObject, Sel, &NSMenuItem) -> objc2::runtime::Bool = validate_menu_item;
+    // SAFETY: `Imp` is the erased type of every method implementation; the runtime calls it with the receiver, the
+    // selector and one object argument, returning BOOL, as the encoding `c@:@` (signed char return) states and as
+    // `validate_menu_item`'s signature is (`Bool` is BOOL; AppKit always passes a non-null menu item).
+    let imp: Imp = unsafe { std::mem::transmute::<extern "C-unwind" fn(&AnyObject, Sel, &NSMenuItem) -> objc2::runtime::Bool, Imp>(handler) };
+    let enc = if cfg!(target_arch = "aarch64") { c"B@:@" } else { c"c@:@" };
+    // SAFETY: `class` is a registered class (just looked up); `class_addMethod` only adds (muda defines no
+    // `validateMenuItem:`), the selector and encoding match the implementation.
+    let added = unsafe { objc2::ffi::class_addMethod((class as *const AnyClass).cast_mut(), sel!(validateMenuItem:), imp, enc.as_ptr()) };
+    if added.as_bool() { Ok(()) } else { Err(PlatformError::Os("muda's menu item class already validates its items".into())) }
 }
 
 // ---------------------------------------------------------------------------------------------

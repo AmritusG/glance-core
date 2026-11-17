@@ -89,3 +89,16 @@ fn the_keychain_stores_reads_and_deletes_a_generic_password() {
     glance_platform::keychain_delete(service, account).unwrap();
     assert_eq!(glance_platform::keychain_get(service, account).unwrap(), None);
 }
+
+#[test]
+fn a_new_file_has_a_date_added_near_now() {
+    let dir = scratch("dateadded");
+    let f = dir.join("a.mov");
+    std::fs::write(&f, b"x").unwrap();
+    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs_f64();
+    if let Some(t) = glance_platform::date_added(&f) {
+        assert!((now - t).abs() < 120.0, "date added {t} vs now {now}");
+    }
+    assert_eq!(glance_platform::date_added(&dir.join("missing.mov")), None);
+    let _ = std::fs::remove_dir_all(&dir);
+}

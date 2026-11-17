@@ -54,14 +54,14 @@ mod macos;
 pub use macos::{
     Defaults, MediaKeys, alert, conforms_to_movie, finish_app_menus, install_menu_key_monitor, install_open_handler, install_terminate_guard, is_default_for,
     localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, reveal_in_finder, screen_names, set_cursor_hidden, set_default_for,
-    set_frame_autosave, set_show_window, set_single_window, set_subtitle, set_unsaved_work,
+    set_frame_autosave, set_menu_item_enabled, set_show_window, set_single_window, set_subtitle, set_unsaved_work,
 };
 #[cfg(target_os = "macos")]
 mod macos_library;
 #[cfg(target_os = "macos")]
 pub use macos_library::{
     DragItem, FS_EVENT_FLAG_ROOT_CHANGED, FS_EVENT_FLAG_UNMOUNT, FolderWatch, FsEvent, ResolvedBookmark, app_for_bundle_id, apps_to_open, bookmark_create,
-    bookmark_resolve, bundle_id_of, copy_paths, is_app_running, keychain_delete, keychain_get, keychain_set, localized_case_insensitive_compare,
+    bookmark_resolve, bundle_id_of, copy_paths, date_added, is_app_running, keychain_delete, keychain_get, keychain_set, localized_case_insensitive_compare,
     observe_workspace, open_with, precomposed, reveal_all_in_finder, start_file_drag,
 };
 
