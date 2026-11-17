@@ -48,7 +48,7 @@ pub use controller::{AskReplace, Controller, ControllerHooks, DateAddedProbe, Lo
 pub use error::{ArenaError, ArenaStatus};
 pub use event_log::{EventLog, LogEntry};
 pub use file_url::ArenaFileURL;
-pub use loader::{ArenaLoader, LayersOutcome, LoadOutcome, SlotResult};
+pub use loader::{ArenaLoader, LayersOutcome, LoadOutcome, READ_BACK_POLL, READ_BACK_SETTLE, SlotResult};
 pub use media::{ArenaMediaTypes, FolderGroup, MediaCollection, MediaCollector, MediaItem, MediaSelection, MediaSorter, SortKey};
 pub use menu::{MenuAction, MenuNode, SendMenuInput, SendMenuModel};
 pub use planner::{Assignment, ConflictResolution, Destination, LayerPlan, LayersPlan, LoadPlan, LoadPlanner};

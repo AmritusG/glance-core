@@ -68,6 +68,11 @@ pub struct FakeState {
     /// `open` bodies containing this answer 404.
     pub fail_open: Option<String>,
     pub composition_name: String,
+    /// After an open, the slot reads "Empty" this many times before the clip shows (Arena answers the open before
+    /// the clip is in the slot).
+    pub load_delay_reads: usize,
+    /// Reads left before each opened slot shows its clip.
+    pub pending_reads: std::collections::HashMap<(usize, usize), usize>,
 }
 
 pub struct FakeArena {
@@ -107,6 +112,8 @@ impl FakeArena {
             override_answer: None,
             hang: false,
             fail_open: None,
+            load_delay_reads: 0,
+            pending_reads: std::collections::HashMap::new(),
             composition_name: "Fake".to_string(),
         }));
         let stop = Arc::new(AtomicBool::new(false));
@@ -364,6 +371,10 @@ fn route(state: &Arc<Mutex<FakeState>>, method: &str, path: &str, body: &[u8]) -
                 }
                 let name = ArenaFileURL::decode(&url).map(|d| d.rsplit('/').next().unwrap_or("?").to_string()).unwrap_or_else(|| "?".to_string());
                 s.layers[l - 1].slots[c - 1] = FSlot::loaded(&name, "Disconnected");
+                if s.load_delay_reads > 0 {
+                    let n = s.load_delay_reads;
+                    s.pending_reads.insert((l, c), n);
+                }
             } else if method == "POST" && p[5] == "connect" {
                 s.layers[l - 1].slots[c - 1].state = "Connected".to_string();
                 s.connects.push(format!("L{l} C{c}"));
@@ -374,6 +385,12 @@ fn route(state: &Arc<Mutex<FakeState>>, method: &str, path: &str, body: &[u8]) -
             let (Ok(l), Ok(c)) = (p[2].parse::<usize>(), p[4].parse::<usize>()) else {
                 return (400, Vec::new());
             };
+            if let Some(left) = s.pending_reads.get_mut(&(l, c))
+                && *left > 0
+            {
+                *left -= 1;
+                return json(json!({"id": 1, "name": {"value": ""}, "connected": {"value": "Empty"}}));
+            }
             let Some(slot) = s.layers.get(l.wrapping_sub(1)).and_then(|x| x.slots.get(c.wrapping_sub(1))) else {
                 return (404, Vec::new());
             };

@@ -183,3 +183,29 @@ fn load_reads_fresh_while_menu_is_stale() {
     assert!(!store.snapshot().unwrap().layers[0].slots[0].is_occupied(), "the store was not asked");
     store.stop();
 }
+
+#[test]
+fn a_slot_that_fills_after_the_open_answers_counts_as_loaded_and_is_triggered() {
+    // Arena answers the open before the clip is in the slot: the read-back waits for it (fixed on purpose; SendEhrKit
+    // 1.1.2 read once and reported "Loaded 0/1", and Trigger After Load then triggered nothing).
+    let fake = FakeArena::start(1, 2);
+    fake.lock().load_delay_reads = 3;
+    let log = EventLog::new();
+    let out = loader(&fake, &log).load(&["/x/a.mov".to_string()], &Destination::NewLayer, true, false, None, &|_| ConflictResolution::Cancel).unwrap();
+    assert_eq!(out.ok_count(), 1, "{}", log.text());
+    assert!(out.triggered);
+    assert_eq!(fake.lock().connects, vec!["L2 C1".to_string()]);
+}
+
+#[test]
+fn a_slot_that_never_fills_is_reported_as_it_reads_after_the_settle_time() {
+    let fake = FakeArena::start(1, 2);
+    fake.lock().load_delay_reads = 10_000;
+    let log = EventLog::new();
+    let started = std::time::Instant::now();
+    let out = loader(&fake, &log).load(&["/x/a.mov".to_string()], &Destination::NewLayer, true, false, None, &|_| ConflictResolution::Cancel).unwrap();
+    assert_eq!(out.ok_count(), 0);
+    assert!(!out.triggered);
+    assert!(started.elapsed() >= glance_arena::READ_BACK_SETTLE);
+    assert!(started.elapsed() < glance_arena::READ_BACK_SETTLE * 3);
+}

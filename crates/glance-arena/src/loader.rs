@@ -13,6 +13,11 @@ use crate::settings::TriggerScope;
 use crate::snapshot::SlotInfo;
 use std::ops::RangeInclusive;
 
+/// How long an open's read-back waits for Arena to put the clip in the slot ([`ArenaLoader`]'s read-back).
+pub const READ_BACK_SETTLE: std::time::Duration = std::time::Duration::from_millis(1000);
+/// How often the read-back asks.
+pub const READ_BACK_POLL: std::time::Duration = std::time::Duration::from_millis(20);
+
 /// One slot's result, verified by a REST GET after the open.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SlotResult {
@@ -241,7 +246,7 @@ impl ArenaLoader {
         for a in assignments {
             let arena_path = remap(&self.remaps, &a.path);
             let mut r = SlotResult { layer_index: layer, column: a.column, path: a.path.clone(), error: None, after: None };
-            let done = self.client.open(layer, a.column, &arena_path).and_then(|()| self.client.slot(layer, a.column));
+            let done = self.client.open(layer, a.column, &arena_path).and_then(|()| self.read_back(layer, a.column));
             match done {
                 Ok(after) => {
                     self.log(format!("open L{layer} C{} <- {arena_path} => {} \"{}\"", a.column, after.state, after.clip_name.clone().unwrap_or_default()));
@@ -255,6 +260,22 @@ impl ArenaLoader {
             results.push(r);
         }
         results
+    }
+
+    /// The slot after an open. Arena answers the open before the clip is in the slot (measured on Arena 7.28.1: the
+    /// slot reads "Empty" for 13–64 ms after the answer in 46 of 48 opens), so a single read straight after the open
+    /// — what SendEhrKit 1.1.2 does — counts loaded clips as failed and makes Trigger After Load into empty slots
+    /// trigger nothing. The slot is read again every 20 ms until it is occupied, for at most [`READ_BACK_SETTLE`];
+    /// a slot still empty then is reported as it reads (a real failure). Fixed on purpose; differs from Swift.
+    fn read_back(&self, layer: usize, column: usize) -> Result<SlotInfo, ArenaError> {
+        let started = std::time::Instant::now();
+        loop {
+            let slot = self.client.slot(layer, column)?;
+            if slot.is_occupied() || started.elapsed() >= READ_BACK_SETTLE {
+                return Ok(slot);
+            }
+            std::thread::sleep(READ_BACK_POLL);
+        }
     }
 
     fn trigger_first(&self, results: &[SlotResult]) -> Result<bool, ArenaError> {
