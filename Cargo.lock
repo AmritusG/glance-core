@@ -838,7 +838,7 @@ dependencies = [
 
 [[package]]
 name = "glance-arena"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "jiff",
  "serde",
@@ -881,7 +881,7 @@ dependencies = [
 
 [[package]]
 name = "glance-library"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "glance-media",
  "rusqlite",

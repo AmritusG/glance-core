@@ -39,6 +39,9 @@ pub use dxvkit_plus_core::container::{Codec, Movie, VideoTrack};
 pub use dxvkit_plus_core::dxv::Variant as DxvVariant;
 pub use dxvkit_plus_core::dxv::parse_header as parse_dxv_header;
 pub use dxvkit_plus_core::names::{self, unsupported_message};
+// The whole demuxer, DXV and HAP modules, for MaCrate's measurement scanner, which reads the stored blocks and texture
+// sections itself (the lab's 4-aligned layout, raw HAP sections) rather than a finished picture (v0.7.0).
+pub use dxvkit_plus_core::{container, dxv, hap};
 
 pub use dxvkit_plus_core::MediaError;
 pub use dxvkit_plus_core::audio::{AudioBlock, AudioCodec, AudioInfo, AudioReader};
