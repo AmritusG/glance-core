@@ -21,7 +21,8 @@
 //!   ([`PlatformEvent::QuitRequested`]); [`set_frame_autosave`]: the window's frame saved and restored by name;
 //!   [`pointer_in_window`]: where a drop landed; [`open_path`]: open a file or folder as Finder does (v0.4.0); [`reveal_in_finder`] (v0.5.0);
 //! - [`movie_files`]: a folder's movies in Finder's order ([`localized_standard_compare`],
-//!   [`conforms_to_movie`]), hidden files left out.
+//!   [`conforms_to_movie`]), hidden files left out;
+//! - [`recognise_text`]: the text in a still (ImageIO JPEG, then Vision), MaCrate's text check (v0.6.0).
 //!
 //! **Windows** (written and compile-checked; run at the Windows milestone, C4):
 //! [`SingleInstance`] (a named mutex plus a named pipe that hands a second launch's paths to the
@@ -41,6 +42,11 @@ pub use value::Value;
 
 mod unattended;
 pub use unattended::{LoginItem, StayAwake, login_item, set_login_item};
+
+mod text;
+pub use text::{TextError, TextObservation, TextOptions, recognise_text};
+#[cfg(target_os = "macos")]
+mod macos_text;
 
 #[cfg(target_os = "macos")]
 mod macos;
