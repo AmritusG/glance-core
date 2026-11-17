@@ -39,7 +39,7 @@ objc2-core-services = { version = "0.3.2", default-features = false, features = 
 security-framework = { version = "3.7.0", default-features = false }
 # Text recognition (`recognise_text`): the still is made a CGImage, JPEG-encoded with ImageIO and read by Vision
 # (Zlib OR Apache-2.0 OR MIT, the objc2 family).
-objc2-core-graphics = { version = "0.3.2", default-features = false, features = ["std", "CGImage", "CGDataProvider", "CGColorSpace"] }
+objc2-core-graphics = { version = "0.3.2", default-features = false, features = ["std", "CGImage", "CGDataProvider", "CGColorSpace", "CGDirectDisplay", "CGError"] }
 objc2-image-io = { version = "0.3.2", default-features = false, features = ["std", "CGImageDestination", "objc2-core-graphics"] }
 objc2-vision = { version = "0.3.2", default-features = false, features = ["std", "VNRequest", "VNRecognizeTextRequest", "VNRequestHandler", "VNObservation", "VNTypes", "objc2-core-foundation", "objc2-image-io"] }
 objc2-media-player = { version = "0.3.2", default-features = false, features = ["std", "block2", "MPRemoteCommandCenter", "MPRemoteCommand", "MPRemoteCommandEvent", "MPNowPlayingInfoCenter", "MPMediaItem"] }

@@ -23,6 +23,7 @@
 //! - [`movie_files`]: a folder's movies in Finder's order ([`localized_standard_compare`],
 //!   [`conforms_to_movie`]), hidden files left out;
 //! - [`recognise_text`]: the text in a still (ImageIO JPEG, then Vision), MaCrate's text check (v0.6.0).
+//! - [`set_cursor_hidden_in_background`]: the pointer hidden while another app is active, GlancEhr's show output (v0.7.0).
 //!
 //! **Windows** (written and compile-checked; run at the Windows milestone, C4):
 //! [`SingleInstance`] (a named mutex plus a named pipe that hands a second launch's paths to the
@@ -53,8 +54,9 @@ mod macos;
 #[cfg(target_os = "macos")]
 pub use macos::{
     Defaults, MediaKeys, alert, conforms_to_movie, finish_app_menus, install_menu_key_monitor, install_open_handler, install_terminate_guard, is_default_for,
-    localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, reveal_in_finder, screen_names, set_cursor_hidden, set_default_for,
-    set_frame_autosave, set_menu_item_enabled, set_show_window, set_single_window, set_subtitle, set_unsaved_work,
+    localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, reveal_in_finder, screen_names, set_cursor_hidden,
+    set_cursor_hidden_in_background, set_default_for, set_frame_autosave, set_menu_item_enabled, set_show_window, set_single_window, set_subtitle,
+    set_unsaved_work,
 };
 #[cfg(target_os = "macos")]
 mod macos_library;

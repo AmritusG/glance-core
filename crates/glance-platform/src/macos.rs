@@ -482,6 +482,67 @@ pub fn set_cursor_hidden(hidden: bool) -> Result<(), PlatformError> {
     Ok(())
 }
 
+static CURSOR_HIDDEN_BG: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// Lets this app hide the pointer while another app is active: the window server's connection property
+/// `SetsCursorInBackground` (a private CoreGraphics call, `CGSSetConnectionProperty`; looked up at run time, so a
+/// macOS without it only loses the background hide). Set once. True when it is set.
+fn cursor_in_background() -> bool {
+    static SET: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+    *SET.get_or_init(|| {
+        unsafe extern "C" {
+            fn dlsym(handle: *mut std::ffi::c_void, symbol: *const std::ffi::c_char) -> *mut std::ffi::c_void;
+        }
+        // RTLD_DEFAULT (<dlfcn.h>: `((void *) -2)`): every image loaded in the process.
+        let all = -2isize as *mut std::ffi::c_void;
+        // SAFETY: `dlsym` with RTLD_DEFAULT and NUL-terminated names only reads; a null result means "not there".
+        let (conn, set) = unsafe { (dlsym(all, c"_CGSDefaultConnection".as_ptr()), dlsym(all, c"CGSSetConnectionProperty".as_ptr())) };
+        if conn.is_null() || set.is_null() {
+            return false;
+        }
+        type DefaultConnection = unsafe extern "C" fn() -> i32;
+        type SetProperty = unsafe extern "C" fn(i32, i32, *const objc2_core_foundation::CFString, *const std::ffi::c_void) -> i32;
+        // SAFETY: the two CoreGraphics functions' C signatures (`CGSConnectionID _CGSDefaultConnection(void)`,
+        // `CGError CGSSetConnectionProperty(CGSConnectionID, CGSConnectionID, CFStringRef, CFTypeRef)`), as every
+        // app that hides the pointer in the background declares them; the pointers came from `dlsym` and are not null.
+        let (conn, set) =
+            unsafe { (std::mem::transmute::<*mut std::ffi::c_void, DefaultConnection>(conn), std::mem::transmute::<*mut std::ffi::c_void, SetProperty>(set)) };
+        let key = objc2_core_foundation::CFString::from_static_str("SetsCursorInBackground");
+        let yes: &objc2_core_foundation::CFBoolean = objc2_core_foundation::CFBoolean::new(true);
+        // SAFETY: this process's own connection; a live CFString and CFBoolean for the call's duration.
+        let err = unsafe {
+            let c = conn();
+            set(c, c, &*key as *const objc2_core_foundation::CFString, (yes as *const objc2_core_foundation::CFBoolean).cast())
+        };
+        err == 0
+    })
+}
+
+/// Hide or show the pointer even while another app is active (v0.7.0, GlancEhr's show output: the pointer never
+/// shows over the show, whichever app has the keyboard). `CGDisplayHideCursor` / `CGDisplayShowCursor`, kept
+/// balanced, with [`cursor_in_background`]; without that property macOS hides it only while this app is active.
+/// The hide is screen-wide: call it while the pointer is over the window that wants it gone, and show it again as
+/// soon as the pointer leaves. Main thread only.
+pub fn set_cursor_hidden_in_background(hidden: bool) -> Result<(), PlatformError> {
+    MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
+    use std::sync::atomic::Ordering;
+    if CURSOR_HIDDEN_BG.swap(hidden, Ordering::SeqCst) == hidden {
+        return Ok(());
+    }
+    let display = objc2_core_graphics::CGMainDisplayID();
+    let err = if hidden {
+        let _ = cursor_in_background();
+        objc2_core_graphics::CGDisplayHideCursor(display)
+    } else {
+        objc2_core_graphics::CGDisplayShowCursor(display)
+    };
+    if err == objc2_core_graphics::CGError::Success {
+        Ok(())
+    } else {
+        Err(PlatformError::Os(format!("CGDisplay{}Cursor: {err:?}", if hidden { "Hide" } else { "Show" })))
+    }
+}
+
 /// Save and restore the window's frame under `name` in the app's preferences (`NSWindow Frame <name>`), as a
 /// SwiftUI `Window(id: name)` scene does (Swift CueGlance: `Window("CueGlance", id: "cue")` → `NSWindow Frame cue`):
 /// the saved frame, when there is one, is applied now, and every later move or resize is saved. Main thread only.

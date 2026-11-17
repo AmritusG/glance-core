@@ -493,8 +493,6 @@ impl<A: App> Running<A> {
         let Some(req) = self.output_request.take() else { return };
         match req {
             OutputRequest::Close => {
-                #[cfg(target_os = "macos")]
-                let _ = glance_platform::set_cursor_hidden(false);
                 if self.output.take().is_some() {
                     self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
                 }
@@ -527,6 +525,25 @@ impl<A: App> Running<A> {
         }
     }
 
+    /// The pointer never shows over the show, whichever app is active (v0.7.0). macOS hides a window's cursor only
+    /// while its app is active and the control window keeps the focus anyway, so the pointer's place is read at every
+    /// refresh of either window and the pointer hidden screen-wide (in the background too) while it is over the
+    /// output, shown again the moment it leaves or the output closes. Elsewhere the output window's own cursor
+    /// (hidden at open) does it.
+    fn pointer_over_show(&self) {
+        #[cfg(target_os = "macos")]
+        {
+            use winit::raw_window_handle::HasWindowHandle;
+            let over = self.output.as_ref().and_then(|o| {
+                let size = o.window.inner_size().to_logical::<f64>(o.window.scale_factor());
+                let handle = o.window.window_handle().ok()?;
+                let (x, y) = glance_platform::pointer_in_window(handle.as_raw()).ok()?;
+                Some(x >= 0.0 && y >= 0.0 && x < size.width && y < size.height)
+            });
+            let _ = glance_platform::set_cursor_hidden_in_background(over.unwrap_or(false));
+        }
+    }
+
     fn output_event(&mut self, event: WindowEvent) {
         let Some(o) = self.output.as_mut() else { return };
         match event {
@@ -537,18 +554,9 @@ impl<A: App> Running<A> {
                     o.present(&self.gpu, picture.as_ref());
                     o.window.request_redraw();
                 }
+                self.pointer_over_show();
             }
             WindowEvent::Resized(size) => o.resized(&self.gpu, size.width, size.height),
-            // The pointer never shows over the show (macOS hides a window's cursor only while it has the focus,
-            // and the control window keeps the focus).
-            #[cfg(target_os = "macos")]
-            WindowEvent::CursorEntered { .. } => {
-                let _ = glance_platform::set_cursor_hidden(true);
-            }
-            #[cfg(target_os = "macos")]
-            WindowEvent::CursorLeft { .. } => {
-                let _ = glance_platform::set_cursor_hidden(false);
-            }
             WindowEvent::CloseRequested => {
                 self.output = None;
                 self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
@@ -722,6 +730,7 @@ impl<A: App, F: FnOnce(&Gpu) -> Result<A, String>> ApplicationHandler for Runner
             WindowEvent::RedrawRequested => {
                 r.redraw();
                 r.apply_output_request(el);
+                r.pointer_over_show();
                 if r.app.finished() || r.quit {
                     el.exit();
                 } else {
