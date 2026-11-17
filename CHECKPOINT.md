@@ -12,6 +12,7 @@ Wave: v0.6.0 (the show output, for GlancEhr; handoff docs/handoffs/v060-glancehr
 - glenc-public re-seeded with the Rust source, tag v1.7.0; clean-room build from a fresh GitHub clone ok (`docs/data/publish/glenc-public-build.txt`).
 - Amrit's "public" (2026-11-17 08:46) recorded in ROADMAP and the three apps; Windows-only parity items stay open.
 - Handoff: `docs/handoffs/clean-history-and-publish.md`; glance-core CI 44140024833 green on 65c65cc.
+- 2026-11-17 fix (MaCrate's preview, Glance 0.19.0): with loop off and the sound driving the clock, the end is now heard and the clock stops on the last frame (glance-audio: silent buffers after the end no longer re-anchor the heard position); note to Glance: `~/claude-handoffs/glance-rs_2026-11-17_note-from-glance-core-loop-end.md`.
 
 ## NEXT
 - Amrit: Settings → Billing → Actions usage (private-repo macOS minutes), then `gh run rerun 44131258624 --failed -R AmritusG/glenc-rs` and watch to green. Next core work: the Windows milestone (ROADMAP §7).

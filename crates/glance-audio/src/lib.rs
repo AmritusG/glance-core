@@ -271,6 +271,33 @@ struct Shared {
 }
 
 impl Shared {
+    /// `samples` (interleaved, `channels` per frame) paused at frame 0, unprimed.
+    fn new(samples: Vec<f32>, channels: usize, loops: bool) -> Shared {
+        let len = (samples.len() / channels.max(1)) as u64;
+        Shared {
+            samples,
+            channels,
+            len,
+            cursor: AtomicU64::new(0),
+            playing: AtomicBool::new(false),
+            loops: AtomicBool::new(loops),
+            gain: AtomicU32::new(1.0f32.to_bits()),
+            pending: AtomicU64::new(NO_SEEK),
+            unprimed: AtomicBool::new(true),
+            failed: AtomicBool::new(false),
+            error: Mutex::new(None),
+            reroute: AtomicBool::new(false),
+            xruns: AtomicU64::new(0),
+            rendered: AtomicU64::new(0),
+            seq: AtomicU64::new(0),
+            anchor_frame: AtomicU64::new(0),
+            anchor_nanos: AtomicU64::new(0),
+            primed_nanos: AtomicU64::new(u64::MAX),
+            reported_delay_nanos: AtomicU64::new(0),
+            buffer_frames: AtomicU64::new(0),
+        }
+    }
+
     fn render(&self, out: &mut [f32], out_channels: usize, heard: u64) {
         let frames = out.len() / out_channels.max(1);
         let seek = self.pending.swap(NO_SEEK, SeqCst);
@@ -301,6 +328,15 @@ impl Shared {
         }
         self.cursor.store(cursor, SeqCst);
         self.rendered.fetch_add(frames as u64, SeqCst);
+        // A buffer that plays nothing of the track (a clip that does not loop has run out) is no
+        // anchor: the frame after the last one was heard right after it, not at this buffer's
+        // start. Re-anchored at every silent buffer, the position fell back by the device latency
+        // each time and stalled up to that latency short of the end, so the end was never heard
+        // and the clock never stopped (MaCrate's preview, Glance 0.19.0). Kept, the position runs
+        // on from the last buffer that played and reaches the last frame when it is heard.
+        if start >= self.len && !loops && seek == NO_SEEK {
+            return;
+        }
         self.seq.fetch_add(1, SeqCst);
         self.anchor_frame.store(start, SeqCst);
         self.anchor_nanos.store(heard, SeqCst);
@@ -311,6 +347,21 @@ impl Shared {
         if seek != NO_SEEK {
             self.unprimed.store(false, SeqCst);
         }
+    }
+
+    /// The device frame heard at stream-clock nanosecond `now`, wrapped or held as the loop
+    /// setting says; `None` until the first frame after a start or seek is heard.
+    fn heard(&self, now: u64, rate: u32) -> Option<u64> {
+        if self.unprimed.load(SeqCst) {
+            return None;
+        }
+        let (frame, heard, primed) = self.anchor();
+        if now < primed {
+            return None;
+        }
+        let elapsed = i128::from(now) - i128::from(heard);
+        let advanced = elapsed * i128::from(rate) / 1_000_000_000;
+        wrap_frame(i128::from(frame) + advanced, self.len, self.loops.load(SeqCst))
     }
 
     /// (anchor frame, its heard time, primed time), consistent.
@@ -431,30 +482,7 @@ impl AudioClock {
     fn stream(pcm: Pcm, device: &cpal::Device, format: DeviceFormat, loops: bool) -> Result<(cpal::Stream, Arc<Shared>), AudioError> {
         validate_format(f64::from(format.rate), i64::from(format.channels))?;
         let samples = resample(pcm.samples, pcm.channels, pcm.rate, format.rate)?;
-        let channels = pcm.channels as usize;
-        let len = (samples.len() / channels.max(1)) as u64;
-        let shared = Arc::new(Shared {
-            samples,
-            channels,
-            len,
-            cursor: AtomicU64::new(0),
-            playing: AtomicBool::new(false),
-            loops: AtomicBool::new(loops),
-            gain: AtomicU32::new(1.0f32.to_bits()),
-            pending: AtomicU64::new(NO_SEEK),
-            unprimed: AtomicBool::new(true),
-            failed: AtomicBool::new(false),
-            error: Mutex::new(None),
-            reroute: AtomicBool::new(false),
-            xruns: AtomicU64::new(0),
-            rendered: AtomicU64::new(0),
-            seq: AtomicU64::new(0),
-            anchor_frame: AtomicU64::new(0),
-            anchor_nanos: AtomicU64::new(0),
-            primed_nanos: AtomicU64::new(u64::MAX),
-            reported_delay_nanos: AtomicU64::new(0),
-            buffer_frames: AtomicU64::new(0),
-        });
+        let shared = Arc::new(Shared::new(samples, pcm.channels as usize, loops));
         let config = cpal::StreamConfig { channels: format.channels, sample_rate: format.rate, buffer_size: cpal::BufferSize::Default };
         let (render, failure) = (shared.clone(), shared.clone());
         let out_channels = usize::from(format.channels);
@@ -644,21 +672,12 @@ impl AudioClock {
         if !self.playing {
             return Some(self.paused_at);
         }
-        if self.shared.unprimed.load(SeqCst) {
-            return None;
-        }
-        let (frame, heard, primed) = self.shared.anchor();
         let host_now = std::time::Instant::now();
         let shift = i128::try_from(at.saturating_duration_since(host_now).as_nanos()).unwrap_or(0)
             - i128::try_from(host_now.saturating_duration_since(at).as_nanos()).unwrap_or(0);
         let stream_now = i128::try_from(self.stream.now().saturating_duration_since(cpal::StreamInstant::ZERO).as_nanos()).unwrap_or(i128::MAX);
         let now = u64::try_from((stream_now + shift).max(0)).unwrap_or(u64::MAX);
-        if now < primed {
-            return None;
-        }
-        let elapsed = i128::from(now) - i128::from(heard);
-        let advanced = elapsed * i128::from(self.device.rate) / 1_000_000_000;
-        wrap_frame(i128::from(frame) + advanced, self.shared.len, self.shared.loops.load(SeqCst))
+        self.shared.heard(now, self.device.rate)
     }
 
     /// A clip that does not loop has played its last audio frame.
@@ -771,6 +790,78 @@ mod tests {
         assert_eq!(wrap_frame(250, 100, false), Some(99));
         assert_eq!(wrap_frame(-1, 100, false), Some(0));
         assert_eq!(wrap_frame(5, 0, true), None);
+    }
+
+    /// The device callbacks without a device: 512-frame buffers at 48 kHz, each heard 14 ms after
+    /// its callback (cpal's playback instant less the buffer: the device latency and safety
+    /// offset; MaCrate's stall, 3 to 10 ms short of the end, is this latency less a buffer). The
+    /// heard position is sampled four times per buffer on the stream clock. Returns every
+    /// (stream nanosecond, heard frame).
+    fn simulate(len: u64, loops: bool, until_nanos: u64) -> Vec<(u64, Option<u64>)> {
+        const RATE: u32 = 48_000;
+        const BUFFER: u64 = 512;
+        const LATENCY: u64 = 14_000_000;
+        let shared = Shared::new(vec![0.25; len as usize], 1, loops);
+        // `AudioClock::play` from frame 0.
+        shared.unprimed.store(true, SeqCst);
+        shared.pending.store(0, SeqCst);
+        shared.playing.store(true, SeqCst);
+        let mut out = vec![0.0f32; BUFFER as usize];
+        let mut seen = Vec::new();
+        for k in 0u64.. {
+            let callback = k * BUFFER * 1_000_000_000 / u64::from(RATE);
+            if callback > until_nanos {
+                break;
+            }
+            shared.render(&mut out, 1, callback + LATENCY);
+            for q in 0..4 {
+                let now = callback + q * BUFFER * 1_000_000_000 / u64::from(RATE) / 4;
+                seen.push((now, shared.heard(now, RATE)));
+            }
+        }
+        seen
+    }
+
+    #[test]
+    fn without_loop_the_heard_position_reaches_the_last_frame_when_it_is_heard() {
+        // 3.0 s at 48 kHz, played to 3.2 s. Glance 0.19.0 re-anchored the frame after the end at
+        // every silent buffer: the position fell back at each one, stalled at least 14 ms less a
+        // buffer (3.3 ms) short of the end, never reached the last frame, and `ended` never came.
+        let len = 144_000;
+        let seen = simulate(len, false, 3_200_000_000);
+        let heard: Vec<(u64, u64)> = seen.iter().filter_map(|&(t, f)| Some((t, f?))).collect();
+        assert!(seen.iter().take_while(|s| s.1.is_none()).count() < 8, "primed within the first buffers");
+        // Never backwards.
+        let back = heard.windows(2).filter(|w| w[1].1 < w[0].1).count();
+        assert_eq!(back, 0, "the heard position fell back {back} times");
+        // The last frame is heard 14 ms + 143 999 / 48 000 s after the start: the position reaches
+        // it at the first sample from then on (samples are a quarter buffer apart), and holds it.
+        let last_heard = 14_000_000 + (len - 1) * 1_000_000_000 / 48_000;
+        let (reached, _) = *heard.iter().find(|s| s.1 == len - 1).unwrap_or_else(|| panic!("stalled at frame {:?} of {}", heard.last(), len - 1));
+        assert!(reached >= last_heard && reached - last_heard <= 2_700_000, "reached at {reached} ns, heard at {last_heard} ns");
+        assert!(heard.iter().filter(|s| s.0 >= reached).all(|s| s.1 == len - 1));
+        // Before the end, the position is the sound heard: (t - 14 ms) x 48 kHz within one frame.
+        for &(t, f) in heard.iter().filter(|s| s.0 >= 14_000_000 && s.0 < last_heard) {
+            let want = (t - 14_000_000) * 48_000 / 1_000_000_000;
+            assert!(f.abs_diff(want) <= 1, "at {t} ns: {f}, want {want}");
+        }
+    }
+
+    #[test]
+    fn looping_the_heard_position_wraps_at_the_tracks_length() {
+        // Negative control for the anchor rule: a looping track plays on through the seam, so
+        // every buffer anchors and the position is (t - 14 ms) x 48 kHz mod the length.
+        let len = 48_000;
+        let seen = simulate(len, true, 3_200_000_000);
+        let mut wrapped = 0;
+        for &(t, f) in seen.iter().filter(|s| s.0 >= 14_000_000) {
+            let want = (t - 14_000_000) * 48_000 / 1_000_000_000;
+            let f = f.unwrap();
+            let off = (f + len - want % len) % len;
+            assert!(off <= 1 || off == len - 1, "at {t} ns: {f}, want {}", want % len);
+            wrapped = wrapped.max(want / len);
+        }
+        assert_eq!(wrapped, 3, "the loop seam was crossed");
     }
 
     #[test]
