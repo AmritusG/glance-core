@@ -44,8 +44,8 @@ mod macos;
 #[cfg(target_os = "macos")]
 pub use macos::{
     Defaults, MediaKeys, alert, conforms_to_movie, finish_app_menus, install_menu_key_monitor, install_open_handler, install_terminate_guard, is_default_for,
-    localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, reveal_in_finder, set_default_for, set_frame_autosave,
-    set_single_window, set_subtitle, set_unsaved_work,
+    localized_standard_compare, movie_files, note_recent, open_path, pointer_in_window, reveal_in_finder, screen_names, set_cursor_hidden, set_default_for,
+    set_frame_autosave, set_show_window, set_single_window, set_subtitle, set_unsaved_work,
 };
 
 #[cfg(windows)]

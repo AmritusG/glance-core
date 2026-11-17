@@ -443,6 +443,41 @@ pub fn set_single_window(handle: raw_window_handle::RawWindowHandle) -> Result<(
     Ok(())
 }
 
+/// The show output's window (v0.6.0): above the menu bar, the Dock and notifications (`NSScreenSaverWindowLevel`), on
+/// every Space, never hidden when the app is not active, not in the Window menu or the window cycle. Main thread only.
+pub fn set_show_window(handle: raw_window_handle::RawWindowHandle) -> Result<(), PlatformError> {
+    let window = window_of(handle)?;
+    // NSScreenSaverWindowLevel (CGWindowLevelForKey(kCGScreenSaverWindowLevelKey) = 1000).
+    window.setLevel(1000);
+    window.setExcludedFromWindowsMenu(true);
+    window.setHidesOnDeactivate(false);
+    window.setCollectionBehavior(
+        NSWindowCollectionBehavior::CanJoinAllSpaces
+            | NSWindowCollectionBehavior::Stationary
+            | NSWindowCollectionBehavior::IgnoresCycle
+            | NSWindowCollectionBehavior::FullScreenAuxiliary,
+    );
+    Ok(())
+}
+
+static CURSOR_HIDDEN: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// Hide or show the pointer app-wide (`NSCursor.hide` / `unhide`, kept balanced; v0.6.0). macOS hides it only while
+/// the app is active. Main thread only.
+pub fn set_cursor_hidden(hidden: bool) -> Result<(), PlatformError> {
+    MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
+    use std::sync::atomic::Ordering;
+    if CURSOR_HIDDEN.swap(hidden, Ordering::SeqCst) == hidden {
+        return Ok(());
+    }
+    if hidden {
+        objc2_app_kit::NSCursor::hide();
+    } else {
+        objc2_app_kit::NSCursor::unhide();
+    }
+    Ok(())
+}
+
 /// Save and restore the window's frame under `name` in the app's preferences (`NSWindow Frame <name>`), as a
 /// SwiftUI `Window(id: name)` scene does (Swift CueGlance: `Window("CueGlance", id: "cue")` → `NSWindow Frame cue`):
 /// the saved frame, when there is one, is applied now, and every later move or resize is saved. Main thread only.
@@ -669,6 +704,21 @@ impl Drop for MediaKeys {
             unsafe { command.removeTarget(Some(target)) };
         }
     }
+}
+
+/// The names macOS gives the attached screens ("DELL U2720Q", "Built-in Retina Display"), each with its display id
+/// (`CGDirectDisplayID`, what winit's monitor handle carries on macOS). Main thread only (v0.6.0).
+pub fn screen_names() -> Result<Vec<(u32, String)>, PlatformError> {
+    let mtm = MainThreadMarker::new().ok_or(PlatformError::NotMainThread)?;
+    let key = NSString::from_str("NSScreenNumber");
+    let mut out = Vec::new();
+    for screen in objc2_app_kit::NSScreen::screens(mtm).iter() {
+        let description = screen.deviceDescription();
+        let Some(number) = description.objectForKey(&key) else { continue };
+        let Ok(number) = number.downcast::<NSNumber>() else { continue };
+        out.push((number.unsignedIntValue(), screen.localizedName().to_string()));
+    }
+    Ok(out)
 }
 
 #[cfg(test)]

@@ -61,7 +61,18 @@ impl Stage {
         let mut raw = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, points)), ..Default::default() };
         raw.viewports.entry(egui::ViewportId::ROOT).or_default().native_pixels_per_point = Some(pixels_per_point);
         let Stage { gpu, ctx, renderer, .. } = self;
-        let mut host = Host { gpu, renderer, last_interval: None, refresh_millihertz: None, window: None, quit: None, drop_at: None };
+        let mut host = Host {
+            gpu,
+            renderer,
+            last_interval: None,
+            refresh_millihertz: None,
+            window: None,
+            quit: None,
+            drop_at: None,
+            screens: &[],
+            output_screen: None,
+            output_request: None,
+        };
         let mut out = ctx.run_ui(raw, |root| ui(root, &mut host));
         // Applied in full, then cleared: egui 0.36 panics when a `TexturesDelta` is dropped unapplied.
         let mut delta = std::mem::take(&mut out.textures_delta);

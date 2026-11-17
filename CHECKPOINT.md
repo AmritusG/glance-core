@@ -1,6 +1,6 @@
 # glance-core CHECKPOINT
 
-Wave: clean-history-and-publish. Brief: ~/claude-handoffs/glance-core_2026-11-17_clean-history-and-publish_brief.md. Machine: <host>. Previous wave: v050-encode (closed, tag v0.5.0; its checkpoint is in git history at b187b6e).
+Wave: v0.6.0 (the show output, for GlancEhr; handoff docs/handoffs/v060-glancehr-output.md). Before that: clean-history-and-publish. Brief: ~/claude-handoffs/glance-core_2026-11-17_clean-history-and-publish_brief.md. Machine: <host>. Previous wave: v050-encode (closed, tag v0.5.0; its checkpoint is in git history at b187b6e).
 
 ## DONE
 - DIAGNOSE: local clean and in sync (8e37377); full bundle of the old history kept privately in the mailbox backups (verified, test-restored); research notes copied to the private repo AmritusG/glance-research (byte-equal).

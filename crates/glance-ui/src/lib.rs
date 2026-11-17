@@ -28,9 +28,11 @@ pub mod icons;
 pub mod look;
 #[cfg(any(target_os = "macos", windows))]
 pub mod menu;
+pub mod output;
 pub mod window;
 
 pub use glance_platform::{MediaCommand, NowPlaying, PlatformEvent};
+pub use output::{OutputEnd, OutputFrame, Screen, find_screen};
 pub use winit::raw_window_handle::RawWindowHandle;
 
 use egui::mutex::RwLock;
@@ -120,6 +122,13 @@ pub enum ShellEvent {
     /// A menu item the app added itself (its muda id): [`menu::MenuBar`].
     #[cfg(any(target_os = "macos", windows))]
     MenuItem(String),
+    /// The screens attached changed (one plugged in, unplugged, rearranged): the new list (v0.6.0).
+    Screens(Vec<Screen>),
+    /// The output window closed ([`Host::open_output`]); when its screen went away the app may open it again once
+    /// the screen is back (v0.6.0).
+    OutputClosed(OutputEnd),
+    /// A key pressed while the output window had the focus, as its name ("Escape", "Space", "f") (v0.6.0).
+    OutputKey(String),
 }
 
 /// What the host runs: one call per display refresh, and one per event before it.
@@ -141,6 +150,18 @@ pub trait App {
     fn close_requested(&mut self) -> bool {
         true
     }
+    /// The output window's picture for its next refresh, drawn at `frame.size` (v0.6.0). Called once per output
+    /// refresh, paced by the output's own screen; `None` shows black.
+    fn output(&mut self, _gpu: &Gpu, _frame: &OutputFrame) -> Option<wgpu::Texture> {
+        None
+    }
+}
+
+/// What the app asked of the output window during a frame.
+#[derive(Clone, Debug, PartialEq, Eq)]
+enum OutputRequest {
+    Open(String),
+    Close,
 }
 
 /// A wgpu texture egui can draw.
@@ -161,6 +182,9 @@ pub struct Host<'a> {
     window: Option<&'a Window>,
     quit: Option<&'a mut bool>,
     drop_at: Option<(f64, f64)>,
+    screens: &'a [Screen],
+    output_screen: Option<&'a Screen>,
+    output_request: Option<&'a mut Option<OutputRequest>>,
 }
 
 impl Host<'_> {
@@ -274,6 +298,38 @@ impl Host<'_> {
         self.window.is_some_and(|w| w.fullscreen().is_some())
     }
 
+    /// The screens attached now (v0.6.0).
+    pub fn screens(&self) -> &[Screen] {
+        self.screens
+    }
+
+    /// Open the output window full screen on the screen with this id (or, when no id matches, the first screen with
+    /// this name), or move it there; it opens after this frame (v0.6.0).
+    pub fn open_output(&mut self, screen: &str) {
+        if let Some(r) = self.output_request.as_deref_mut() {
+            *r = Some(OutputRequest::Open(screen.to_string()));
+        }
+    }
+
+    /// Close the output window after this frame (v0.6.0).
+    pub fn close_output(&mut self) {
+        if let Some(r) = self.output_request.as_deref_mut() {
+            *r = Some(OutputRequest::Close);
+        }
+    }
+
+    /// The screen the output window is on, while it is open (v0.6.0).
+    pub fn output_screen(&self) -> Option<&Screen> {
+        self.output_screen
+    }
+
+    /// Hide the pointer over the app's window (a single-screen show in full screen) or show it again (v0.6.0).
+    pub fn set_cursor_hidden(&self, hidden: bool) {
+        if let Some(w) = self.window {
+            w.set_cursor_visible(!hidden);
+        }
+    }
+
     /// The window's raw handle, for platform calls (media controls on Windows).
     pub fn raw_window_handle(&self) -> Option<winit::raw_window_handle::RawWindowHandle> {
         self.window.and_then(|w| w.window_handle().ok()).map(|h| h.as_raw())
@@ -320,6 +376,10 @@ struct Running<A> {
     /// Where it landed.
     drop_at: Option<(f64, f64)>,
     quit: bool,
+    output: Option<output::Output>,
+    output_request: Option<OutputRequest>,
+    screens: Vec<Screen>,
+    screens_looked: Option<Instant>,
 }
 
 impl<A: App> Running<A> {
@@ -399,7 +459,111 @@ impl<A: App> Running<A> {
             drop_all: Vec::new(),
             drop_at: None,
             quit: false,
+            output: None,
+            output_request: None,
+            screens: Vec::new(),
+            screens_looked: None,
         })
+    }
+
+    /// Once a second: the screens attached; a change is an event, and an output whose screen left closes.
+    fn look_at_screens(&mut self) {
+        if self.screens_looked.is_some_and(|t| t.elapsed() < Duration::from_secs(1)) {
+            return;
+        }
+        self.screens_looked = Some(Instant::now());
+        let main = self.window.current_monitor();
+        let names = output::screen_names();
+        let now: Vec<Screen> = self.window.available_monitors().map(|m| output::screen_of(&m, main.as_ref(), &names)).collect();
+        if now != self.screens {
+            self.screens = now.clone();
+            self.pending.push(ShellEvent::Screens(now));
+        }
+        if let Some(o) = &self.output
+            && !self.screens.iter().any(|s| s.id == o.screen.id)
+        {
+            let id = o.screen.id.clone();
+            self.output = None;
+            self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(id)));
+        }
+    }
+
+    /// Carry out what the app asked of the output window during the frame.
+    fn apply_output_request(&mut self, el: &ActiveEventLoop) {
+        let Some(req) = self.output_request.take() else { return };
+        match req {
+            OutputRequest::Close => {
+                #[cfg(target_os = "macos")]
+                let _ = glance_platform::set_cursor_hidden(false);
+                if self.output.take().is_some() {
+                    self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
+                }
+            }
+            OutputRequest::Open(id) => {
+                let main = self.window.current_monitor();
+                let names = output::screen_names();
+                let monitors: Vec<_> = self.window.available_monitors().collect();
+                let screens: Vec<Screen> = monitors.iter().map(|m| output::screen_of(m, main.as_ref(), &names)).collect();
+                let found = output::find_screen(&screens, &id).and_then(|s| screens.iter().position(|x| x == s)).and_then(|i| monitors.get(i));
+                let Some(m) = found.cloned() else {
+                    self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(id)));
+                    return;
+                };
+                let screen = output::screen_of(&m, main.as_ref(), &names);
+                if self.output.as_ref().is_some_and(|o| o.screen.id == screen.id) {
+                    return;
+                }
+                self.output = None;
+                match output::Output::open(el, &self.gpu, m, screen) {
+                    Ok(o) => {
+                        o.window.request_redraw();
+                        self.output = Some(o);
+                        // The control window keeps the keyboard.
+                        self.window.focus_window();
+                    }
+                    Err(e) => self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(format!("{id}: {e}")))),
+                }
+            }
+        }
+    }
+
+    fn output_event(&mut self, event: WindowEvent) {
+        let Some(o) = self.output.as_mut() else { return };
+        match event {
+            WindowEvent::RedrawRequested => {
+                let info = o.frame_info();
+                let picture = self.app.output(&self.gpu, &info);
+                if let Some(o) = self.output.as_mut() {
+                    o.present(&self.gpu, picture.as_ref());
+                    o.window.request_redraw();
+                }
+            }
+            WindowEvent::Resized(size) => o.resized(&self.gpu, size.width, size.height),
+            // The pointer never shows over the show (macOS hides a window's cursor only while it has the focus,
+            // and the control window keeps the focus).
+            #[cfg(target_os = "macos")]
+            WindowEvent::CursorEntered { .. } => {
+                let _ = glance_platform::set_cursor_hidden(true);
+            }
+            #[cfg(target_os = "macos")]
+            WindowEvent::CursorLeft { .. } => {
+                let _ = glance_platform::set_cursor_hidden(false);
+            }
+            WindowEvent::CloseRequested => {
+                self.output = None;
+                self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
+            }
+            WindowEvent::KeyboardInput { event, .. } if event.state.is_pressed() && !event.repeat => {
+                use winit::keyboard::Key;
+                let name = match &event.logical_key {
+                    Key::Named(n) => format!("{n:?}"),
+                    Key::Character(c) => c.to_string(),
+                    _ => return,
+                };
+                self.pending.push(ShellEvent::OutputKey(name));
+            }
+            _ => {}
+        }
     }
 
     fn on_event(&mut self, event: &WindowEvent) {
@@ -438,8 +602,9 @@ impl<A: App> Running<A> {
         if !self.drop_all.is_empty() {
             self.pending.push(ShellEvent::DroppedAll(std::mem::take(&mut self.drop_all)));
         }
+        self.look_at_screens();
         let raw = self.input.take_egui_input(&self.window);
-        let Running { window, gpu, render, app, ctx, last_interval, pending, quit, drop_at, .. } = self;
+        let Running { window, gpu, render, app, ctx, last_interval, pending, quit, drop_at, screens, output, output_request, .. } = self;
         let refresh_millihertz = window.current_monitor().and_then(|m| m.refresh_rate_millihertz());
         let mut host = Host {
             gpu,
@@ -449,6 +614,9 @@ impl<A: App> Running<A> {
             window: Some(window),
             quit: Some(quit),
             drop_at: *drop_at,
+            screens,
+            output_screen: output.as_ref().map(|o| &o.screen),
+            output_request: Some(output_request),
         };
         for event in pending.drain(..) {
             app.event(event, &mut host);
@@ -539,8 +707,12 @@ impl<A: App, F: FnOnce(&Gpu) -> Result<A, String>> ApplicationHandler for Runner
         }
     }
 
-    fn window_event(&mut self, el: &ActiveEventLoop, _id: WindowId, event: WindowEvent) {
+    fn window_event(&mut self, el: &ActiveEventLoop, id: WindowId, event: WindowEvent) {
         let Some(r) = self.running.as_mut() else { return };
+        if r.output.as_ref().is_some_and(|o| o.window.id() == id) {
+            r.output_event(event);
+            return;
+        }
         match event {
             WindowEvent::CloseRequested => {
                 if r.app.close_requested() {
@@ -549,6 +721,7 @@ impl<A: App, F: FnOnce(&Gpu) -> Result<A, String>> ApplicationHandler for Runner
             }
             WindowEvent::RedrawRequested => {
                 r.redraw();
+                r.apply_output_request(el);
                 if r.app.finished() || r.quit {
                     el.exit();
                 } else {

@@ -392,6 +392,8 @@ impl App for Sample {
             }
             // The sample adds no menu items of its own and never says it has unsaved work.
             ShellEvent::MenuItem(_) | ShellEvent::Platform(PlatformEvent::QuitRequested) => {}
+            // The sample has no output window (v0.6.0).
+            ShellEvent::Screens(_) | ShellEvent::OutputClosed(_) | ShellEvent::OutputKey(_) => {}
             ShellEvent::Platform(PlatformEvent::DefaultHandlerSet(result)) => {
                 log(serde_json::json!({"event": "default-handler", "result": format!("{result:?}")}));
                 match result {
