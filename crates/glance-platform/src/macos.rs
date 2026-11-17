@@ -612,7 +612,7 @@ pub fn finish_app_menus(app: &str) -> Result<(), PlatformError> {
         .find(|menu| menu.itemArray().iter().any(|i| i.action() == Some(sel!(undo:)) || i.action() == Some(sel!(copy:))))
         .ok_or(PlatformError::Os("no Edit menu (an Undo or Copy item) in the menu bar".into()))?;
     edit.setAutoenablesItems(true);
-    install_item_validation()?;
+    install_item_validation(&edit)?;
     ns_app.windowsMenu().ok_or(PlatformError::Os("no Window menu set".into()))?.setAutoenablesItems(true);
     let help = ns_app.helpMenu().ok_or(PlatformError::Os("no Help menu set".into()))?;
     let title = NSString::from_str(&format!("{app} Help"));
@@ -645,8 +645,11 @@ extern "C-unwind" fn validate_menu_item(_this: &AnyObject, _cmd: Sel, item: &NSM
     objc2::runtime::Bool::new(on)
 }
 
-fn install_item_validation() -> Result<(), PlatformError> {
-    let Some(class) = AnyClass::get(c"MudaNSMenuItem") else { return Ok(()) };
+/// Add `validateMenuItem:` to the class of muda's items in `menu` (found by their action `customAction:`; muda
+/// registers the class under a crate- and version-qualified name, so it is taken from an item, not looked up).
+fn install_item_validation(menu: &objc2_app_kit::NSMenu) -> Result<(), PlatformError> {
+    let Some(item) = menu.itemArray().iter().find(|i| i.action() == Some(sel!(customAction:))) else { return Ok(()) };
+    let class: &AnyClass = item.class();
     if class.instance_method(sel!(validateMenuItem:)).is_some_and(|m| m.implementation() as *const () == validate_menu_item as *const ()) {
         return Ok(());
     }
