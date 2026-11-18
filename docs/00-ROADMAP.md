@@ -142,7 +142,7 @@ the QuickTime writer (approved under MIT: Amrit 2026-11-14, "Yes"; still last).
 | **GlEnc E0** | DXVKit Plus gains the encoders and the QuickTime writer, moved from loombda-rs under MIT (Amrit 2026-11-14: "Yes") — in that repo, the last wave of its run order | — |
 | **GlEnc E1–E3** | `glance-encode`, the queue UI, preview, the CLI; parity (112); swap. macOS first: DXV + HAP outputs are ours, ProRes / H.264 / HEVC / MJPEG / AAC through VideoToolbox / AudioToolbox (moved from loombda-rs) | v0.5.0 |
 | **MaCrate M0** | `glance-library` + the cross-test against the Swift app (`01-RESEARCH.md` §5): sidecars + stash file + `clip_id` are the iCrate contract, and the SQLite format is kept identical too; `glance-arena` (MIT, from SendEhrKit) | — |
-| **MaCrate M1–M4** | scanning and watching, grid and thumbnails, search / filter / sort, metadata and sidecars, stashes, preview, drag-out, Send to Arena, Brief, measurements; parity (126); swap; iCrate check on the iPad | v0.6.0 |
+| **MaCrate M1–M4** | scanning and watching, grid and thumbnails, search / filter / sort, metadata and sidecars, stashes, preview, drag-out, Send to Arena, Brief, measurements; parity (126); swap; iCrate check on the iPad | v0.7.0 |
 | **GlancEhr** | its own W0 against the built core: macOS, Windows, and iPhone / iPad | v0.4.0 + what section 3 lists |
 
 Windows versions of CueGlance, GlEnc and MaCrate follow each app's macOS swap, in the same order.

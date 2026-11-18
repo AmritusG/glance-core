@@ -125,7 +125,10 @@ fn run_session(session: &Session, paths: &[String], progress: &mut dyn FnMut(usi
         return results;
     }
     let next = Mutex::new(0usize);
-    let (tx, rx) = std::sync::mpsc::channel::<(String, HashResult)>();
+    // A rendezvous channel: a worker takes its next path only after the calling thread took its result, as Swift
+    // adds the next task only after `group.next()` returned one (ClipHashingService.swift:74-82). An unbounded
+    // channel let the workers run ahead of `progress`, so a cancel from it came after every hash had finished.
+    let (tx, rx) = std::sync::mpsc::sync_channel::<(String, HashResult)>(0);
     std::thread::scope(|scope| {
         for _ in 0..CONCURRENT_HASHES.min(paths.len()) {
             let tx = tx.clone();
@@ -262,8 +265,9 @@ mod tests {
                 svc.cancel();
             }
         });
-        // Seeding stops: the hashes already running finish, the rest never start.
-        assert!(!r.is_empty() && r.len() < paths.len(), "{}", r.len());
+        // Seeding stops: the hashes already running finish, the rest never start. At most the first, one in flight
+        // per worker and one each worker took before it saw the cancel.
+        assert!(!r.is_empty() && r.len() <= 1 + 2 * CONCURRENT_HASHES, "{}", r.len());
         // The next session runs normally.
         assert_eq!(svc.index_folder(&paths, |_| {}).len(), paths.len());
         std::fs::remove_dir_all(&d).ok();

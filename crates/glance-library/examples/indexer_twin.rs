@@ -93,6 +93,7 @@ fn generate(lib: &Path) {
     write(&a.join("Thing.app/inner.mov"), &bytes(9, 100), 1_700_000_010);
     write(&a.join("notes.txt"), b"not a clip", 1_700_000_011);
     write(&a.join("excluded/x.mov"), &bytes(10, 900), 1_700_000_012);
+    #[cfg(unix)]
     std::os::unix::fs::symlink(a.join("gen2.MOV"), a.join("link.mov")).unwrap();
     // Sidecars: by expected name; for a missing clip; for the NFC-named clip; under the excluded folder.
     let id1 = clip_id(&a.join("gen1.mov")).unwrap();
