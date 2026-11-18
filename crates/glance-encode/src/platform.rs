@@ -68,12 +68,23 @@ mod mac {
         }
     }
 
-    pub fn open_native(path: &Path, alpha_tag: FrameAlpha) -> Result<Box<dyn SourceReader>, SourceError> {
-        let reader = apple::BgraReader::open(path).map_err(source_err)?;
-        let fps = dxvkit_plus_core::container::Movie::open(path)
+    /// The source rate by the one FrameTiming rule: over the container's own tables when the core's demuxer reads
+    /// them, else over AVFoundation's own inputs — the platform decoder's timing, which every app's playback of such
+    /// a file uses (a fragmented MP4: empty `moov` sample tables, the samples in `moof` fragments). Swift GlEnc takes
+    /// AVFoundation's timing for every native source, so it converts those files; up to v0.7.1 this read 0 fps
+    /// there and the encode failed ("source reports an invalid frame rate (0.0 fps)").
+    fn source_rate(path: &Path) -> f64 {
+        use dxvkit_plus_core::backend::{NativeDecoder, PixelLayout};
+        let rate = dxvkit_plus_core::container::Movie::open(path)
             .ok()
             .and_then(|m| m.first().map(|t| t.timing.rate))
-            .map_or(0.0, |r| if r.den != 0 { r.num as f64 / r.den as f64 } else { 0.0 });
+            .or_else(|| apple::NativeReader::open(path, PixelLayout::Bgra).ok().and_then(|r| r.timing().map(|t| t.rate)));
+        rate.map_or(0.0, |r| if r.den != 0 { r.num as f64 / r.den as f64 } else { 0.0 })
+    }
+
+    pub fn open_native(path: &Path, alpha_tag: FrameAlpha) -> Result<Box<dyn SourceReader>, SourceError> {
+        let reader = apple::BgraReader::open(path).map_err(source_err)?;
+        let fps = source_rate(path);
         let duration = reader.duration_seconds();
         let (w, h) = (reader.width(), reader.height());
         validate_geometry(i64::from(w), i64::from(h), fps, duration)?;

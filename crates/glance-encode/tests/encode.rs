@@ -139,6 +139,27 @@ fn a_rate_outside_the_writers_set_is_refused() {
     assert_eq!(glance_encode::enc::mov::derive_timescale(30_000.0 / 1001.0).unwrap(), (30_000, 1001));
 }
 
+/// A fragmented MP4 (samples in `moof` fragments, the `moov`'s tables empty, as in a DASH or streaming capture) is a
+/// native source the core's demuxer does not read: its rate comes from the platform's timing, as in Swift GlEnc,
+/// so it converts (up to v0.7.1: "source reports an invalid frame rate (0.0 fps)"). Every frame is written, at the
+/// source's 30 fps.
+#[cfg(target_os = "macos")]
+#[test]
+fn a_fragmented_mp4_converts_at_its_rate() {
+    assert!(Movie::open(&fixture("tiles_h264_fragmented.mp4")).is_err(), "the demuxer reads fragments now: the fixture no longer tests the fallback");
+    for (codec, name) in
+        [(OutputCodec::Dxv(DxvFormat::Dxt1), "frag-dxt1.mov"), (OutputCodec::Dxv(DxvFormat::Hap1), "frag-hap1.mov"), (OutputCodec::H264, "frag-h264.mov")]
+    {
+        let r = req("tiles_h264_fragmented.mp4", name, codec);
+        let o = run(&r).unwrap_or_else(|e| panic!("{name}: {e}"));
+        assert_eq!(o.frames, 24, "{name}");
+        let m = Movie::open(&r.output).unwrap();
+        let t = m.first().unwrap();
+        assert_eq!((t.width, t.height, t.samples.len()), (128, 72, 24), "{name}");
+        assert_eq!((t.timing.rate.num, t.timing.rate.den), (30, 1), "{name}");
+    }
+}
+
 #[test]
 fn source_limits_are_swifts() {
     assert_eq!(validate_geometry(0, 10, 30.0, 1.0), Err(SourceError::DimensionsInvalid { width: 0, height: 10 }));

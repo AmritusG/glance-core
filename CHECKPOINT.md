@@ -19,6 +19,11 @@ Wave: v0.6.0 (the show output, for GlancEhr; handoff docs/handoffs/v060-glancehr
   RUSTFLAGS comment corrected. Shipped in Glance 0.19.1, CueGlance 1.5.1, GlEnc 1.7.1, MaCrate 0.17.1 (all on v0.7.1;
   numbers in each app's docs/data/p1/speed/). This workspace's own profile unchanged (debug = 1 for its tests).
 
+- 2026-11-18 (glenc-rs session, train-loop-and-speed r2, PART A): v0.7.2 — glance-encode takes the platform's timing
+  when the demuxer does not read a native file (fragmented MP4: 0.0 fps up to v0.7.1); test + CC0 fixture
+  `tiles_h264_fragmented.mp4`; handoff docs/handoffs/v072-fragmented-mp4.md. OPEN there: AVFoundation's doubled
+  duration for such a file (count 2x on the grid fallback); a moof-reading demuxer in DXVKit Plus would fix it.
+
 ## NEXT
 - Amrit: Settings → Billing → Actions usage (private-repo macOS minutes), then `gh run rerun 44131258624 --failed -R AmritusG/glenc-rs` and watch to green. Next core work: the Windows milestone (ROADMAP §7).
 
