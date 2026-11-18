@@ -737,6 +737,19 @@ fn loop_score_sort_puts_unmeasured_last_and_measurement_fetch() {
     assert_eq!(st.measurement("loop").unwrap().unwrap().text_checked, 1);
 }
 
+/// The folder view's value sorts read the measurement through the cell read (Amrit 2026-11-18, M44).
+#[test]
+fn cell_metadata_carries_loop_score_and_cycle() {
+    let st = measured_store();
+    let paths: Vec<String> = ["/a.mov", "/b.mov", "/c.mov", "/d.mov", "/none.mov"].iter().map(|p| p.to_string()).collect();
+    let m = st.cell_metadata_by_path(&paths).unwrap();
+    assert_eq!((m["/a.mov"].loop_score, m["/a.mov"].cycle_s), (Some(0.4), Some(4.0)));
+    assert_eq!((m["/b.mov"].loop_score, m["/b.mov"].cycle_s), (Some(1.9), Some(12.0)));
+    assert_eq!((m["/c.mov"].loop_score, m["/c.mov"].cycle_s), (None, None));
+    assert_eq!((m["/d.mov"].loop_score, m["/d.mov"].cycle_s), (None, None));
+    assert!(!m.contains_key("/none.mov"));
+}
+
 #[test]
 fn library_query_leaves_out_clips_on_unmounted_volumes() {
     let mut st =

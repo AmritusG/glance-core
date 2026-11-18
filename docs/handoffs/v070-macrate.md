@@ -43,3 +43,12 @@ v0.7.0 only (Cowork answer, 2026-11-18).
   cargo-home paths (panic locations of registry / git crates) before, 0 after; notarised fine. Apps that copied the
   kit earlier (Glance 0.19.0 ships 1,422 such paths) take it at their next release.
 - `lib.sh`: optional `DMG_NAME` slot, for a releases repo with its own naming (MaCrate: `MaCrate-<version>.dmg`).
+
+## v0.7.1 — the folder view sorts by the value (MaCrate M44)
+
+Amrit, 2026-11-18: "Sorting: sort by the value." `sorting::apply` orders rating / BPM / energy / loop score / cycle
+by their value (missing values last in both directions, ties by name, as the library query orders them; Swift fell
+back to filename A→Z). `SortableClip` gains `rating`, `bpm`, `energy`, `loop_score`, `cycle_s` (default `None`), and
+`cell_metadata_by_path` reads the measurement's `pass1_score` / `cycle_s` (LEFT JOIN, as the library query).
+Tests: `format_tests::folder_value_sorts_order_by_the_value`, `store_tests::cell_metadata_carries_loop_score_and_cycle`;
+gates 452 passed with test media + GPU.

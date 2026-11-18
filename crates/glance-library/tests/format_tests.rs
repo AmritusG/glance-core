@@ -287,6 +287,66 @@ fn clip_sorting() {
     assert_eq!(names(&apply(&durations, ClipSort::DurationDesc, 0)), ["long.mov", "short.mov", "a-none.mov", "b-none.mov"]);
 }
 
+#[derive(Clone)]
+struct V {
+    name: String,
+    rating: Option<i64>,
+    bpm: Option<f64>,
+    energy: Option<i64>,
+    score: Option<f64>,
+    cycle: Option<f64>,
+}
+
+impl SortableClip for V {
+    fn display_name(&self) -> &str {
+        &self.name
+    }
+    fn mtime(&self) -> f64 {
+        0.0
+    }
+    fn duration_sec(&self) -> Option<f64> {
+        None
+    }
+    fn rating(&self) -> Option<i64> {
+        self.rating
+    }
+    fn bpm(&self) -> Option<f64> {
+        self.bpm
+    }
+    fn energy(&self) -> Option<i64> {
+        self.energy
+    }
+    fn loop_score(&self) -> Option<f64> {
+        self.score
+    }
+    fn cycle_s(&self) -> Option<f64> {
+        self.cycle
+    }
+}
+
+/// Amrit, 2026-11-18 (M44): "Sorting: sort by the value." Values in order, missing last both ways, ties by name.
+#[test]
+fn folder_value_sorts_order_by_the_value() {
+    let v = |name: &str, n: Option<i64>, x: Option<f64>| V { name: name.into(), rating: n, bpm: x, energy: n, score: x, cycle: x };
+    let files = vec![
+        v("d-none.mov", None, None),
+        v("b.mov", Some(3), Some(128.0)),
+        v("a.mov", Some(3), Some(90.0)),
+        v("c.mov", Some(5), Some(128.0)),
+        v("e.mov", Some(0), Some(60.0)),
+    ];
+    let order = |s| apply(&files, s, 0).iter().map(|f| f.name.clone()).collect::<Vec<_>>();
+    assert_eq!(order(ClipSort::RatingDesc), ["c.mov", "a.mov", "b.mov", "e.mov", "d-none.mov"]);
+    assert_eq!(order(ClipSort::EnergyAsc), ["e.mov", "a.mov", "b.mov", "c.mov", "d-none.mov"]);
+    assert_eq!(order(ClipSort::EnergyDesc), ["c.mov", "a.mov", "b.mov", "e.mov", "d-none.mov"]);
+    for s in [ClipSort::BpmAsc, ClipSort::LoopScoreAsc, ClipSort::CycleAsc] {
+        assert_eq!(order(s), ["e.mov", "a.mov", "b.mov", "c.mov", "d-none.mov"], "{s:?}");
+    }
+    for s in [ClipSort::BpmDesc, ClipSort::CycleDesc] {
+        assert_eq!(order(s), ["b.mov", "c.mov", "a.mov", "e.mov", "d-none.mov"], "{s:?}");
+    }
+}
+
 #[test]
 fn shuffle_and_name_order_match_swift() {
     let rules = read_json(&fixtures().join("rules.json"));

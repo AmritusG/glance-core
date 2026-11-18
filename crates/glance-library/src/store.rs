@@ -112,6 +112,9 @@ pub struct ClipCellMetadata {
     pub genre: Option<String>,
     pub brief: Option<String>,
     pub tags: Option<Vec<String>>,
+    /// The measurement's `pass1_score` and `cycle_s` (`None`: not measured), for the folder view's value sorts.
+    pub loop_score: Option<f64>,
+    pub cycle_s: Option<f64>,
 }
 
 /// One clip id with at least one row without a brief, and the row to brief it from (`UnbriefedEntry`).
@@ -533,14 +536,15 @@ impl MetadataStore {
         Ok(n)
     }
 
-    /// `cellMetadataByPath(_:)`: the grid fields of each path that has a row, tags fetched (sorted).
+    /// `cellMetadataByPath(_:)`: the grid fields of each path that has a row, tags fetched (sorted), and the
+    /// measurement's loop score and cycle (for the folder view's value sorts; not in Swift's read).
     pub fn cell_metadata_by_path(&self, paths: &[String]) -> Result<BTreeMap<String, ClipCellMetadata>> {
         let mut map = BTreeMap::new();
         if paths.is_empty() {
             return Ok(map);
         }
         let sql = format!(
-            "SELECT current_path, clip_id, duration_sec, frame_rate, video_width, video_height,\n       rating, bpm, energy, mood, genre, brief\nFROM clips\nWHERE current_path IN ({})",
+            "SELECT c.current_path, c.clip_id, c.duration_sec, c.frame_rate, c.video_width, c.video_height,\n       c.rating, c.bpm, c.energy, c.mood, c.genre, c.brief, m.pass1_score, m.cycle_s\nFROM clips c\nLEFT JOIN {SCHEMA_NAME}.clip_measurements m ON m.clip_id = c.clip_id\nWHERE c.current_path IN ({})",
             placeholders(paths.len())
         );
         let mut stmt = self.conn.prepare(&sql)?;
@@ -560,6 +564,8 @@ impl MetadataStore {
                     genre: r.get("genre")?,
                     brief: r.get("brief")?,
                     tags: Some(Vec::new()),
+                    loop_score: r.get("pass1_score")?,
+                    cycle_s: r.get("cycle_s")?,
                 },
             ))
         })?;
