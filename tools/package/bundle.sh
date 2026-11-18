@@ -24,10 +24,18 @@ target_dir="$STAGE_DIR/target"
 mkdir -p "$STAGE_DIR"
 # No build-machine paths in the shipped binary (Swift MaCrate 0.16.3's check-build-paths.sh rule): the source paths
 # rustc writes for panic locations name the cargo home (registry, git checkouts), the repo and the stage's target
-# (generated code), so each is remapped to a neutral prefix. The target-specific rustflags of .cargo/config.toml
-# still apply (RUSTFLAGS replaces only build.rustflags). A build that still holds $HOME is refused below.
+# (generated code), so each is remapped to a neutral prefix. RUSTFLAGS takes the place of every rustflags in
+# .cargo/config.toml (build and target.<triple>; Cargo uses one source), so a config's `-Wl,-S` does not apply here:
+# `strip -S` below does that work. A build that still holds $HOME is refused below.
 cargo_home="${CARGO_HOME:-$HOME/.cargo}"
 remap="--remap-path-prefix=$cargo_home=/cargo --remap-path-prefix=$REPO=/src --remap-path-prefix=$target_dir=/target"
+# The speed build (Amrit 2026-11-18: "Any software under 200 MB I want optimized for speed, not disk size"): whole-
+# program optimisation by default for every app the kit builds, whatever its Cargo.toml says; an app that measured
+# slower sets the CARGO_PROFILE_RELEASE_* variables itself. panic and debug / strip stay the app's profile's.
+export CARGO_PROFILE_RELEASE_LTO="${CARGO_PROFILE_RELEASE_LTO:-fat}"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS="${CARGO_PROFILE_RELEASE_CODEGEN_UNITS:-1}"
+export CARGO_PROFILE_RELEASE_OPT_LEVEL="${CARGO_PROFILE_RELEASE_OPT_LEVEL:-3}"
+echo "==> release profile: lto $CARGO_PROFILE_RELEASE_LTO, codegen-units $CARGO_PROFILE_RELEASE_CODEGEN_UNITS, opt-level $CARGO_PROFILE_RELEASE_OPT_LEVEL"
 for t in aarch64-apple-darwin x86_64-apple-darwin; do
     echo "==> cargo build --release --target $t -p $CARGO_PACKAGE"
     (cd "$REPO" && MACOSX_DEPLOYMENT_TARGET="$MIN_MACOS" CARGO_TARGET_DIR="$target_dir" RUSTC="$bin_dir/rustc" RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }$remap" "$bin_dir/cargo" build --release --locked --target "$t" -p "$CARGO_PACKAGE" --bin "$EXECUTABLE")

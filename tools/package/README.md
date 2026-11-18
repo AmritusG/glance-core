@@ -8,7 +8,7 @@ read for C3; `docs/handoffs/c3-shell.md` DIAGNOSE 4). Proven on `glance-sample`
 
 | Script | Does |
 |---|---|
-| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, `strip -S` (debug information out, the symbol table kept; refuses if any debug map entry is left), source paths remapped (`--remap-path-prefix` for the cargo home, the repo, the stage's target; refuses a binary that still holds `$HOME`), the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
+| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, the speed build by default (`lto = "fat"`, `codegen-units = 1`, `opt-level = 3`, through `CARGO_PROFILE_RELEASE_*`; set one in the environment to override), `strip -S` (debug information out, the symbol table kept; refuses if any debug map entry is left), source paths remapped (`--remap-path-prefix` for the cargo home, the repo, the stage's target; refuses a binary that still holds `$HOME`), the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
 | `sign.sh <conf> [path]` | Developer ID, hardened runtime, secure timestamp, `entitlements.plist`; strict verify |
 | `notarize.sh <conf> [path]` | `notarytool submit --keychain-profile NOTARY_PROFILE --wait`, refuses anything but Accepted (prints the log), `stapler staple` + `validate`, Gatekeeper |
 | `dmg.sh <conf>` | UDZO image "`<APP_NAME> <VERSION>`" with the app and an `/Applications` link, file `<APP_NAME>-v<VERSION>.dmg`; signed, notarised, stapled; then `<dmg>.sha256` |
@@ -45,6 +45,9 @@ The Rust toolchain must have both macOS standard libraries (`KIT_TOOLCHAIN_BIN`;
 
 1. Copy `tools/package/` (keep the timestamps: `cp -Rp` / `ditto`) and `.cargo/config.toml`
    (deployment target 14.0).
+   Set the same speed build in the app's `[profile.release]` (`lto = "fat"`, `codegen-units = 1`,
+   `opt-level = 3`) so `cargo build --release` outside the kit builds what ships; keep the app's own `panic` and
+   `debug`. Measure before / after (release, several runs, mean and spread) and keep it only when not slower.
 2. Write `<crate>/bundle/app.conf` and `Info.plist` from glance-sample's. At the swap the plist
    carries the Swift app's document types and handler ranks exactly (Glance: one `QuickTime Movie`
    type, role Viewer, rank **Default**, `public.movie`, `com.apple.quicktime-movie`,
