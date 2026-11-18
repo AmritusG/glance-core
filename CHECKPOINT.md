@@ -14,6 +14,11 @@ Wave: v0.6.0 (the show output, for GlancEhr; handoff docs/handoffs/v060-glancehr
 - Handoff: `docs/handoffs/clean-history-and-publish.md`; glance-core CI 44140024833 green on 65c65cc.
 - 2026-11-17 fix (MaCrate's preview, Glance 0.19.0): with loop off and the sound driving the clock, the end is now heard and the clock stops on the last frame (glance-audio: silent buffers after the end no longer re-anchor the heard position); note to Glance: `~/claude-handoffs/glance-rs_2026-11-17_note-from-glance-core-loop-end.md`.
 
+- 2026-11-18 (glance-rs session, patch-releases): kit 1c9841c — the speed build by default in bundle.sh
+  (CARGO_PROFILE_RELEASE_LTO=fat, CODEGEN_UNITS=1, OPT_LEVEL=3, printed), README adoption step for the app profile,
+  RUSTFLAGS comment corrected. Shipped in Glance 0.19.1, CueGlance 1.5.1, GlEnc 1.7.1, MaCrate 0.17.1 (all on v0.7.1;
+  numbers in each app's docs/data/p1/speed/). This workspace's own profile unchanged (debug = 1 for its tests).
+
 ## NEXT
 - Amrit: Settings → Billing → Actions usage (private-repo macOS minutes), then `gh run rerun 44131258624 --failed -R AmritusG/glenc-rs` and watch to green. Next core work: the Windows milestone (ROADMAP §7).
 
