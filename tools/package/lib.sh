@@ -25,7 +25,7 @@ kit_load() {
     STAGE_DIR="$(cd "$STAGE_DIR" && pwd -P)"
     APP="$STAGE_DIR/$APP_NAME.app"
     KEEP="$INSTALL_DIR/$APP_NAME.app"
-    DMG="$STAGE_DIR/$APP_NAME-v$VERSION.dmg"
+    DMG="$STAGE_DIR/${DMG_NAME:-$APP_NAME-v$VERSION.dmg}"
     ENTITLEMENTS="${ENTITLEMENTS:-$(dirname "${BASH_SOURCE[0]}")/entitlements.plist}"
     LSR=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 }

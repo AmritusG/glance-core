@@ -35,3 +35,11 @@ v0.7.0 only (Cowork answer, 2026-11-18).
   (the test-media enumeration case GlancEhr saw at 182 / 183 passes), deny ok, release build ok. The hashing tests
   eight times in a row ok. The Windows check runs in CI (no MSVC tools here for the C build scripts).
 - Tag made only after CI on this commit is green.
+
+## Addendum after the tag: the kit (tools/package, no crate change)
+
+- `bundle.sh`: rustc's source paths remapped (`--remap-path-prefix` for the cargo home → `/cargo`, the repo → `/src`,
+  the stage's target → `/target`); a binary that still holds `$HOME` is refused. Measured on MaCrate 0.17.0: 1,895
+  cargo-home paths (panic locations of registry / git crates) before, 0 after; notarised fine. Apps that copied the
+  kit earlier (Glance 0.19.0 ships 1,422 such paths) take it at their next release.
+- `lib.sh`: optional `DMG_NAME` slot, for a releases repo with its own naming (MaCrate: `MaCrate-<version>.dmg`).

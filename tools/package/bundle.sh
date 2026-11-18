@@ -22,9 +22,15 @@ echo "==> toolchain: $("$bin_dir/rustc" --version)"
 
 target_dir="$STAGE_DIR/target"
 mkdir -p "$STAGE_DIR"
+# No build-machine paths in the shipped binary (Swift MaCrate 0.16.3's check-build-paths.sh rule): the source paths
+# rustc writes for panic locations name the cargo home (registry, git checkouts), the repo and the stage's target
+# (generated code), so each is remapped to a neutral prefix. The target-specific rustflags of .cargo/config.toml
+# still apply (RUSTFLAGS replaces only build.rustflags). A build that still holds $HOME is refused below.
+cargo_home="${CARGO_HOME:-$HOME/.cargo}"
+remap="--remap-path-prefix=$cargo_home=/cargo --remap-path-prefix=$REPO=/src --remap-path-prefix=$target_dir=/target"
 for t in aarch64-apple-darwin x86_64-apple-darwin; do
     echo "==> cargo build --release --target $t -p $CARGO_PACKAGE"
-    (cd "$REPO" && MACOSX_DEPLOYMENT_TARGET="$MIN_MACOS" CARGO_TARGET_DIR="$target_dir" RUSTC="$bin_dir/rustc" "$bin_dir/cargo" build --release --locked --target "$t" -p "$CARGO_PACKAGE" --bin "$EXECUTABLE")
+    (cd "$REPO" && MACOSX_DEPLOYMENT_TARGET="$MIN_MACOS" CARGO_TARGET_DIR="$target_dir" RUSTC="$bin_dir/rustc" RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }$remap" "$bin_dir/cargo" build --release --locked --target "$t" -p "$CARGO_PACKAGE" --bin "$EXECUTABLE")
 done
 
 echo "==> assembling $APP"
@@ -38,6 +44,8 @@ lipo -create -output "$APP/Contents/MacOS/$EXECUTABLE" "$target_dir/aarch64-appl
 strip -S "$APP/Contents/MacOS/$EXECUTABLE"
 stabs="$(nm -a "$APP/Contents/MacOS/$EXECUTABLE" 2>/dev/null | grep -c ' - ' || true)"
 [ "$stabs" = 0 ] || kit_die "debug map entries left after strip -S: $stabs"
+home_paths="$(strings -a "$APP/Contents/MacOS/$EXECUTABLE" | grep -cF "$HOME" || true)"
+[ "$home_paths" = 0 ] || kit_die "build-machine paths ($HOME) left in the binary: $home_paths"
 sed -e "s|@APP_NAME@|$APP_NAME|g" -e "s|@BUNDLE_ID@|$BUNDLE_ID|g" -e "s|@EXECUTABLE@|$EXECUTABLE|g" -e "s|@VERSION@|$VERSION|g" -e "s|@MIN_MACOS@|$MIN_MACOS|g" \
     "$CONF_DIR/$INFO_PLIST" > "$APP/Contents/Info.plist"
 plutil -lint "$APP/Contents/Info.plist" >/dev/null
@@ -48,5 +56,5 @@ long="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Contents/Info.
 if [ -n "${ICON:-}" ]; then
     cp -p "$CONF_DIR/$ICON" "$APP/Contents/Resources/AppIcon.icns"
 fi
-echo "==> stripped: 0 debug map entries, $(nm "$APP/Contents/MacOS/$EXECUTABLE" 2>/dev/null | wc -l | tr -d ' ') symbols kept"
+echo "==> stripped: 0 debug map entries, 0 build-machine paths, $(nm "$APP/Contents/MacOS/$EXECUTABLE" 2>/dev/null | wc -l | tr -d ' ') symbols kept"
 echo "==> $APP: version $short, $(lipo -archs "$APP/Contents/MacOS/$EXECUTABLE"), minos $(otool -l "$APP/Contents/MacOS/$EXECUTABLE" | awk '/LC_BUILD_VERSION/{f=1} f&&/minos/{print $2; exit}')"

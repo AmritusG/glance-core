@@ -8,7 +8,7 @@ read for C3; `docs/handoffs/c3-shell.md` DIAGNOSE 4). Proven on `glance-sample`
 
 | Script | Does |
 |---|---|
-| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, `strip -S` (debug information out, the symbol table kept; refuses if any debug map entry is left), the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
+| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, `strip -S` (debug information out, the symbol table kept; refuses if any debug map entry is left), source paths remapped (`--remap-path-prefix` for the cargo home, the repo, the stage's target; refuses a binary that still holds `$HOME`), the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
 | `sign.sh <conf> [path]` | Developer ID, hardened runtime, secure timestamp, `entitlements.plist`; strict verify |
 | `notarize.sh <conf> [path]` | `notarytool submit --keychain-profile NOTARY_PROFILE --wait`, refuses anything but Accepted (prints the log), `stapler staple` + `validate`, Gatekeeper |
 | `dmg.sh <conf>` | UDZO image "`<APP_NAME> <VERSION>`" with the app and an `/Applications` link, file `<APP_NAME>-v<VERSION>.dmg`; signed, notarised, stapled; then `<dmg>.sha256` |
@@ -34,6 +34,7 @@ team ids and certificate hashes are masked in everything the kit prints.
 | `SIGN_IDENTITY` | `auto` | `auto` = the first "Developer ID Application" identity in the keychain |
 | `INSTALL_DIR` | `/Applications` | the one place the app is registered |
 | `STAGE_DIR` | `$TMPDIR/glance-kit/<bundle id>` | outside the project; the kit creates it and uses its physical path (`pwd -P`: `/var/folders/…` becomes `/private/var/folders/…`, the path LaunchServices records), so the conf needs no resolving of its own |
+| `DMG_NAME` (optional) | — | the DMG's file name when the releases repo has its own naming (default `<APP_NAME>-v<VERSION>.dmg`) |
 | `ICON` (optional) | — | an `.icns` beside the conf, copied to `Contents/Resources/AppIcon.icns` (`CFBundleIconFile` = `AppIcon`) |
 | `ENTITLEMENTS` (optional) | the kit's `entitlements.plist` | Swift Glance's two keys: user-selected read-only files, app-scope bookmarks |
 
