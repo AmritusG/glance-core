@@ -24,6 +24,11 @@ Wave: v0.6.0 (the show output, for GlancEhr; handoff docs/handoffs/v060-glancehr
   `tiles_h264_fragmented.mp4`; handoff docs/handoffs/v072-fragmented-mp4.md. OPEN there: AVFoundation's doubled
   duration for such a file (count 2x on the grid fallback); a moof-reading demuxer in DXVKit Plus would fix it.
 
+- 2026-11-19 (glenc-rs session, speed-build-and-fragmented-mp4): **v0.8.0** — glance-encode frames in flight, native
+  BGRA kept for the platform writer, a fragmented file's exact count; DXVKit Plus v0.15.0 (fragmented MP4 read, faster
+  DXV encode / CPU decode); kit x86-64-v3 Intel slice. Gates 458 / 0, CI 44508562393 green, tag v0.8.0. Handoff
+  docs/handoffs/v080-frames-in-flight.md. The OPEN of v0.7.2 (AVFoundation's doubled duration) is closed by DXVKit Plus 0.15.0.
+
 ## NEXT
 - Amrit: Settings → Billing → Actions usage (private-repo macOS minutes), then `gh run rerun 44131258624 --failed -R AmritusG/glenc-rs` and watch to green. Next core work: the Windows milestone (ROADMAP §7).
 

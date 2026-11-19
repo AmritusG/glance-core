@@ -1,0 +1,63 @@
+## glance-core v0.8.0 gates 2026-11-19T10:41:22Z
+error: package ID specification `dxvkit-plus-core` did not match any packages
+Diff in <workspace>/glance-core/crates/glance-encode/src/pipeline.rs:432:
+ 
+     impl SourceReader for Fake {
+         fn info(&self) -> SourceInfo {
+[31m-            SourceInfo { kind: crate::source::SourceKind::Dxv, fourcc: *b"DXD3", width: 4, height: 4, fps: 30.0, total_frames: self.n, unpremultiplies_on_read: false }
+(B[m[32m+            SourceInfo {
+(B[m[32m+                kind: crate::source::SourceKind::Dxv,
+(B[m[32m+                fourcc: *b"DXD3",
+(B[m[32m+                width: 4,
+(B[m[32m+                height: 4,
+(B[m[32m+                fps: 30.0,
+(B[m[32m+                total_frames: self.n,
+(B[m[32m+                unpremultiplies_on_read: false,
+(B[m[32m+            }
+(B[m         }
+         fn next_pending(&mut self) -> Result<Option<Pending>, SourceError> {
+             let i = self.next;
+Diff in <workspace>/glance-core/crates/glance-encode/src/pipeline.rs:450:
+                 if fail {
+                     return Err(SourceError::DxvDecodeFailed { index: i, why: "decode".into() });
+                 }
+[31m-                Ok(Frame { width: 4, height: 4, rgba: vec![i as u8; 64], alpha: FrameAlpha::Straight, pts: Pts { value: i as i64, timescale: 30 }, attachments: None })
+(B[m[32m+                Ok(Frame {
+(B[m[32m+                    width: 4,
+(B[m[32m+                    height: 4,
+(B[m[32m+                    rgba: vec![i as u8; 64],
+(B[m[32m+                    alpha: FrameAlpha::Straight,
+(B[m[32m+                    pts: Pts { value: i as i64, timescale: 30 },
+(B[m[32m+                    attachments: None,
+(B[m[32m+                })
+(B[m             }))))
+         }
+     }
+Diff in <workspace>/glance-core/crates/glance-encode/src/platform.rs:162:
+     }
+ 
+     /// The platform's writer. `bgra`: the frames arrive in BGRA already (see [`open_native`]'s `keep_bgra`).
+[31m-    pub fn av_sink(req: &EncodeRequest, codec: OutputCodec, w: u32, h: u32, audio: Option<Pcm>, bgra: bool) -> Result<Box<dyn crate::pipeline::Sink>, EncodeError> {
+(B[m[32m+    pub fn av_sink(
+(B[m[32m+        req: &EncodeRequest,
+(B[m[32m+        codec: OutputCodec,
+(B[m[32m+        w: u32,
+(B[m[32m+        h: u32,
+(B[m[32m+        audio: Option<Pcm>,
+(B[m[32m+        bgra: bool,
+(B[m[32m+    ) -> Result<Box<dyn crate::pipeline::Sink>, EncodeError> {
+(B[m         let av = match codec {
+             OutputCodec::ProRes(ProResVariant::ProRes422) => apple::AvCodec::ProRes422,
+             OutputCodec::ProRes(ProResVariant::ProRes422Hq) => apple::AvCodec::ProRes422HQ,
+fmt exit 1
+clippy exit 0
+tests passed 458 failed 0 ignored 0
+advisories ok, bans ok, licenses ok, sources ok
+    Finished `release` profile [optimized + debuginfo] target(s) in 2.29s
+build exit 0
+fmt after cargo fmt: exit 0
+0
+clippy re-check exit 0
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
