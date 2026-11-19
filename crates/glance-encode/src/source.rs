@@ -150,14 +150,17 @@ pub enum Pending {
     Ready(Frame),
     /// The read sample and the work that turns it into the frame.
     Decode(Box<dyn FnOnce() -> Result<Frame, SourceError> + Send>),
+    /// The platform decoder's own buffer, for the platform's writer as it is (v0.8.1).
+    Through(crate::frame::Through),
 }
 
 impl Pending {
-    /// The frame (decoding it now if that is still to do).
+    /// The frame (decoding it now if that is still to do; a decoder's buffer copied out, in its BGRA order).
     pub fn frame(self) -> Result<Frame, SourceError> {
         match self {
             Pending::Ready(f) => Ok(f),
             Pending::Decode(f) => f(),
+            Pending::Through(b) => crate::platform::through_frame(b),
         }
     }
 }

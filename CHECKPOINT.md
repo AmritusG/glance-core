@@ -27,7 +27,8 @@ Wave: v0.6.0 (the show output, for GlancEhr; handoff docs/handoffs/v060-glancehr
 - 2026-11-19 (glenc-rs session, speed-build-and-fragmented-mp4): **v0.8.0** — glance-encode frames in flight, native
   BGRA kept for the platform writer, a fragmented file's exact count; DXVKit Plus v0.15.0 (fragmented MP4 read, faster
   DXV encode / CPU decode); kit x86-64-v3 Intel slice. Gates 458 / 0, CI 44508562393 green, tag v0.8.0. Handoff
-  docs/handoffs/v080-frames-in-flight.md. The OPEN of v0.7.2 (AVFoundation's doubled duration) is closed by DXVKit Plus 0.15.0.
+  docs/handoffs/v080-frames-in-flight.md. **v0.8.1**: the decoder's own buffer to the platform writer
+  (DXVKit Plus v0.15.1), level with Swift on ProRes / H.264 from native sources. The OPEN of v0.7.2 (AVFoundation's doubled duration) is closed by DXVKit Plus 0.15.0.
 
 ## NEXT
 - Amrit: Settings → Billing → Actions usage (private-repo macOS minutes), then `gh run rerun 44131258624 --failed -R AmritusG/glenc-rs` and watch to green. Next core work: the Windows milestone (ROADMAP §7).

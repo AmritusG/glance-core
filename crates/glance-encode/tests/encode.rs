@@ -190,3 +190,20 @@ fn progress_runs_to_one_over_the_trimmed_range() {
     let s = seen.into_inner().unwrap();
     assert_eq!(s, vec![0.5, 1.0, 1.0]);
 }
+
+/// v0.8.1: a native source to the platform's writer with no crop or resize hands the decoder's own buffer over (no
+/// copy), as Swift GlEnc does: every frame is written and the decoder's colour attachments reach the file (`colr`);
+/// a resized job rebuilds the buffer and has none (Swift's rule, DXVKit Plus `glenc_av` tests).
+#[cfg(target_os = "macos")]
+#[test]
+fn the_decoders_buffer_goes_to_the_platform_writer() {
+    let has_colr = |p: &Path| std::fs::read(p).unwrap().windows(8).any(|w| w == b"colrnclc");
+    let r = req("tiles_prores422.mov", "through.mov", OutputCodec::ProRes(glance_encode::codec::ProResVariant::ProRes422));
+    assert_eq!(run(&r).unwrap().frames, 24);
+    let m = Movie::open(&r.output).unwrap();
+    assert_eq!((m.first().unwrap().samples.len(), has_colr(&r.output)), (24, true));
+    let mut resized = req("tiles_prores422.mov", "rebuilt.mov", OutputCodec::ProRes(glance_encode::codec::ProResVariant::ProRes422));
+    resized.output_size = OutputSize::Custom { width: 64, height: 36 };
+    assert_eq!(run(&resized).unwrap().frames, 24);
+    assert!(!has_colr(&resized.output));
+}

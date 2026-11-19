@@ -33,6 +33,15 @@ pub type Attachments = dxvkit_plus_apple::FrameAttachments;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Attachments;
 
+/// The platform decoder's own buffer, handed to the platform's writer unchanged (v0.8.1): Swift GlEnc appends the
+/// reader's buffer when it neither crops, resizes nor un-premultiplies.
+#[cfg(target_os = "macos")]
+pub type Through = dxvkit_plus_apple::DecodedBuffer;
+/// No platform decoder on other platforms yet.
+#[cfg(not(target_os = "macos"))]
+#[derive(Clone, Debug)]
+pub struct Through;
+
 /// One frame (RGBA8, top row first, no row padding).
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Frame {

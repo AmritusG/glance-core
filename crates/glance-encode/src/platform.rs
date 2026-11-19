@@ -47,8 +47,12 @@ mod mac {
         fn info(&self) -> SourceInfo {
             self.info
         }
-        /// The decoder's copy is read in order; the swap and un-premultiply are the worker's.
+        /// For the platform's writer unchanged (BGRA kept, nothing to un-premultiply): the decoder's own buffer, no
+        /// copy (v0.8.1). Otherwise the decoder's copy is read in order; the swap and un-premultiply are the worker's.
         fn next_pending(&mut self) -> Result<Option<Pending>, SourceError> {
+            if self.keep_bgra && !self.info.unpremultiplies_on_read {
+                return Ok(self.reader.next_buffer().map_err(source_err)?.map(Pending::Through));
+            }
             let Some(f) = self.reader.next_frame().map_err(source_err)? else { return Ok(None) };
             let (alpha, swap, unpremultiply) = (self.alpha, !self.keep_bgra, self.info.unpremultiplies_on_read);
             Ok(Some(Pending::Decode(Box::new(move || {
@@ -143,6 +147,22 @@ mod mac {
             }
             Ok(Made::Picture(frame))
         }
+        fn pass(&mut self, buffer: crate::frame::Through) -> Result<Made, EncodeError> {
+            Ok(Made::Buffer(buffer))
+        }
+    }
+
+    /// A decoder's buffer copied out as a frame (its BGRA order kept, its attachments with it).
+    pub fn through_frame(b: crate::frame::Through) -> Result<Frame, SourceError> {
+        let f = b.to_frame().map_err(source_err)?;
+        Ok(Frame {
+            width: f.width,
+            height: f.height,
+            rgba: f.data,
+            alpha: FrameAlpha::Straight,
+            pts: Pts { value: f.pts_value, timescale: f.pts_timescale },
+            attachments: f.attachments,
+        })
     }
 
     impl crate::pipeline::Sink for AvSink {
@@ -150,10 +170,13 @@ mod mac {
             Ok(Box::new(AvMaker { bgra: self.bgra }))
         }
         fn write(&mut self, made: Made) -> Result<(), EncodeError> {
-            let Made::Picture(frame) = made else { return Err(EncodeError::Write("a packet for the platform writer".into())) };
             let w = self.writer.as_mut().ok_or_else(|| EncodeError::Write("writer finished".into()))?;
-            w.append_with_attachments(&frame.rgba, frame.pts.value, frame.pts.timescale, frame.attachments.as_ref())
-                .map_err(|e| EncodeError::Write(e.to_string()))
+            match made {
+                Made::Picture(frame) => w.append_with_attachments(&frame.rgba, frame.pts.value, frame.pts.timescale, frame.attachments.as_ref()),
+                Made::Buffer(b) => w.append_buffer(&b),
+                Made::Packet(_) => return Err(EncodeError::Write("a packet for the platform writer".into())),
+            }
+            .map_err(|e| EncodeError::Write(e.to_string()))
         }
         fn finish(mut self: Box<Self>) -> Result<Option<String>, EncodeError> {
             let w = self.writer.take().ok_or_else(|| EncodeError::Write("writer finished".into()))?;
@@ -215,7 +238,7 @@ mod mac {
 }
 
 #[cfg(target_os = "macos")]
-pub use mac::{av_sink, open_native, read_pcm, scale};
+pub use mac::{av_sink, open_native, read_pcm, scale, through_frame};
 
 #[cfg(not(target_os = "macos"))]
 mod other {
@@ -227,6 +250,9 @@ mod other {
     pub fn read_pcm(_: &Path, _: Option<u32>) -> Result<Option<Pcm>, String> {
         Err(WHY.into())
     }
+    pub fn through_frame(_: crate::frame::Through) -> Result<crate::frame::Frame, SourceError> {
+        Err(SourceError::ReaderFailed(WHY.into()))
+    }
     pub fn scale(_: &[u8], _: (u32, u32), _: (u32, u32), _: bool) -> Result<Vec<u8>, EncodeError> {
         Err(EncodeError::Write(WHY.into()))
     }
@@ -236,4 +262,4 @@ mod other {
 }
 
 #[cfg(not(target_os = "macos"))]
-pub use other::{av_sink, open_native, read_pcm, scale};
+pub use other::{av_sink, open_native, read_pcm, scale, through_frame};

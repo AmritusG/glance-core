@@ -1,4 +1,4 @@
-# v0.8.0 — frames in flight (glance-encode), DXVKit Plus v0.15.0, kit x86-64-v3
+# v0.8.0 / v0.8.1 — frames in flight (glance-encode), DXVKit Plus v0.15.0 / v0.15.1, kit x86-64-v3
 
 Brief: glenc-rs's `speed-build-and-fragmented-mp4` pass (2026-11-19), run from the glenc-rs session. Built from the
 2026-11-18 speed diagnosis's prototypes (`~/claude-handoffs/glenc-rs_2026-11-18_speed-data/prototype-diffs/`).
@@ -35,6 +35,14 @@ Every DXV / HAP output is byte-identical to v0.7.2.
   1.06–12.4× less wall time; 4K peak RSS ≤ 1.81 GB. ProRes / H.264 files differ on every run of any build; their
   decoded pictures are compared in glenc-rs (docs/data/p3).
 
+## v0.8.1 — the decoder's own buffer to the platform writer
+Measured against Swift GlEnc 1.6.2 after v0.8.0: ProRes / H.264 output from a native source at 4K was still slower
+(0.69–0.96×; two full-frame copies per frame, decoder buffer → bytes → a new writer buffer). v0.8.1 (DXVKit Plus
+0.15.1 `BgraReader::next_buffer` / `AvWriter::append_buffer`) hands the decoder's buffer over as Swift does
+(`Pending::Through`, when the frame goes to the platform's writer with no crop, resize or un-premultiply): level with
+Swift at 1080p and 4K (0.95–1.02×, 5 runs), CPU 0.39 → 0.10 s per 60 4K frames, peak RSS 0.8–1.0 GB → ≤ 0.31 GB.
+Test `the_decoders_buffer_goes_to_the_platform_writer` (every frame, the decoder's `colr` kept; a resized job none).
+Gates v0.8.1 (`docs/data/v080/gates-v0.8.1.txt`): clippy, 458 + 1 tests / 0 failed (GPU, test media), deny, build.
+
 ## Not built (measured, glenc-rs docs/handoffs/p3-speed-build.md)
-PGO (no gain beyond noise on top of frames in flight), band stealing (no bands left: one thread per encoder), the
-CVPixelBuffer hand-over to AVAssetWriter.
+PGO (no gain beyond noise on top of frames in flight), band stealing (no bands left: one thread per encoder).

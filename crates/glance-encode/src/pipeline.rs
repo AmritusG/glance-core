@@ -15,7 +15,7 @@ use crate::audio::{AudioPlan, Pcm};
 use crate::codec::{DxvFormat, OutputCodec, OutputContainer, VideoSettings};
 use crate::frame::{CropRect, Frame, FrameAlpha};
 use crate::size::{AspectMode, OutputSize, ResizeQuality};
-use crate::source::{AlphaType, SourceKind, SourceReader, open_reader, source_kind};
+use crate::source::{AlphaType, Pending, SourceKind, SourceReader, open_reader, source_kind};
 use dxvkit_plus_enc::dxv::{DxvEffort, DxvEncoder, DxvVariant};
 use dxvkit_plus_enc::hap::{HapCodec, HapEncoder};
 use dxvkit_plus_enc::mov::MovWriter;
@@ -71,11 +71,18 @@ pub(crate) enum Made {
     Packet(Vec<u8>),
     /// A frame in BGRA for the platform's writer.
     Picture(Frame),
+    /// The platform decoder's own buffer, for the platform's writer as it is.
+    Buffer(crate::frame::Through),
 }
 
 /// One worker's encoder (every worker has its own).
 pub(crate) trait Maker: Send {
     fn make(&mut self, frame: Frame) -> Result<Made, EncodeError>;
+    /// The decoder's own buffer, passed through (only the platform's writer takes one).
+    fn pass(&mut self, buffer: crate::frame::Through) -> Result<Made, EncodeError> {
+        let _ = buffer;
+        Err(EncodeError::Write("a decoder buffer for an encoder that needs pixels".into()))
+    }
 }
 
 /// Where frames go: the workers' encoders, and the writer that takes their results in source order.
@@ -351,17 +358,20 @@ fn in_flight(
                     if idx < lo {
                         continue;
                     }
-                    let made = item.frame().map_err(EncodeError::from).and_then(|frame| {
-                        let cropped = match req.crop {
-                            Some(r) => frame.crop(r)?,
-                            None => frame,
-                        };
-                        let out = match req.output_size {
-                            OutputSize::Original => cropped,
-                            _ => cropped.resize(ow, oh, req.resize_quality, req.aspect)?,
-                        };
-                        maker.make(out)
-                    });
+                    let made = match item {
+                        Pending::Through(b) => maker.pass(b),
+                        item => item.frame().map_err(EncodeError::from).and_then(|frame| {
+                            let cropped = match req.crop {
+                                Some(r) => frame.crop(r)?,
+                                None => frame,
+                            };
+                            let out = match req.output_size {
+                                OutputSize::Original => cropped,
+                                _ => cropped.resize(ow, oh, req.resize_quality, req.aspect)?,
+                            };
+                            maker.make(out)
+                        }),
+                    };
                     let failed = made.is_err();
                     if failed {
                         stop(shared);
@@ -416,7 +426,7 @@ pub fn output_path(req: &EncodeRequest) -> &Path {
 mod tests {
     use super::*;
     use crate::frame::Pts;
-    use crate::source::{Pending, SourceError, SourceInfo};
+    use crate::source::{SourceError, SourceInfo};
     use std::sync::Arc;
     use std::time::Duration;
 

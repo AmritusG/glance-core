@@ -1,0 +1,8 @@
+## glance-core v0.8.1 gates 2026-11-19T11:24:44Z
+fmt exit 0
+clippy exit 0
+tests passed 458 failed 0 ignored 0
+advisories ok, bans ok, licenses ok, sources ok
+    Finished `release` profile [optimized + debuginfo] target(s) in 1.18s
+build exit 0
++ the_decoders_buffer_goes_to_the_platform_writer: ok (glance-encode encode tests 10 / 0)
