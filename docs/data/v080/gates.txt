@@ -1,6 +1,6 @@
 ## glance-core v0.8.0 gates 2026-11-19T10:41:22Z
 error: package ID specification `dxvkit-plus-core` did not match any packages
-Diff in <workspace>/glance-core/crates/glance-encode/src/pipeline.rs:432:
+Diff in <home>/Documents/claude/native-builds/rust/glance-core/crates/glance-encode/src/pipeline.rs:432:
  
      impl SourceReader for Fake {
          fn info(&self) -> SourceInfo {
@@ -17,7 +17,7 @@ Diff in <workspace>/glance-core/crates/glance-encode/src/pipeline.rs:432:
 (B[m         }
          fn next_pending(&mut self) -> Result<Option<Pending>, SourceError> {
              let i = self.next;
-Diff in <workspace>/glance-core/crates/glance-encode/src/pipeline.rs:450:
+Diff in <home>/Documents/claude/native-builds/rust/glance-core/crates/glance-encode/src/pipeline.rs:450:
                  if fail {
                      return Err(SourceError::DxvDecodeFailed { index: i, why: "decode".into() });
                  }
@@ -33,7 +33,7 @@ Diff in <workspace>/glance-core/crates/glance-encode/src/pipeline.rs:450:
 (B[m             }))))
          }
      }
-Diff in <workspace>/glance-core/crates/glance-encode/src/platform.rs:162:
+Diff in <home>/Documents/claude/native-builds/rust/glance-core/crates/glance-encode/src/platform.rs:162:
      }
  
      /// The platform's writer. `bgra`: the frames arrive in BGRA already (see [`open_native`]'s `keep_bgra`).
