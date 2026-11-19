@@ -36,9 +36,15 @@ export CARGO_PROFILE_RELEASE_LTO="${CARGO_PROFILE_RELEASE_LTO:-fat}"
 export CARGO_PROFILE_RELEASE_CODEGEN_UNITS="${CARGO_PROFILE_RELEASE_CODEGEN_UNITS:-1}"
 export CARGO_PROFILE_RELEASE_OPT_LEVEL="${CARGO_PROFILE_RELEASE_OPT_LEVEL:-3}"
 echo "==> release profile: lto $CARGO_PROFILE_RELEASE_LTO, codegen-units $CARGO_PROFILE_RELEASE_CODEGEN_UNITS, opt-level $CARGO_PROFILE_RELEASE_OPT_LEVEL"
+# The Intel slice for x86-64-v3 (AVX2, FMA, BMI1 / 2, F16C, LZCNT, MOVBE): every Intel Mac macOS 14 runs on has them
+# (Apple's "macOS Sonoma is compatible with these computers", support.apple.com/105113: iMac Pro 2017 and later — the
+# oldest cores are Skylake-SP and Amber Lake, both Haswell-or-later). arm64 needs nothing: aarch64-apple-darwin
+# already targets apple-m1.
+cpu_flags() { case "$1" in x86_64-*) echo "-C target-cpu=x86-64-v3";; *) echo "";; esac; }
 for t in aarch64-apple-darwin x86_64-apple-darwin; do
-    echo "==> cargo build --release --target $t -p $CARGO_PACKAGE"
-    (cd "$REPO" && MACOSX_DEPLOYMENT_TARGET="$MIN_MACOS" CARGO_TARGET_DIR="$target_dir" RUSTC="$bin_dir/rustc" RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }$remap" "$bin_dir/cargo" build --release --locked --target "$t" -p "$CARGO_PACKAGE" --bin "$EXECUTABLE")
+    flags="${RUSTFLAGS:+$RUSTFLAGS }$(cpu_flags "$t")"
+    echo "==> cargo build --release --target $t -p $CARGO_PACKAGE ${flags:+(RUSTFLAGS $flags + path remaps)}"
+    (cd "$REPO" && MACOSX_DEPLOYMENT_TARGET="$MIN_MACOS" CARGO_TARGET_DIR="$target_dir" RUSTC="$bin_dir/rustc" RUSTFLAGS="${flags:+$flags }$remap" "$bin_dir/cargo" build --release --locked --target "$t" -p "$CARGO_PACKAGE" --bin "$EXECUTABLE")
 done
 
 echo "==> assembling $APP"

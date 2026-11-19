@@ -139,20 +139,29 @@ fn a_rate_outside_the_writers_set_is_refused() {
     assert_eq!(glance_encode::enc::mov::derive_timescale(30_000.0 / 1001.0).unwrap(), (30_000, 1001));
 }
 
-/// A fragmented MP4 (samples in `moof` fragments, the `moov`'s tables empty, as in a DASH or streaming capture) is a
-/// native source the core's demuxer does not read: its rate comes from the platform's timing, as in Swift GlEnc,
-/// so it converts (up to v0.7.1: "source reports an invalid frame rate (0.0 fps)"). Every frame is written, at the
-/// source's 30 fps.
+/// A fragmented MP4 (samples in `moof` fragments, the `moov`'s tables empty, as in a DASH or streaming capture):
+/// up to v0.7.1 it failed ("source reports an invalid frame rate (0.0 fps)"); v0.7.2 took the platform's timing;
+/// since v0.8.0 (DXVKit Plus 0.15.0 reads fragments) the rate and the frame count are its samples'. Every frame is
+/// written, at the source's 30 fps, and the reader counts the fragments' 24 frames (a user's capture whose
+/// AVFoundation length is twice its samples' made the progress stop near half: glenc-rs docs/data/p3).
 #[cfg(target_os = "macos")]
 #[test]
 fn a_fragmented_mp4_converts_at_its_rate() {
-    assert!(Movie::open(&fixture("tiles_h264_fragmented.mp4")).is_err(), "the demuxer reads fragments now: the fixture no longer tests the fallback");
+    let src = fixture("tiles_h264_fragmented.mp4");
+    let m = Movie::open(&src).unwrap();
+    assert!(m.fragments > 0 && m.first().unwrap().frames() == 24, "the demuxer reads the fragments");
+    let info = glance_encode::source::open_source(&src, glance_encode::frame::FrameAlpha::Opaque, AlphaType::Premultiplied).unwrap().info();
+    assert_eq!((info.fps, info.total_frames), (30.0, 24));
     for (codec, name) in
         [(OutputCodec::Dxv(DxvFormat::Dxt1), "frag-dxt1.mov"), (OutputCodec::Dxv(DxvFormat::Hap1), "frag-hap1.mov"), (OutputCodec::H264, "frag-h264.mov")]
     {
         let r = req("tiles_h264_fragmented.mp4", name, codec);
-        let o = run(&r).unwrap_or_else(|e| panic!("{name}: {e}"));
+        let seen = std::sync::Mutex::new(Vec::new());
+        let o = encode(&r, &|p| seen.lock().unwrap().push(p), &AtomicBool::new(false)).unwrap_or_else(|e| panic!("{name}: {e}"));
         assert_eq!(o.frames, 24, "{name}");
+        // The progress reaches 1 on the last frame, before the closing report.
+        let s = seen.into_inner().unwrap();
+        assert_eq!((s.len(), s[23]), (25, 1.0), "{name}");
         let m = Movie::open(&r.output).unwrap();
         let t = m.first().unwrap();
         assert_eq!((t.width, t.height, t.samples.len()), (128, 72, 24), "{name}");

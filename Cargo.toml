@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.7.2"
+version = "0.8.0"
 edition = "2024"
 # Same floor as DXVKit Plus (let-chains, edition 2024).
 rust-version = "1.95"
@@ -24,13 +24,14 @@ glance-encode = { path = "crates/glance-encode" }
 glance-library = { path = "crates/glance-library" }
 glance-arena = { path = "crates/glance-arena" }
 # Decoders, demux, transport and BC upload are DXVKit Plus's (MIT, Amrit's own): the core never
-# carries a second copy of a decoder. Pinned by tag; bumped deliberately (docs/00-ROADMAP.md §4).
-dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.14.0" }
-dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.14.0" }
-dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.14.0" }
-dxvkit-plus-enc = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.14.0" }
+# carries a second copy of a decoder. Pinned by tag; bumped deliberately (docs/00-ROADMAP.md §4). v0.15.0 since
+# core v0.8.0: fragmented MP4 read, faster DXV encode and CPU decode.
+dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.0" }
+dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.0" }
+dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.0" }
+dxvkit-plus-enc = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.0" }
 # Windows: the Media Foundation reader (0.14.0; it ran on Windows: DXVKit Plus run 44171687138).
-dxvkit-plus-windows = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.14.0" }
+dxvkit-plus-windows = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.0" }
 # One wgpu major across DXVKit Plus, loombda-rs and egui 0.36 (which requires wgpu ^30).
 wgpu = "30.0.1"
 egui = { version = "0.36.2", default-features = false }

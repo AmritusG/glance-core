@@ -143,11 +143,34 @@ pub struct SourceInfo {
     pub unpremultiplies_on_read: bool,
 }
 
+/// A frame read in file order whose decode may still be to do (v0.8.0): the pipeline reads under one lock, in
+/// order, and decodes on whichever worker took the frame.
+pub enum Pending {
+    /// Decoded already.
+    Ready(Frame),
+    /// The read sample and the work that turns it into the frame.
+    Decode(Box<dyn FnOnce() -> Result<Frame, SourceError> + Send>),
+}
+
+impl Pending {
+    /// The frame (decoding it now if that is still to do).
+    pub fn frame(self) -> Result<Frame, SourceError> {
+        match self {
+            Pending::Ready(f) => Ok(f),
+            Pending::Decode(f) => f(),
+        }
+    }
+}
+
 /// A sequential frame reader.
 pub trait SourceReader: Send {
     fn info(&self) -> SourceInfo;
-    /// The next frame in file order; `None` at the end.
-    fn next_frame(&mut self) -> Result<Option<Frame>, SourceError>;
+    /// The next frame in file order, its decode possibly left to the caller; `None` at the end.
+    fn next_pending(&mut self) -> Result<Option<Pending>, SourceError>;
+    /// The next frame in file order, decoded; `None` at the end.
+    fn next_frame(&mut self) -> Result<Option<Frame>, SourceError> {
+        self.next_pending()?.map(Pending::frame).transpose()
+    }
 }
 
 /// Where a source goes, by its first video track's FourCC.
@@ -167,10 +190,16 @@ pub fn source_kind(path: &Path) -> Option<([u8; 4], SourceKind)> {
 /// native frames to carry (`.last` = [`FrameAlpha::Straight`] for alpha outputs, else [`FrameAlpha::Opaque`]); DXV
 /// and HAP frames are always tagged straight (`.last`).
 pub fn open_source(path: &Path, alpha_tag: FrameAlpha, alpha_type: AlphaType) -> Result<Box<dyn SourceReader>, SourceError> {
+    open_reader(path, alpha_tag, alpha_type, false)
+}
+
+/// [`open_source`]; `keep_bgra`: a native source's frames stay in the decoder's BGRA order (v0.8.0: the pipeline
+/// asks for it when the frame goes to the platform's writer unchanged). DXV and HAP frames are always RGBA.
+pub(crate) fn open_reader(path: &Path, alpha_tag: FrameAlpha, alpha_type: AlphaType, keep_bgra: bool) -> Result<Box<dyn SourceReader>, SourceError> {
     match source_kind(path) {
         Some((cc, SourceKind::Dxv)) => Ok(Box::new(DxvReader::open(path, cc, alpha_type)?)),
         Some((cc, SourceKind::Hap)) => Ok(Box::new(HapReader::open(path, cc)?)),
-        _ => crate::platform::open_native(path, alpha_tag),
+        _ => crate::platform::open_native(path, alpha_tag, keep_bgra),
     }
 }
 
@@ -190,7 +219,6 @@ pub struct DxvReader {
     track: VideoTrack,
     step: f64,
     next: u32,
-    buf: Vec<u8>,
 }
 
 impl DxvReader {
@@ -219,7 +247,7 @@ impl DxvReader {
             total_frames: track.samples.len() as u64,
             unpremultiplies_on_read: alpha_type == AlphaType::Premultiplied && has_alpha,
         };
-        Ok(DxvReader { info, movie, track, step, next: 0, buf })
+        Ok(DxvReader { info, movie, track, step, next: 0 })
     }
 }
 
@@ -227,21 +255,25 @@ impl SourceReader for DxvReader {
     fn info(&self) -> SourceInfo {
         self.info
     }
-    fn next_frame(&mut self) -> Result<Option<Frame>, SourceError> {
+    fn next_pending(&mut self) -> Result<Option<Pending>, SourceError> {
         let i = self.next;
         if u64::from(i) >= self.info.total_frames {
             return Ok(None);
         }
         self.next = i.saturating_add(1);
-        let fail = |why: String| SourceError::DxvDecodeFailed { index: u64::from(i), why };
-        self.movie.read_sample(&self.track, i, &mut self.buf).map_err(|e| fail(e.to_string()))?;
-        let blocks = dxvkit_plus_core::dxv::decode_blocks(&self.buf, self.info.width, self.info.height, true).map_err(|e| fail(e.to_string()))?;
-        let mut rgba = dxvkit_plus_core::dxv::rgba::blocks_to_rgba(&blocks, false).map_err(|e| fail(e.to_string()))?;
-        if self.info.unpremultiplies_on_read {
-            dxvkit_plus_enc::alpha::unpremultiply_in_place(&mut rgba);
-        }
+        let fail = move |why: String| SourceError::DxvDecodeFailed { index: u64::from(i), why };
+        let mut packet = Vec::new();
+        self.movie.read_sample(&self.track, i, &mut packet).map_err(|e| fail(e.to_string()))?;
+        let (w, h, unpremultiply) = (self.info.width, self.info.height, self.info.unpremultiplies_on_read);
         let pts = Pts::from_seconds_600(f64::from(i) * self.step);
-        Ok(Some(Frame { width: self.info.width, height: self.info.height, rgba, alpha: FrameAlpha::Straight, pts, attachments: None }))
+        Ok(Some(Pending::Decode(Box::new(move || {
+            let blocks = dxvkit_plus_core::dxv::decode_blocks(&packet, w, h, true).map_err(|e| fail(e.to_string()))?;
+            let mut rgba = dxvkit_plus_core::dxv::rgba::blocks_to_rgba(&blocks, false).map_err(|e| fail(e.to_string()))?;
+            if unpremultiply {
+                dxvkit_plus_enc::alpha::unpremultiply_in_place(&mut rgba);
+            }
+            Ok(Frame { width: w, height: h, rgba, alpha: FrameAlpha::Straight, pts, attachments: None })
+        }))))
     }
 }
 
@@ -253,7 +285,6 @@ pub struct HapReader {
     track: VideoTrack,
     starts: Vec<f64>,
     next: u32,
-    buf: Vec<u8>,
 }
 
 impl HapReader {
@@ -279,7 +310,7 @@ impl HapReader {
         validate_geometry(i64::from(track.width), i64::from(track.height), fps, duration_sec)?;
         let info =
             SourceInfo { kind: SourceKind::Hap, fourcc, width: track.width, height: track.height, fps, total_frames: n as u64, unpremultiplies_on_read: false };
-        Ok(HapReader { info, movie, track, starts, next: 0, buf: Vec::new() })
+        Ok(HapReader { info, movie, track, starts, next: 0 })
     }
 }
 
@@ -287,19 +318,22 @@ impl SourceReader for HapReader {
     fn info(&self) -> SourceInfo {
         self.info
     }
-    fn next_frame(&mut self) -> Result<Option<Frame>, SourceError> {
+    fn next_pending(&mut self) -> Result<Option<Pending>, SourceError> {
         let i = self.next;
         if u64::from(i) >= self.info.total_frames {
             return Ok(None);
         }
         self.next = i.saturating_add(1);
-        let fail = |why: String| SourceError::DxvDecodeFailed { index: u64::from(i), why };
-        self.movie.read_sample(&self.track, i, &mut self.buf).map_err(|e| fail(e.to_string()))?;
+        let fail = move |why: String| SourceError::DxvDecodeFailed { index: u64::from(i), why };
+        let mut packet = Vec::new();
+        self.movie.read_sample(&self.track, i, &mut packet).map_err(|e| fail(e.to_string()))?;
         let (w, h) = (self.info.width, self.info.height);
-        let frame = dxvkit_plus_core::hap::decode(&self.buf, w, h, true).map_err(|e| fail(e.to_string()))?;
-        let rgba = dxvkit_plus_core::hap::to_rgba(&frame, w, h).map_err(|e| fail(e.to_string()))?;
         let pts = Pts::from_seconds_600(self.starts.get(i as usize).copied().unwrap_or(0.0));
-        Ok(Some(Frame { width: w, height: h, rgba, alpha: FrameAlpha::Straight, pts, attachments: None }))
+        Ok(Some(Pending::Decode(Box::new(move || {
+            let frame = dxvkit_plus_core::hap::decode(&packet, w, h, true).map_err(|e| fail(e.to_string()))?;
+            let rgba = dxvkit_plus_core::hap::to_rgba(&frame, w, h).map_err(|e| fail(e.to_string()))?;
+            Ok(Frame { width: w, height: h, rgba, alpha: FrameAlpha::Straight, pts, attachments: None })
+        }))))
     }
 }
 
