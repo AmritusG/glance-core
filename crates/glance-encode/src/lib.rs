@@ -19,6 +19,7 @@ pub mod pipeline;
 mod platform;
 pub mod size;
 pub mod source;
+pub mod writer;
 
 /// DXVKit Plus's demuxer and decoders, for checking outputs.
 pub use dxvkit_plus_core as media;
@@ -26,3 +27,4 @@ pub use dxvkit_plus_core as media;
 pub use dxvkit_plus_enc as enc;
 pub use error::EncodeError;
 pub use pipeline::{EncodeOutcome, EncodeRequest, encode};
+pub use writer::FrameWriter;

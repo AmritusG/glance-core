@@ -15,6 +15,10 @@ Wave: kit-dmg-record-fix. Brief: ~/claude-handoffs/glance-core_2026-11-21_kit-dm
 - Verifier (cc-kit:verifier): 37 confirmed, 9 unproven, 4 wrong; the 4 were wording in the handoff / evidence header (when v0.9.0 landed, run G's heading, the dump's duration, the scratch's size), corrected in the closing commit; no kit bug; its low-risk notes are in the handoff. Gates log added: `docs/data/kit-dmg-record/gates.txt`.
 - `cargo clean` (2.3 GiB). Result: ~/claude-handoffs/glance-core_2026-11-21_kit-dmg-record-fix-result.md. Wave closed 2026-11-21.
 
+- 2026-11-21 (GlancEhr session, crawl-eval-transitions): **v0.9.2** — glance-ui's headless stage as a scripted host
+  (input events, AccessKit tree, made-up screens, outputs by the shell's rules, quit), glance-encode `FrameWriter`,
+  DXVKit Plus v0.15.2 (a CVMetalTextureCache crash); Handoff docs/handoffs/v092-stage-host-frame-writer.md.
+
 ## NEXT
 - Nothing queued for this wave. The apps take the kit (v0.9.1) at their next release. Next core work: the Windows milestone (ROADMAP §7).
 

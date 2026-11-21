@@ -207,3 +207,38 @@ fn the_decoders_buffer_goes_to_the_platform_writer() {
     assert_eq!(run(&resized).unwrap().frames, 24);
     assert!(!has_colr(&resized.output));
 }
+
+/// v0.9.2: frames an app made, written by the platform writer: the count, the size and the colours come back; a DXV
+/// codec and a wrong-sized frame are refused.
+#[cfg(target_os = "macos")]
+#[test]
+fn a_frame_writer_writes_what_it_is_given() {
+    use glance_encode::FrameWriter;
+    use glance_encode::frame::FrameAlpha;
+    use glance_encode::source::open_source;
+    let path = out("frames.mp4");
+    let (w, h) = (128u32, 72u32);
+    let mut fw = FrameWriter::create(&path, OutputCodec::H264, OutputContainer::Mp4, (w, h), 30, VideoSettings::default()).unwrap();
+    for i in 0..30u32 {
+        // Red for the first half, blue for the second.
+        let c = if i < 15 { [220u8, 30, 30, 255] } else { [30, 40, 220, 255] };
+        fw.push(c.repeat((w * h) as usize)).unwrap();
+    }
+    assert!(fw.push(vec![0; 16]).is_err(), "a frame of the wrong size is refused");
+    assert_eq!(fw.finish().unwrap(), 30);
+    let mut r = open_source(&path, FrameAlpha::Opaque, AlphaType::Premultiplied).unwrap();
+    let info = r.info();
+    assert_eq!((info.width, info.height, info.total_frames), (w, h, 30));
+    assert!((info.fps - 30.0).abs() < 0.01, "{}", info.fps);
+    let mut frames = Vec::new();
+    while let Some(f) = r.next_frame().unwrap() {
+        let mid = ((h / 2 * w + w / 2) * 4) as usize;
+        frames.push([f.rgba[mid], f.rgba[mid + 1], f.rgba[mid + 2]]);
+    }
+    assert_eq!(frames.len(), 30);
+    // H.264 is YUV: the colours come back within the round trip's shift (measured: red 220, 30, 30 → 203, 9, 33).
+    let near = |a: [u8; 3], b: [u8; 3]| a.iter().zip(b).all(|(x, y)| (i32::from(*x) - i32::from(y)).abs() <= 28);
+    assert!(near(frames[3], [220, 30, 30]) && frames[3][0] > 150, "{:?}", frames[3]);
+    assert!(near(frames[25], [30, 40, 220]) && frames[25][2] > 150, "{:?}", frames[25]);
+    assert!(FrameWriter::create(&out("x.mov"), OutputCodec::Dxv(DxvFormat::Dxt1), OutputContainer::Mov, (w, h), 30, VideoSettings::default()).is_err());
+}
