@@ -4,8 +4,8 @@
 //! waits for a refresh. A window that is fully covered, minimised or off every screen gets no such wait (macOS stops
 //! handing out paced drawables to an occluded window; on Windows a minimised window's present returns at once), so the
 //! loop would spin: measured on the home machine, 60 550 frames a second and 175 % CPU for a covered glance-proof
-//! window (GlancEhr measured 6 500 a second in its own window): frames that get no drawable, one after the other
-//! (presents still came every 16 ms). The [`Pacer`] holds a redraw until about one refresh has passed since the last
+//! window (GlancEhr measured 6 500 a second in its own window): frames that get no drawable, one after the other,
+//! and nothing presented while covered. The [`Pacer`] holds a redraw until about one refresh has passed since the last
 //! frame began when
 //!
 //! - the OS says the window is hidden (winit's `Occluded` on macOS, `is_minimized` elsewhere), or
@@ -13,12 +13,13 @@
 //! - the frames came less than [`UNPACED`] apart twice in a row, which no display paces (240 Hz is 4.2 ms): the last
 //!   net, for a window that gets drawables at once and that the OS does not report; it lets at most two frames through
 //!   a refresh. Once is not enough: a visible window's FIFO queue hands out a drawable at once now and then after a
-//!   late frame (1 to 14 times in 8 s in the runs on the home machine, never twice in a row), and holding that frame would present
+//!   late frame (1 to 14 times in 7.5 s in the runs on the home machine, never twice in a row), and holding that frame would present
 //!   it after the refresh it was in time for.
 //!
 //! The wait is the event loop's (`ControlFlow::WaitUntil`), not a sleep, so menus, OS events and the other windows
 //! carry on. The rate while hidden is one display refresh, the same as visible: apps run their engine in their frame
-//! (GlancEhr's show), so hiding the window never slows it. Shown again, the next frame is drawn at once.
+//! (GlancEhr's show), so hiding the window never slows it. Shown again (`Occluded(false)`), the next frame is drawn
+//! at once; restored from minimised (no event), at the held redraw's time, at most a refresh later.
 
 use std::time::{Duration, Instant};
 

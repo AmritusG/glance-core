@@ -1,0 +1,5 @@
+# 1-minute / 5-minute / 15-minute load averages (uptime) around the A/B runs, as printed in the session
+before ab1-new:   6.18 7.88 8.31
+after ab1-new:    5.34 7.48 8.15
+after ab2-old:    6.59 7.57 8.16
+after ab3-new:    5.79 7.28 8.03
