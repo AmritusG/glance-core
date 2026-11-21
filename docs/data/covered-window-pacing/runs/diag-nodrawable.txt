@@ -1,0 +1,4 @@
+frames without a drawable (diag build): 1252
+DIAG nodrawable Ok(1795293290912)
+DIAG nodrawable Ok(1795293301524)
+DIAG nodrawable Ok(1795293312009)

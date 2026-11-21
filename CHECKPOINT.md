@@ -1,26 +1,17 @@
 # glance-core CHECKPOINT
 
-Wave: kit-dmg-record-fix. Brief: ~/claude-handoffs/glance-core_2026-11-21_kit-dmg-record-fix_brief.md. Machine: the core's home machine. Previous waves (scrub-paths-and-guard, v0.8.1 and before): closed; their checkpoint is in git history. v0.9.0 (GlancEhr session, 2026-11-21: several outputs, SyphonServer, SpoutSender; `docs/handoffs/v090-several-outputs-syphon-spout.md`) had reached main from another clone before this wave started (this clone had not fetched).
+Wave: covered-window-pacing. Brief: ~/claude-handoffs/glance-core_2026-11-21_from-glancehr_covered-window-pacing.md. Machine: the core's home machine. Previous waves (kit-dmg-record-fix / v0.9.1, v0.9.2 from the GlancEhr session, and before): closed; their checkpoint is in git history.
 
 ## DONE
-- READ: the note from glenc-rs, tools/package/{dmg,ls-cleanup,release,install,lib}.sh, `lsregister -h`.
-- DIAGNOSE (`docs/data/kit-dmg-record/diagnose.txt`): test app = glance-sample under the throw-away id com.amritus.glancecore.kitrecordtest, built / signed / notarised by the kit in scratch. Neither the ditto nor the attach registers the staging copy: the detach of an image mounted beside it does (runs D, D2, H: 1 record after the detach; A, B, C, E, F, G, I: none). `lsregister -u` straight after the detach: exit 0 three times, none afterwards; by path of a deleted folder: exit 0.
-- FIX: dmg.sh's EXIT trap detaches, unregisters the staging copy and the mounted copy, then deletes (success and failure); ls-cleanup.sh unregisters a record under KIT_TMP whose path is gone; lib.sh KIT_TMP (physical $TMPDIR); kit README.
-- PROVE (`docs/data/kit-dmg-record/prove.txt`): full dmg.sh run (notarised) exit 0, 0 staging records, guard clean over the mounted image (8 objects); install.sh into scratch: "OK: exactly one record"; failure after the detach and while mounted: 0 staging records (old kit: 1 each); old ls-cleanup WARNING exit 1, new one OK exit 0. Test app unregistered (0 records), scratch in the Bin.
-- The first push was refused (not a fast-forward): main had moved to v0.9.0 (8eaa92e, tagged, CI green) from another clone. Rebased onto it; the brief's "next patch (v0.8.2)" is therefore **v0.9.1** (a tag comes from main, and main is past 0.9.0). Workspace version 0.9.1 (version + lock only). The kit's files are the proven ones, unchanged by the rebase.
-- Gates on the rebased tree (v0.9.0 + the fix): fmt ok, clippy ok, test 459 passed / 0 failed / 0 ignored (GLANCE_TESTFILES set, GLANCE_REQUIRE_GPU=1), deny ok, build ok, path-guard check clean. Handoff: `docs/handoffs/kit-dmg-record-fix.md`.
-- Pushed: ed843aa on main through `tools/push-main.sh` (path-guard job green on guard/ed843aae1350; the first try at main met "Required status check path-guard is in progress", the second passed; the guard branch is deleted). CI on main green: lint, macos, windows, path-guard (runs 44933058389, 44933058386).
-- Tag v0.9.1 (annotated) on ed843aa, pushed.
-- Notes in ~/claude-handoffs for glance-rs, cueglance-rs, glenc-rs, macrate-rs (`<repo>_2026-11-21_note-from-glance-core-kit-dmg-record.md`). No app pin changed.
-- Verifier (cc-kit:verifier): 37 confirmed, 9 unproven, 4 wrong; the 4 were wording in the handoff / evidence header (when v0.9.0 landed, run G's heading, the dump's duration, the scratch's size), corrected in the closing commit; no kit bug; its low-risk notes are in the handoff. Gates log added: `docs/data/kit-dmg-record/gates.txt`.
-- `cargo clean` (2.3 GiB). Result: ~/claude-handoffs/glance-core_2026-11-21_kit-dmg-record-fix-result.md. Wave closed 2026-11-21.
-
-- 2026-11-21 (GlancEhr session, crawl-eval-transitions): **v0.9.2** — glance-ui's headless stage as a scripted host
-  (input events, AccessKit tree, made-up screens, outputs by the shell's rules, quit), glance-encode `FrameWriter`,
-  DXVKit Plus v0.15.2 (a CVMetalTextureCache crash); Handoff docs/handoffs/v092-stage-host-frame-writer.md.
+- READ: GlancEhr's fix (b2e7d78, crates/glancehr/src/app.rs `frame`: a frame within 2 ms of the last sleeps out 0.95 of a refresh) and its w6 evidence; glance-ui's loop (lib.rs Runner / Running::redraw, output.rs Output::present); winit 0.30.13: `WindowEvent::Occluded` on macOS (not Windows), `is_minimized` on Windows / macOS.
+- REPRODUCED (GUI runs allowed by Amrit for this wave): glance-proof playing glenc_hap5_1920x1080_chunks4.mov, its window fully covered 10 s by another process's window (docs/data/covered-window-pacing/cover.swift): v0.9.2 60 550 frames/s, 175 % CPU (visible 120 frames/s, 14 %). The spin = frames that get no drawable, back to back; presents still every 16 ms.
+- FIX: glance-ui `pace` (crate-private Pacer) for the main window and every output window: a redraw is held to 0.95 of a refresh after the last frame began when the OS says hidden (Occluded / is_minimized), when the last frame got no drawable, or when frames came < 2 ms apart twice in a row; the wait is ControlFlow::WaitUntil in `about_to_wait`, not a sleep; shown again, the next frame draws at once. GlancEhr's bare 2 ms rule (holding a single quick frame) was tried first and dropped: it holds FIFO catch-up frames of a visible window.
+- PROVED: 10 unit tests in pace.rs; diag build (prints, not committed): Occluded(true) 19 ms after the cover, (false) 9 ms after; 1 252 covered frames without a drawable. A/B back to back under the same load (ab1-new / ab2-old / ab3-new): covered 119.2 / 62 983.9 / 116.5 frames/s, CPU 6.8 / 174.1 / 6.9 %; visible the same within load noise (113.4–119.8 vs 114.1–119.5 frames/s); un-cover longest gap 16.8 / 16.9 / 16.7 ms. docs/data/covered-window-pacing/results.txt.
+- Workspace version 0.9.3 (version + lock).
+- Gates (docs/data/covered-window-pacing/gates.txt): fmt, clippy, deny, build, path-guard green; tests 468 passed / 3 failed, all three Amrit's test media: clipS_ProRes 4444.mov (871 561 049 bytes) is no longer in the test media folder (folder last changed 21:39:53 local, outside this session; nothing in the workspace writes there). Last full run here (kit-dmg wave): 459 / 0. Handoff docs/handoffs/v093-covered-window-pacing.md.
 
 ## NEXT
-- Nothing queued for this wave. The apps take the kit (v0.9.1) at their next release. Next core work: the Windows milestone (ROADMAP §7).
+- Commit, tools/push-main.sh, CI green, tag v0.9.3, note to GlancEhr, mailbox handoff.
 
 ## STATE
 - Other sessions push to glance-core main from their own clones (GlancEhr's did, v0.9.0): `git fetch` and compare with origin/main before committing a version or tagging.
@@ -31,6 +22,9 @@ Wave: kit-dmg-record-fix. Brief: ~/claude-handoffs/glance-core_2026-11-21_kit-dm
 - The kit's temporary folder is KIT_TMP (lib.sh): physical ${TMPDIR:-/tmp}. A record of the app's id under it whose path is gone is the kit's own (ls-cleanup.sh).
 
 ## OPEN
+- [ ] Amrit: clipS_ProRes 4444.mov is gone from the test media folder (3 test-media tests red): put it back, or re-read the three tests' expectations without it
+- [ ] Push through tools/push-main.sh; CI green on main
+- [ ] Tag v0.9.3; note to GlancEhr; handoff (docs/handoffs/v093-covered-window-pacing.md + ~/claude-handoffs/glance-core_2026-11-21_covered-window-pacing-result.md)
 
 ## IDEAS
 - Windows: Media Foundation reader / writer behind glance-encode's platform module (with DXVKit Plus's Windows backend).

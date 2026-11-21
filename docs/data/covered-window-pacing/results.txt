@@ -1,0 +1,61 @@
+# covered-window-pacing: glance-proof, glenc_hap5_1920x1080_chunks4.mov from the test media folder, no audio, 30 s;
+# from 10 s to 20 s after its window appeared another process's window covered it fully (cover.swift).
+# Release builds on the home machine (120 Hz display). 'before' / 'ab2-old' = v0.9.2 (e02f11b); the others the fix;
+# 'after' = the first fix (2 ms rule alone), 'diag' = the final fix plus temporary prints (runs/diag-*.txt), not committed.
+# ab1-new, ab2-old, ab3-new ran back to back under the same load (load average 5.3 to 6.6).
+
+# before: covered from 10.53 s to 21.02 s after the window appeared; 1 s left out at each edge
+phase             frames/s  int p50 ms  int p99 ms  int min ms   CPU %
+visible              120.0       8.330       8.513       0.265    14.0
+covered            60550.8      15.999      15.999      15.999   174.6
+visible again        120.0       8.331       8.495       0.255    13.7
+uncover: frames 20.52..22.52 s: 35337, longest gap between frame starts 16.1 ms
+
+# after: covered from 10.55 s to 21.05 s after the window appeared; 1 s left out at each edge
+phase             frames/s  int p50 ms  int p99 ms  int min ms   CPU %
+visible              118.2       8.337      16.656       0.190    14.4
+covered              118.9       8.352       8.352       8.352     8.1
+visible again        117.4       8.337      16.672       0.201    13.8
+uncover: frames 20.55..22.55 s: 235, longest gap between frame starts 33.3 ms
+
+# diag: covered from 10.53 s to 21.03 s after the window appeared; 1 s left out at each edge
+phase             frames/s  int p50 ms  int p99 ms  int min ms   CPU %
+visible              117.3       8.330      16.726       0.213    14.1
+covered              119.0       7.818       7.818       7.818     8.3
+visible again        110.0       8.335      16.767       0.210    14.0
+uncover: frames 20.53..22.53 s: 233, longest gap between frame starts 37.3 ms
+
+# ab1-new: covered from 10.52 s to 21.02 s after the window appeared; 1 s left out at each edge
+phase             frames/s  int p50 ms  int p99 ms  int min ms   CPU %
+visible              113.4       8.336      16.755       7.101    13.1
+covered              119.2      16.569      16.569      16.569     6.8
+visible again        119.0       8.333       8.513       8.150    12.6
+uncover: frames 20.52..22.52 s: 237, longest gap between frame starts 16.8 ms
+
+# ab2-old: covered from 10.52 s to 21.02 s after the window appeared; 1 s left out at each edge
+phase             frames/s  int p50 ms  int p99 ms  int min ms   CPU %
+visible              114.1       8.335      16.771       0.240    13.8
+covered            62983.9       8.185       8.185       8.185   174.1
+visible again        119.5       8.335       8.585       0.269    17.8
+uncover: frames 20.52..22.52 s: 38843, longest gap between frame starts 16.9 ms
+
+# ab3-new: covered from 10.52 s to 21.02 s after the window appeared; 1 s left out at each edge
+phase             frames/s  int p50 ms  int p99 ms  int min ms   CPU %
+visible              119.8       8.331       8.470       0.757    14.5
+covered              116.5       8.237       8.237       8.237     6.9
+visible again        118.4       8.332      16.700       8.100    12.8
+uncover: frames 20.52..22.52 s: 237, longest gap between frame starts 16.7 ms
+
+# visible cadence (gaps.py)
+before   visible        frames   903  gaps>12ms   2  gaps<2ms  2  longest run <2ms 1
+before   visible again  frames   837  gaps>12ms   3  gaps<2ms  3  longest run <2ms 1
+after    visible        frames   892  gaps>12ms  12  gaps<2ms  0  longest run <2ms 0
+after    visible again  frames   816  gaps>12ms  15  gaps<2ms  0  longest run <2ms 0
+diag     visible        frames   883  gaps>12ms  30  gaps<2ms 14  longest run <2ms 1
+diag     visible again  frames   767  gaps>12ms  75  gaps<2ms  7  longest run <2ms 1
+ab1-new  visible        frames   853  gaps>12ms  49  gaps<2ms  0  longest run <2ms 0
+ab1-new  visible again  frames   830  gaps>12ms   7  gaps<2ms  0  longest run <2ms 0
+ab2-old  visible        frames   858  gaps>12ms  46  gaps<2ms  4  longest run <2ms 1
+ab2-old  visible again  frames   834  gaps>12ms   4  gaps<2ms  1  longest run <2ms 1
+ab3-new  visible        frames   901  gaps>12ms   2  gaps<2ms  1  longest run <2ms 1
+ab3-new  visible again  frames   826  gaps>12ms  11  gaps<2ms  0  longest run <2ms 0

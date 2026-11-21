@@ -132,6 +132,10 @@ pub(crate) struct Output {
     bound: Option<(wgpu::Texture, wgpu::BindGroup)>,
     last_present: Option<Instant>,
     last_interval: Option<Duration>,
+    /// Its frames when its screen does not pace them ([`crate::pace`]).
+    pub(crate) pace: crate::pace::Pacer,
+    /// The OS says it is fully covered.
+    pub(crate) occluded: bool,
 }
 
 impl Output {
@@ -220,7 +224,20 @@ impl Output {
             min_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
-        Ok(Output { window, screen, surface, config, pipeline, layout, sampler, bound: None, last_present: None, last_interval: None })
+        Ok(Output {
+            window,
+            screen,
+            surface,
+            config,
+            pipeline,
+            layout,
+            sampler,
+            bound: None,
+            last_present: None,
+            last_interval: None,
+            pace: Default::default(),
+            occluded: false,
+        })
     }
 
     pub(crate) fn resized(&mut self, gpu: &Gpu, w: u32, h: u32) {
@@ -244,15 +261,16 @@ impl Output {
         }
     }
 
-    /// Put `picture` on the screen, stretched to it (the app draws it at the output's size), or black.
-    pub(crate) fn present(&mut self, gpu: &Gpu, picture: Option<&wgpu::Texture>) {
+    /// Put `picture` on the screen, stretched to it (the app draws it at the output's size), or black; `false` when no
+    /// drawable came (nothing was presented).
+    pub(crate) fn present(&mut self, gpu: &Gpu, picture: Option<&wgpu::Texture>) -> bool {
         let frame = match self.surface.get_current_texture() {
             wgpu::CurrentSurfaceTexture::Success(t) | wgpu::CurrentSurfaceTexture::Suboptimal(t) => t,
             wgpu::CurrentSurfaceTexture::Outdated | wgpu::CurrentSurfaceTexture::Lost => {
                 self.surface.configure(&gpu.device, &self.config);
-                return;
+                return false;
             }
-            _ => return,
+            _ => return false,
         };
         if let Some(t) = picture
             && self.bound.as_ref().is_none_or(|(b, _)| b != t)
@@ -296,6 +314,7 @@ impl Output {
         let now = Instant::now();
         self.last_interval = self.last_present.map(|t| now.duration_since(t));
         self.last_present = Some(now);
+        true
     }
 }
 

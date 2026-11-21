@@ -9,7 +9,8 @@
 //! checkerboard — 8 pt squares of grey 0.85 and 0.65, in window points, not clip pixels), then the
 //! premultiplied picture blended over it, fitted to the space with its aspect kept.
 //!
-//! The window redraws continuously, paced by the display (`PresentMode::Fifo`). egui-wgpu's
+//! The window redraws continuously, paced by the display (`PresentMode::Fifo`); a window the display
+//! does not pace (covered, minimised) is held to one refresh a frame ([`pace`], v0.9.3). egui-wgpu's
 //! dithering is off: it would add noise to a scaled picture, and a viewer shows what the file holds.
 //!
 //! The shell (C3): text in the system font ([`fonts`]); Glance's look ([`look`], [`icons`]), its
@@ -29,6 +30,7 @@ pub mod look;
 #[cfg(any(target_os = "macos", windows))]
 pub mod menu;
 pub mod output;
+mod pace;
 pub mod window;
 
 pub use glance_platform::{MediaCommand, NowPlaying, PlatformEvent};
@@ -43,7 +45,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
-use winit::event_loop::{ActiveEventLoop, EventLoop, EventLoopProxy};
+use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop, EventLoopProxy};
 use winit::raw_window_handle::HasWindowHandle;
 use winit::window::{Fullscreen, Window, WindowAttributes, WindowId};
 
@@ -407,6 +409,10 @@ struct Running<A> {
     output_request: Vec<OutputRequest>,
     screens: Vec<Screen>,
     screens_looked: Option<Instant>,
+    /// The window's frames when the display does not pace them.
+    pace: pace::Pacer,
+    /// The OS says the window is fully covered (winit's `Occluded`).
+    occluded: bool,
 }
 
 impl<A: App> Running<A> {
@@ -490,6 +496,8 @@ impl<A: App> Running<A> {
             output_request: Vec::new(),
             screens: Vec::new(),
             screens_looked: None,
+            pace: pace::Pacer::default(),
+            occluded: false,
         })
     }
 
@@ -588,15 +596,28 @@ impl<A: App> Running<A> {
         let Some(o) = self.outputs.get_mut(at) else { return };
         match event {
             WindowEvent::RedrawRequested => {
+                let hidden = o.occluded || o.window.is_minimized() == Some(true);
+                o.pace.set_hidden(hidden);
+                let refresh = pace::refresh(o.window.current_monitor().and_then(|m| m.refresh_rate_millihertz()));
+                if o.pace.hold(Instant::now(), refresh).is_some() {
+                    return;
+                }
                 let info = o.frame_info();
                 let picture = self.app.output(&self.gpu, &info);
                 if let Some(o) = self.outputs.get_mut(at) {
-                    o.present(&self.gpu, picture.as_ref());
+                    let presented = o.present(&self.gpu, picture.as_ref());
+                    o.pace.presented(presented);
                     o.window.request_redraw();
                 }
                 self.pointer_over_show();
             }
             WindowEvent::Resized(size) => o.resized(&self.gpu, size.width, size.height),
+            WindowEvent::Occluded(covered) => {
+                o.occluded = covered;
+                if o.pace.set_hidden(covered || o.window.is_minimized() == Some(true)) {
+                    o.window.request_redraw();
+                }
+            }
             WindowEvent::CloseRequested => {
                 self.outputs.remove(at);
                 self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
@@ -640,7 +661,8 @@ impl<A: App> Running<A> {
         let _ = self.input.on_window_event(&self.window, event);
     }
 
-    fn redraw(&mut self) {
+    /// One frame; `true` when it got a drawable and was presented.
+    fn redraw(&mut self) -> bool {
         #[cfg(any(target_os = "macos", windows))]
         self.pending.extend(menu::take_chosen().into_iter().map(|c| match c {
             menu::Chosen::Glance(c) => ShellEvent::Menu(c),
@@ -695,6 +717,7 @@ impl<A: App> Running<A> {
             }
             _ => None,
         };
+        let presented = frame.is_some();
         if let Some(frame) = frame {
             let view = frame.texture.create_view(&wgpu::TextureViewDescriptor::default());
             let mut enc = self.gpu.device.create_command_encoder(&wgpu::CommandEncoderDescriptor { label: Some("glance-ui") });
@@ -730,6 +753,7 @@ impl<A: App> Running<A> {
             r.free_texture(id);
         }
         delta.clear();
+        presented
     }
 }
 
@@ -768,7 +792,13 @@ impl<A: App, F: FnOnce(&Gpu) -> Result<A, String>> ApplicationHandler for Runner
                 }
             }
             WindowEvent::RedrawRequested => {
-                r.redraw();
+                r.pace.set_hidden(r.occluded || r.window.is_minimized() == Some(true));
+                let refresh = pace::refresh(r.window.current_monitor().and_then(|m| m.refresh_rate_millihertz()));
+                if r.pace.hold(Instant::now(), refresh).is_some() {
+                    return;
+                }
+                let presented = r.redraw();
+                r.pace.presented(presented);
                 r.apply_output_request(el);
                 r.pointer_over_show();
                 if r.app.finished() || r.quit {
@@ -777,8 +807,31 @@ impl<A: App, F: FnOnce(&Gpu) -> Result<A, String>> ApplicationHandler for Runner
                     r.window.request_redraw();
                 }
             }
+            WindowEvent::Occluded(covered) => {
+                r.occluded = covered;
+                if r.pace.set_hidden(covered || r.window.is_minimized() == Some(true)) {
+                    r.window.request_redraw();
+                }
+                r.on_event(&WindowEvent::Occluded(covered));
+            }
             other => r.on_event(&other),
         }
+    }
+
+    /// A held redraw that is due is asked for; the loop sleeps until the next one ([`pace`]), or until an event.
+    fn about_to_wait(&mut self, el: &ActiveEventLoop) {
+        let Some(r) = self.running.as_mut() else { return };
+        let now = Instant::now();
+        if r.pace.take_due(now) {
+            r.window.request_redraw();
+        }
+        for o in &mut r.outputs {
+            if o.pace.take_due(now) {
+                o.window.request_redraw();
+            }
+        }
+        let next = std::iter::once(r.pace.due()).chain(r.outputs.iter().map(|o| o.pace.due())).flatten().min();
+        el.set_control_flow(next.map_or(ControlFlow::Wait, ControlFlow::WaitUntil));
     }
 
     /// An OS event was queued ([`glance_platform::set_waker`]): draw, which delivers it.
