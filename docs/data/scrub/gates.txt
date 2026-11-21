@@ -1,0 +1,47 @@
+# Gates, 2026-11-21 (release builds, the home machine). Summaries; the full logs hold build-machine paths and are not kept.
+
+## glance-core, on the guard commit's tree (GLANCE_TESTFILES set, GLANCE_REQUIRE_GPU=1)
+ok: cargo fmt --all --check
+ok: cargo clippy --workspace --all-targets --release -- -D warnings
+ok: cargo test --workspace --release
+ok: cargo deny check
+ok: cargo build --release
+ok: tools/path-guard.sh check
+tests: 459 passed, 0 failed, 0 ignored
+advisories ok, bans ok, licenses ok, sources ok
+path-guard: clean - the hook is installed; the working tree (1318 objects, 7337186 bytes)
+
+## glance-rs, after cargo update of the glance-core and DXVKit Plus packages (lock diff: only their commit ids)
+ok: cargo fmt --all --check
+ok: cargo clippy --workspace --all-targets --release -- -D warnings
+ok: cargo test --workspace --release
+ok: cargo deny check
+ok: cargo build --release
+tests: 21 passed, 0 failed, 0 ignored
+
+## cueglance-rs, after cargo update of the glance-core and DXVKit Plus packages (lock diff: only their commit ids)
+ok: cargo fmt --all --check
+ok: cargo clippy --workspace --all-targets --release -- -D warnings
+ok: cargo test --workspace --release
+ok: cargo deny check
+ok: cargo build --release
+tests: 71 passed, 0 failed, 0 ignored
+
+## glenc-rs, after cargo update of the glance-core and DXVKit Plus packages (lock diff: only their commit ids)
+ok: cargo fmt --all --check
+ok: cargo clippy --workspace --all-targets --release -- -D warnings
+ok: cargo test --workspace --release
+ok: cargo deny check
+ok: cargo build --release
+tests: 234 passed, 0 failed, 0 ignored
+
+## macrate-rs, after cargo update of the glance-core and DXVKit Plus packages (lock diff: only their commit ids)
+ok: cargo fmt --all --check
+ok: cargo clippy --workspace --all-targets --release -- -D warnings
+ok: cargo test --workspace --release
+ok: cargo deny check
+ok: cargo build --release
+tests: 195 passed, 0 failed, 0 ignored
+
+## DXVKit-Plus and glenc-public: no Rust source changed (tools, workflows, docs); cargo fmt --all --check ok (DXVKit-Plus),
+## tools/path-guard.sh check clean in both; glenc-public: cargo metadata --locked resolves the rewritten lock against the re-created repos.

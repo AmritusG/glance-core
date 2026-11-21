@@ -18,3 +18,22 @@ path-guard	every ref - commits, files, file names, tag messages, ref names	2026-
 path-guard	every ref - commits, files, file names, tag messages, ref names	2026-11-21T15:21:46.5821106Z path-guard: 1 hit in every ref: commits, files, tag messages, ref names (2163 objects, 13300056 bytes). Fix each at its source; nothing is waved through.
 path-guard	every ref - commits, files, file names, tag messages, ref names	2026-11-21T15:21:46.5852756Z ##[error]Process completed with exit code 1.
 throwaway/guard-proof deleted on origin: 0 refs left
+
+## 3. GitHub refuses a new commit pushed straight to the protected main (the owner is an admin; no bypass)
+$ git push origin main     (commit a0e59b1)
+path-guard: clean - the 1 commits of this push (20 objects, 35261 bytes)
+remote: error: GH006: Protected branch update failed for refs/heads/main.        
+remote: 
+remote: - Required status check "path-guard" is expected.        
+To <origin>
+ ! [remote rejected] main -> main (protected branch hook declined)
+error: failed to push some refs to '<origin>
+
+## 4. A clean commit passes
+e1a7f3f (the guard itself) and a0e59b1 went in with tools/push-main.sh: hook clean, path-guard job green on guard/<sha>, then main.
+run 44919093388 main a0e59b1 success
+run 44919072690 guard/a0e59b1f99f3 a0e59b1 success
+run 44918764269 throwaway/guard-proof 7b38bef failure
+run 44918762422 throwaway/guard-proof e1a7f3f success
+run 44918619626 main e1a7f3f success
+run 44918591671 guard/e1a7f3fb7e8a e1a7f3f success
