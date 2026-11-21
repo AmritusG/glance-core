@@ -1,9 +1,13 @@
 kit-dmg-record-fix: which step of dmg.sh registers its staging copy with LaunchServices (2026-11-21, the home machine, macOS 27.0.1).
 Test app: glance-sample under the throw-away id com.amritus.glancecore.kitrecordtest ("Kit Record Test"), built, signed, notarised and stapled
 by the kit into <scratch>/stage; never in /Applications, never published. Each [label] line is the count of that id's records in
-`lsregister -dump` (one dump takes about 15 s, so "after X" is within 15 s of X); (+Ns) is the same count N seconds later.
+`lsregister -dump` (a dump took 15.8 s when first timed and 3.4 s when timed again after the pass, so "after X" is within 4 to 16 s of X);
+(+Ns) is the same count N seconds later.
 <scratch>/stage/Kit Record Test.app is the staged build product (registered by notarize.sh's Gatekeeper check; ls-cleanup.sh's business).
 hdiutil prints a deprecation warning for create / attach / detach on this macOS; the lines are kept as printed.
+Run G's printed heading is wrong: G is ditto, create, attach and detach with nothing in between (no guard, no pause), so it is NOT
+dmg.sh's order, and it registered nothing; its `lsregister -u` therefore had no record to remove (exit 1). Run K is the test of
+`lsregister -u` on a deleted folder. The scripts that made these logs were scratch and are not kept in the repo.
 
 ================ run 1 (A, B, C, D) ================
 ##### start

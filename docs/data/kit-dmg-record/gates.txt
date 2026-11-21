@@ -1,0 +1,120 @@
+kit-dmg-record-fix: the gates on the rebased tree (v0.9.0 = 8eaa92e + the kit fix, workspace 0.9.1), the home machine, 2026-11-21 18:56 to 18:58 local,
+GLANCE_TESTFILES set, GLANCE_REQUIRE_GPU=1, release. Then every "Running" and "test result" line of the test gate's output.
+(tools/path-guard.sh check ran after these, on the tree that was committed: clean, 1348 objects.)
+
+== cargo fmt --all --check
+exit 0
+== cargo clippy --workspace --all-targets --release -- -D warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 2.08s
+exit 0
+== cargo test --workspace --release
+exit 0
+test result lines 50: passed 459, failed 0, ignored 0
+== cargo deny check
+advisories ok, bans ok, licenses ok, sources ok
+exit 0
+== cargo build --release
+    Finished `release` profile [optimized + debuginfo] target(s) in 1.26s
+exit 0
+
+== cargo test --workspace --release: suites
+     Running unittests src/lib.rs (target/release/deps/glance_arena-fa8a9eab81792351)
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/client.rs (target/release/deps/client-dde6549120607083)
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.30s
+     Running tests/controller.rs (target/release/deps/controller-65b865be6ef45e45)
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.02s
+     Running tests/kit.rs (target/release/deps/kit-417af69628b21a1c)
+test result: ok. 53 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+     Running tests/loader.rs (target/release/deps/loader-ceb5556826af0f91)
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s
+     Running tests/media_fs.rs (target/release/deps/media_fs-590b72bb08a3cfcd)
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+     Running tests/store.rs (target/release/deps/store-b6e4260429dfa72b)
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.21s
+     Running tests/swift_oracle.rs (target/release/deps/swift_oracle-d60e7ba0fb3af171)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests src/lib.rs (target/release/deps/glance_audio-44e31f7c3dff848c)
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/decode.rs (target/release/deps/decode-d987c84b7129b950)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+     Running unittests src/lib.rs (target/release/deps/glance_encode-334e3f8ebad40100)
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+     Running tests/encode.rs (target/release/deps/encode-7b9be703186d431b)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+     Running unittests src/lib.rs (target/release/deps/glance_gpu-7dc119acfef786e4)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/exact.rs (target/release/deps/exact-fdca7de04665d44f)
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.82s
+     Running tests/present.rs (target/release/deps/present-5029f2c04f2544af)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+     Running unittests src/lib.rs (target/release/deps/glance_library-4297216eb1d3559d)
+test result: ok. 55 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+     Running tests/brief_import.rs (target/release/deps/brief_import-1d49b47719f5fec9)
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/files_swift_parity.rs (target/release/deps/files_swift_parity-6137994218491074)
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+     Running tests/format_tests.rs (target/release/deps/format_tests-e23c7a882200b70c)
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/indexer_tests.rs (target/release/deps/indexer_tests-4929ac416436b274)
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+     Running tests/roots_store_tests.rs (target/release/deps/roots_store_tests-593c115de4929dd4)
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+     Running tests/store_tests.rs (target/release/deps/store_tests-6707efca7f4959ce)
+test result: ok. 48 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+     Running tests/swift_fixtures.rs (target/release/deps/swift_fixtures-cb1b6f839928ec43)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+     Running tests/thumbnail_tests.rs (target/release/deps/thumbnail_tests-8517913e4ff3e9c7)
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+     Running unittests src/lib.rs (target/release/deps/glance_media-f2dc597a90bc69cc)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/routing.rs (target/release/deps/routing-70b7b1116bb8c7fa)
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.07s
+     Running tests/swift_parity.rs (target/release/deps/swift_parity-24c49a8be7e0ed9b)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
+     Running unittests src/lib.rs (target/release/deps/glance_platform-14bbba403d5e9c6a)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+     Running tests/folder.rs (target/release/deps/folder-c238ac6e48fbd22b)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+     Running tests/library_macos.rs (target/release/deps/library_macos-5f676881602ea632)
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
+     Running tests/text_macos.rs (target/release/deps/text_macos-04ca3c14a5f66e27)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 27.80s
+     Running unittests src/lib.rs (target/release/deps/glance_playback-2b55afd42351bd39)
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/end_with_sound.rs (target/release/deps/end_with_sound-de2a1a29af0a754a)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.50s
+     Running tests/frames.rs (target/release/deps/frames-8e2608d9a25e998d)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.29s
+     Running unittests src/main.rs (target/release/deps/glance_proof-3bc72935151f80b2)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+     Running unittests src/main.rs (target/release/deps/glance_sample-a3f6744ecc7705a5)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests src/lib.rs (target/release/deps/glance_settings-23e4fc881f37f0c0)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+     Running tests/swift_roundtrip.rs (target/release/deps/swift_roundtrip-ef0cd3cc97c8ce08)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.99s
+     Running unittests src/lib.rs (target/release/deps/glance_ui-d9ab0fb09a940fbd)
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+     Running tests/screen.rs (target/release/deps/screen-aaa60419cba62eee)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+   Doc-tests glance_arena
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_audio
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_encode
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_gpu
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_library
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_media
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_platform
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_playback
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_settings
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests glance_ui
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

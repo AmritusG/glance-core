@@ -4,7 +4,7 @@ STATUS:     COMPLETE
 parent:     8eaa92e (v0.9.0; the work started on eadb97f, see Deviations)
 result:     this commit, tagged v0.9.1 (its id and push: in the mailbox copy)
 session:    17b3f85d-efd4-4381-b8c2-ebbfd024984f
-written_at: 2026-11-21T19:30Z
+written_at: 2026-11-21T18:10Z
 
 # kit-dmg-record-fix: dmg.sh no longer leaves a LaunchServices record for its staging copy (kit at v0.9.1)
 
@@ -35,12 +35,14 @@ ended with "WARNING: expected exactly one record"). Kit only: no crate code chan
    | J1 to J3 | dmg.sh's order, `lsregister -u <copy>` straight after the detach | exit 0 each time (the record is there when detach returns); none afterwards, also 12 s later |
    | K | `lsregister -u` by path of a record whose folder is gone | exit 0, record removed |
 
-   So: **neither the `ditto` nor the mount registers the copy. The detach does**, when the image was mounted for a few
-   seconds on a mount point that sits in the same folder as the staging copy; the record is for the copy beside the
-   mount point, not for the mounted one. That is exactly what eadb97f's dmg.sh added (the guard's mount at
+   So: **neither the `ditto` nor the mount registers the copy. The detach does**, of an image whose mount point sits in
+   the same folder as the staging copy; the record is for the copy beside the mount point, not for the mounted one.
+   (In run G, attach and detach with nothing in between, nothing was registered: one run, no durations taken, so
+   "only when mounted for a while" is a guess the fix does not rely on.) That is exactly what eadb97f's dmg.sh added (the guard's mount at
    `<staging>/mnt`). Why LaunchServices does it was not looked into; the fix does not depend on it.
-   Also measured: the staged build product has no record after `bundle.sh` and `sign.sh` and one after `notarize.sh`
-   (its Gatekeeper / staple step); that one was always `ls-cleanup.sh`'s to remove.
+   Also seen in the session (counts taken by hand, not in the evidence files, which start after it): the staged build
+   product had no record after `bundle.sh` and `sign.sh` and one after `notarize.sh` (its Gatekeeper / staple step);
+   that one was always `ls-cleanup.sh`'s to remove.
 
 3. **Fix, both ways.**
    - `dmg.sh`: one `cleanup` on EXIT, on success and on failure: detach the image if it is still mounted (plain, then
@@ -74,9 +76,9 @@ ended with "WARNING: expected exactly one record"). Kit only: no crate code chan
 
 ## Deviations and notes
 
-- **The tag is v0.9.1, not the brief's v0.8.2.** While this pass ran, GlancEhr's session pushed and tagged v0.9.0
-  (8eaa92e: several outputs, SyphonServer, SpoutSender) from its own clone; this clone still stood on eadb97f, and
-  the brief was written with v0.8.1 as the newest. The first `tools/push-main.sh` was refused by GitHub (not a
+- **The tag is v0.9.1, not the brief's v0.8.2.** GlancEhr's session had pushed v0.9.0 (8eaa92e: several outputs,
+  SyphonServer, SpoutSender) from its own clone at 16:46Z and tagged it at 17:02Z, before the brief was written
+  (17:30Z); this clone had not fetched and still stood on eadb97f, and the brief names v0.8.1 as the newest. The first `tools/push-main.sh` was refused by GitHub (not a
   fast-forward; nothing was forced, the guard branch it had made was deleted). The commit was rebased onto v0.9.0
   (conflicts only in the version, the lock and the checkpoint), the gates run again on that tree, and the next patch
   from main is v0.9.1: a tag comes from a green main, and main is past 0.9.0. The kit's files are byte-identical to
@@ -87,7 +89,7 @@ ended with "WARNING: expected exactly one record"). Kit only: no crate code chan
   becoming a handler for anything. Built with `CARGO_PROFILE_RELEASE_LTO=off` and 16 codegen units (the kit's own
   override): the build's speed is not what was measured.
 - **Two uploads to Apple's notary service** under the stored profile, both of the throw-away app (the `.app` zip, then
-  the DMG of the full `dmg.sh` run), both Accepted. The brief's "full dmg.sh run" needs a stapled app and notarises the
+  the DMG of the full `dmg.sh` run; submissions eb8eb08f… and 681c623e…), both Accepted. The brief's "full dmg.sh run" needs a stapled app and notarises the
   image. Nothing was published or installed outside scratch; nothing in /Applications was touched.
 - **The controls ran the old kit** (`git archive eadb97f`) only in failing runs (no third upload).
 - **Not built: moving the mount point away from the staging copy.** Runs E and I register nothing at all, so a mount
@@ -103,9 +105,33 @@ ended with "WARNING: expected exactly one record"). Kit only: no crate code chan
 - The evidence files were scrubbed (`<TMPDIR>`, `<scratch>`, `<home>`, `<volume>` for the test image's mount path) and
   pass `tools/path-guard.sh files`.
 
+## Independent check (cc-kit:verifier, after the tag)
+
+50 claims re-derived from the files, the Bin's raw logs, git and GitHub: 37 confirmed, 9 unproven, 4 wrong. The four
+wrong ones were statements in this write-up, not in the kit, and are corrected here and in `diagnose.txt`'s header:
+v0.9.0 was on main before the brief was written (not "while the pass ran"); run G's printed heading; "a dump takes
+15 s" (3.4 s when it timed it); the scratch is 2.5 GB, not 2.6. Unproven by it: the reading of the files (no
+artefact); the local gates (now `docs/data/kit-dmg-record/gates.txt`; CI on ed843aa shows the same 459 / 0 / 0
+without the test media); the text of the two refused pushes (in the session only; quoted in the mailbox copy); the
+by-hand counts above; the number of notary uploads (it did not use the stored profile); `cargo clean`'s size; and
+"/Applications untouched": no command of this pass wrote there and the kit ran with a scratch `INSTALL_DIR`, but it
+saw `GlEnc.app`'s ctime change at 18:28 local and `OneDrive.app`'s mtime at 18:24, which it could not attribute
+(this pass did not touch either).
+
+Its reading of the kit diff: no blocking bug; nothing can unregister or delete the installed copy or a bundle still on
+disk. Its notes, all low: (1) the staging copy's record lives from the guard's detach until `dmg.sh` exits (the
+sign / notarise wait), because the unregister is in the trap; the staged build product's own record lives through the
+same wait and until `ls-cleanup.sh`, so this adds no new exposure, and an unregister straight after the detach or the
+mount point in its own folder would close it (IDEAS). (2) The trap relies on the record being there when detach
+returns (measured 4 of 4); a later one would be caught by `ls-cleanup.sh` at the next release. (3) The two
+`lsregister -u` calls are silent. (4) `ls-cleanup.sh`'s pattern matches at any depth under the temporary folder (only
+paths that are gone are unregistered). (5) `KIT_TMP` follows `TMPDIR`: a run with another `TMPDIR` leaves a stale
+record "left alone". (6) `kit_load` now stops every kit script when `TMPDIR` names a missing folder. (7) If both
+detaches fail the trap's `rm -r` fails on the read-only mount and replaces the exit code, as the old trap would.
+
 ## Needs Amrit
 
-- Nothing blocks. The scratch (2.6 GB, mostly the test build's target) is in the Bin as
+- Nothing blocks. The scratch (about 2.5 GB, mostly the test build's target) is in the Bin as
   `glance-core-scratch_kit-dmg-record_2026-11-21`: empty the Bin when convenient.
 - Optional decisions: the mount point in its own folder (cause removed); `diskutil image` instead of `hdiutil`.
 
@@ -180,11 +206,12 @@ exit 0
 
 $ afterwards
 lsregister -u <scratch>/install/Kit Record Test.app: exit 0; records of com.amritus.glancecore.kitrecordtest: 0
-scratch moved to the Bin (glance-core-scratch_kit-dmg-record_2026-11-21, 2.6G); records of the test id 5 s later: 0
+scratch moved to the Bin (glance-core-scratch_kit-dmg-record_2026-11-21, about 2.5G); records of the test id 5 s later: 0
 
-$ evidence files (bytes)
- 11539 docs/data/kit-dmg-record/diagnose.txt
+$ evidence files (bytes; gates.txt added with the closing commit)
+ 11968 docs/data/kit-dmg-record/diagnose.txt
   9191 docs/data/kit-dmg-record/prove.txt
+  9222 docs/data/kit-dmg-record/gates.txt
 
 $ git log -1 of this file's own commit, the push, the path-guard job, the tag: in the mailbox copy
 ```
