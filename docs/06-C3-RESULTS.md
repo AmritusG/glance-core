@@ -1,7 +1,7 @@
 # C3 results — the shell (macOS)
 
 2026-11-15, core wave C3, on the core's home machine (<host>: Apple M5 Max, macOS 27.0.1, Dark
-appearance, default output MacBook Pro Speakers at 44.1 kHz). Release builds only. Raw data:
+appearance, default output the built-in speakers at 44.1 kHz). Release builds only. Raw data:
 `docs/data/c3-sample/`, `docs/data/c3-reroute/`, `docs/data/c3-look/`. Test media: the repo's
 fixtures and, read-only, Amrit's folder `<testfiles>`
 (`_master_hapm_512x512.mov`, `_master_hapm_540x960.mov`, `_master_hapm_3840x2160.mov`,

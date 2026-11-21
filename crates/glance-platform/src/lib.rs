@@ -58,6 +58,16 @@ pub use macos::{
     set_cursor_hidden_in_background, set_default_for, set_frame_autosave, set_menu_item_enabled, set_show_window, set_single_window, set_subtitle,
     set_unsaved_work,
 };
+#[cfg(windows)]
+mod spout;
+#[cfg(windows)]
+pub use spout::SpoutSender;
+
+#[cfg(target_os = "macos")]
+mod syphon;
+#[cfg(target_os = "macos")]
+pub use syphon::{SyphonServer, syphon_available};
+
 #[cfg(target_os = "macos")]
 mod macos_library;
 #[cfg(target_os = "macos")]

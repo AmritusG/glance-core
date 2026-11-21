@@ -157,11 +157,17 @@ pub trait App {
     }
 }
 
-/// What the app asked of the output window during a frame.
+/// What the app asked of the output windows during a frame.
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum OutputRequest {
+    /// The one output on this screen (any others close).
     Open(String),
+    /// One more output, on this screen (v0.9.0).
+    Add(String),
+    /// Every output closes.
     Close,
+    /// The output on this screen closes (v0.9.0).
+    CloseOn(String),
 }
 
 /// A wgpu texture egui can draw.
@@ -183,8 +189,8 @@ pub struct Host<'a> {
     quit: Option<&'a mut bool>,
     drop_at: Option<(f64, f64)>,
     screens: &'a [Screen],
-    output_screen: Option<&'a Screen>,
-    output_request: Option<&'a mut Option<OutputRequest>>,
+    output_screens: Vec<&'a Screen>,
+    output_request: Option<&'a mut Vec<OutputRequest>>,
 }
 
 impl Host<'_> {
@@ -304,23 +310,44 @@ impl Host<'_> {
     }
 
     /// Open the output window full screen on the screen with this id (or, when no id matches, the first screen with
-    /// this name), or move it there; it opens after this frame (v0.6.0).
+    /// this name), or move it there; any other output closes; it opens after this frame (v0.6.0).
     pub fn open_output(&mut self, screen: &str) {
         if let Some(r) = self.output_request.as_deref_mut() {
-            *r = Some(OutputRequest::Open(screen.to_string()));
+            r.push(OutputRequest::Open(screen.to_string()));
         }
     }
 
-    /// Close the output window after this frame (v0.6.0).
+    /// Open one more output window, full screen on this screen, beside those open (v0.9.0). Each output is paced by
+    /// its own screen and drawn by [`App::output`] with its [`OutputFrame::screen`]; a screen already showing one is
+    /// left as it is.
+    pub fn add_output(&mut self, screen: &str) {
+        if let Some(r) = self.output_request.as_deref_mut() {
+            r.push(OutputRequest::Add(screen.to_string()));
+        }
+    }
+
+    /// Close every output window after this frame (v0.6.0).
     pub fn close_output(&mut self) {
         if let Some(r) = self.output_request.as_deref_mut() {
-            *r = Some(OutputRequest::Close);
+            r.push(OutputRequest::Close);
         }
     }
 
-    /// The screen the output window is on, while it is open (v0.6.0).
+    /// Close the output window on this screen after this frame (v0.9.0).
+    pub fn close_output_on(&mut self, screen: &str) {
+        if let Some(r) = self.output_request.as_deref_mut() {
+            r.push(OutputRequest::CloseOn(screen.to_string()));
+        }
+    }
+
+    /// The screen the (first) output window is on, while one is open (v0.6.0).
     pub fn output_screen(&self) -> Option<&Screen> {
-        self.output_screen
+        self.output_screens.first().copied()
+    }
+
+    /// The screens every open output window is on, in the order they opened (v0.9.0).
+    pub fn output_screens(&self) -> &[&Screen] {
+        &self.output_screens
     }
 
     /// Hide the pointer over the app's window (a single-screen show in full screen) or show it again (v0.6.0).
@@ -376,8 +403,8 @@ struct Running<A> {
     /// Where it landed.
     drop_at: Option<(f64, f64)>,
     quit: bool,
-    output: Option<output::Output>,
-    output_request: Option<OutputRequest>,
+    outputs: Vec<output::Output>,
+    output_request: Vec<OutputRequest>,
     screens: Vec<Screen>,
     screens_looked: Option<Instant>,
 }
@@ -459,8 +486,8 @@ impl<A: App> Running<A> {
             drop_all: Vec::new(),
             drop_at: None,
             quit: false,
-            output: None,
-            output_request: None,
+            outputs: Vec::new(),
+            output_request: Vec::new(),
             screens: Vec::new(),
             screens_looked: None,
         })
@@ -479,49 +506,62 @@ impl<A: App> Running<A> {
             self.screens = now.clone();
             self.pending.push(ShellEvent::Screens(now));
         }
-        if let Some(o) = &self.output
-            && !self.screens.iter().any(|s| s.id == o.screen.id)
-        {
-            let id = o.screen.id.clone();
-            self.output = None;
-            self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(id)));
+        let screens = &self.screens;
+        let (keep, gone): (Vec<_>, Vec<_>) = std::mem::take(&mut self.outputs).into_iter().partition(|o| screens.iter().any(|s| s.id == o.screen.id));
+        self.outputs = keep;
+        for o in gone {
+            self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(o.screen.id.clone())));
         }
     }
 
-    /// Carry out what the app asked of the output window during the frame.
+    /// Carry out what the app asked of the output windows during the frame, in order.
     fn apply_output_request(&mut self, el: &ActiveEventLoop) {
-        let Some(req) = self.output_request.take() else { return };
-        match req {
-            OutputRequest::Close => {
-                if self.output.take().is_some() {
-                    self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
-                }
-            }
-            OutputRequest::Open(id) => {
-                let main = self.window.current_monitor();
-                let names = output::screen_names();
-                let monitors: Vec<_> = self.window.available_monitors().collect();
-                let screens: Vec<Screen> = monitors.iter().map(|m| output::screen_of(m, main.as_ref(), &names)).collect();
-                let found = output::find_screen(&screens, &id).and_then(|s| screens.iter().position(|x| x == s)).and_then(|i| monitors.get(i));
-                let Some(m) = found.cloned() else {
-                    self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(id)));
-                    return;
-                };
-                let screen = output::screen_of(&m, main.as_ref(), &names);
-                if self.output.as_ref().is_some_and(|o| o.screen.id == screen.id) {
-                    return;
-                }
-                self.output = None;
-                match output::Output::open(el, &self.gpu, m, screen) {
-                    Ok(o) => {
-                        o.window.request_redraw();
-                        self.output = Some(o);
-                        // The control window keeps the keyboard.
-                        self.window.focus_window();
+        for req in std::mem::take(&mut self.output_request) {
+            match req {
+                OutputRequest::Close => {
+                    for _ in self.outputs.drain(..) {
+                        self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
                     }
-                    Err(e) => self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(format!("{id}: {e}")))),
                 }
+                OutputRequest::CloseOn(id) => {
+                    let before = self.outputs.len();
+                    self.outputs.retain(|o| o.screen.id != id && o.screen.name != id);
+                    if self.outputs.len() < before {
+                        self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
+                    }
+                }
+                OutputRequest::Open(id) => self.open_on(el, &id, true),
+                OutputRequest::Add(id) => self.open_on(el, &id, false),
             }
+        }
+    }
+
+    /// An output on the screen `id` (`only`: the others close).
+    fn open_on(&mut self, el: &ActiveEventLoop, id: &str, only: bool) {
+        let main = self.window.current_monitor();
+        let names = output::screen_names();
+        let monitors: Vec<_> = self.window.available_monitors().collect();
+        let screens: Vec<Screen> = monitors.iter().map(|m| output::screen_of(m, main.as_ref(), &names)).collect();
+        let found = output::find_screen(&screens, id).and_then(|s| screens.iter().position(|x| x == s)).and_then(|i| monitors.get(i));
+        let Some(m) = found.cloned() else {
+            self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(id.to_string())));
+            return;
+        };
+        let screen = output::screen_of(&m, main.as_ref(), &names);
+        if only {
+            self.outputs.retain(|o| o.screen.id == screen.id);
+        }
+        if self.outputs.iter().any(|o| o.screen.id == screen.id) {
+            return;
+        }
+        match output::Output::open(el, &self.gpu, m, screen) {
+            Ok(o) => {
+                o.window.request_redraw();
+                self.outputs.push(o);
+                // The control window keeps the keyboard.
+                self.window.focus_window();
+            }
+            Err(e) => self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(format!("{id}: {e}")))),
         }
     }
 
@@ -534,23 +574,23 @@ impl<A: App> Running<A> {
         #[cfg(target_os = "macos")]
         {
             use winit::raw_window_handle::HasWindowHandle;
-            let over = self.output.as_ref().and_then(|o| {
+            let over = self.outputs.iter().any(|o| {
                 let size = o.window.inner_size().to_logical::<f64>(o.window.scale_factor());
-                let handle = o.window.window_handle().ok()?;
-                let (x, y) = glance_platform::pointer_in_window(handle.as_raw()).ok()?;
-                Some(x >= 0.0 && y >= 0.0 && x < size.width && y < size.height)
+                let Ok(handle) = o.window.window_handle() else { return false };
+                let Ok((x, y)) = glance_platform::pointer_in_window(handle.as_raw()) else { return false };
+                x >= 0.0 && y >= 0.0 && x < size.width && y < size.height
             });
-            let _ = glance_platform::set_cursor_hidden_in_background(over.unwrap_or(false));
+            let _ = glance_platform::set_cursor_hidden_in_background(over);
         }
     }
 
-    fn output_event(&mut self, event: WindowEvent) {
-        let Some(o) = self.output.as_mut() else { return };
+    fn output_event(&mut self, at: usize, event: WindowEvent) {
+        let Some(o) = self.outputs.get_mut(at) else { return };
         match event {
             WindowEvent::RedrawRequested => {
                 let info = o.frame_info();
                 let picture = self.app.output(&self.gpu, &info);
-                if let Some(o) = self.output.as_mut() {
+                if let Some(o) = self.outputs.get_mut(at) {
                     o.present(&self.gpu, picture.as_ref());
                     o.window.request_redraw();
                 }
@@ -558,7 +598,7 @@ impl<A: App> Running<A> {
             }
             WindowEvent::Resized(size) => o.resized(&self.gpu, size.width, size.height),
             WindowEvent::CloseRequested => {
-                self.output = None;
+                self.outputs.remove(at);
                 self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
             }
             WindowEvent::KeyboardInput { event, .. } if event.state.is_pressed() && !event.repeat => {
@@ -612,7 +652,7 @@ impl<A: App> Running<A> {
         }
         self.look_at_screens();
         let raw = self.input.take_egui_input(&self.window);
-        let Running { window, gpu, render, app, ctx, last_interval, pending, quit, drop_at, screens, output, output_request, .. } = self;
+        let Running { window, gpu, render, app, ctx, last_interval, pending, quit, drop_at, screens, outputs, output_request, .. } = self;
         let refresh_millihertz = window.current_monitor().and_then(|m| m.refresh_rate_millihertz());
         let mut host = Host {
             gpu,
@@ -623,7 +663,7 @@ impl<A: App> Running<A> {
             quit: Some(quit),
             drop_at: *drop_at,
             screens,
-            output_screen: output.as_ref().map(|o| &o.screen),
+            output_screens: outputs.iter().map(|o| &o.screen).collect(),
             output_request: Some(output_request),
         };
         for event in pending.drain(..) {
@@ -717,8 +757,8 @@ impl<A: App, F: FnOnce(&Gpu) -> Result<A, String>> ApplicationHandler for Runner
 
     fn window_event(&mut self, el: &ActiveEventLoop, id: WindowId, event: WindowEvent) {
         let Some(r) = self.running.as_mut() else { return };
-        if r.output.as_ref().is_some_and(|o| o.window.id() == id) {
-            r.output_event(event);
+        if let Some(at) = r.outputs.iter().position(|o| o.window.id() == id) {
+            r.output_event(at, event);
             return;
         }
         match event {

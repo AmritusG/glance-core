@@ -80,9 +80,11 @@ pub fn find_screen<'a>(screens: &'a [Screen], wanted: &str) -> Option<&'a Screen
     screens.iter().find(|s| s.id == wanted).or_else(|| screens.iter().find(|s| s.name == name))
 }
 
-/// What the app gets when it draws the output.
-#[derive(Clone, Copy, Debug, PartialEq)]
+/// What the app gets when it draws an output.
+#[derive(Clone, Debug, PartialEq)]
 pub struct OutputFrame {
+    /// The screen this output is on (its [`Screen::id`]): with several outputs, which one to draw (v0.9.0).
+    pub screen: String,
     /// The output's size in pixels: draw a picture this size.
     pub size: (u32, u32),
     pub refresh_millihertz: Option<u32>,
@@ -234,6 +236,7 @@ impl Output {
         let refresh = self.window.current_monitor().and_then(|m| m.refresh_rate_millihertz());
         let ahead = refresh.map_or(Duration::from_millis(16), |mhz| Duration::from_secs_f64(1000.0 / f64::from(mhz.max(1))));
         OutputFrame {
+            screen: self.screen.id.clone(),
             size: (self.config.width, self.config.height),
             refresh_millihertz: refresh,
             last_interval: self.last_interval,

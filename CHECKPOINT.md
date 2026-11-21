@@ -18,6 +18,9 @@ Wave: scrub-paths-and-guard. Brief: ~/claude-handoffs/glance-core_2026-11-21_scr
 - The four apps: locks on glance-core v0.8.1 = 83f5bcd and DXVKit Plus v0.15.1 = 899fb50, gates 21 / 71 / 234 / 195 passed, 0 failed (`docs/data/scrub/gates.txt`); the guard copy, the gate line and the rule; pushed (glance-rs dbe81e2, cueglance-rs 4d3ae88, glenc-rs 09f1f78, macrate-rs c1d6e0e).
 - What has shipped: four installed apps and four released DMGs clean under the guard (`docs/data/scrub/shipped-check.txt`).
 - Handoff: `docs/handoffs/scrub-paths-and-guard.md`. Wave closed 2026-11-21.
+- 2026-11-21 (GlancEhr session, all-functions-and-transitions): **v0.9.0** — glance-ui several outputs at once
+  (add / close per screen, `OutputFrame::screen`), glance-platform `SyphonServer` (macOS, Syphon.framework loaded at
+  run time, wgpu's MTLTexture handed over) and `SpoutSender` (Windows, Spout 2's sender protocol); Handoff docs/handoffs/v090-several-outputs-syphon-spout.md.
 
 ## NEXT
 - Nothing queued for this wave. Amrit: remove the delete_repo scope if wanted; decide on the installed Glance Sample 0.3.1 (holds the home path; never published); GitHub Support can purge glenc-public's old commits. Next core work: the Windows milestone (ROADMAP §7).

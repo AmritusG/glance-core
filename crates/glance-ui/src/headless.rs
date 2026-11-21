@@ -70,7 +70,7 @@ impl Stage {
             quit: None,
             drop_at: None,
             screens: &[],
-            output_screen: None,
+            output_screens: Vec::new(),
             output_request: None,
         };
         let mut out = ctx.run_ui(raw, |root| ui(root, &mut host));

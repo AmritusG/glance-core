@@ -28,6 +28,9 @@ undocumented_unsafe_blocks = "deny"
 raw-window-handle = { workspace = true }
 
 [target.'cfg(target_os = "macos")'.dependencies]
+# The Syphon server hands wgpu's Metal texture over (v0.9.0): wgpu's hal objects and Metal's command buffer.
+wgpu = { workspace = true }
+objc2-metal = { version = "0.3.2", default-features = false, features = ["std", "MTLDevice", "MTLCommandQueue", "MTLCommandBuffer", "MTLTexture", "MTLResource", "MTLAllocation"] }
 objc2 = "0.6.3"
 block2 = "0.6.2"
 objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSArray", "NSData", "NSDictionary", "NSString", "NSUserDefaults", "NSURL", "NSValue", "NSBundle", "NSError", "NSObject", "NSEnumerator", "NSFileManager", "NSObjCRuntime", "block2", "NSNotification", "NSOperation", "NSDate", "NSGeometry", "NSRange"] }
@@ -46,4 +49,4 @@ objc2-media-player = { version = "0.3.2", default-features = false, features = [
 
 [target.'cfg(windows)'.dependencies]
 muda = { workspace = true }
-windows = { version = "0.62.2", features = ["Foundation", "Media", "Win32_Foundation", "Win32_Security", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_IO", "Win32_System_WinRT", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_Shell", "Win32_System_Power", "Win32_System_Registry"] }
+windows = { version = "0.62.2", features = ["Foundation", "Media", "Win32_Foundation", "Win32_Security", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_IO", "Win32_System_WinRT", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_Shell", "Win32_System_Power", "Win32_System_Registry", "Win32_System_Memory", "Win32_Graphics_Direct3D", "Win32_Graphics_Direct3D11", "Win32_Graphics_Dxgi", "Win32_Graphics_Dxgi_Common"] }
