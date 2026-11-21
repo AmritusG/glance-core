@@ -1,0 +1,20 @@
+# The guard, proven on glance-core (2026-11-21T15:21Z). The made-up path is a home folder path with the name jodoe;
+# the output below is the guard's masked form (CI=1: a public log never repeats what it found).
+
+## 1. The pre-push hook refuses a throwaway commit that holds the made-up path
+$ git push origin throwaway/guard-proof     (commit 99f35bb)
+commit 99f35bb:guard-proof.txt:1: [home path] /Us...(12 characters)
+path-guard: 1 hit in the 1 commits of this push (6 objects, 219 bytes). Fix each at its source; nothing is waved through.
+error: failed to push some refs to '<origin>
+exit 1; on origin: 0 refs named throwaway/guard-proof
+local throwaway branch deleted; main is e1a7f3f, tree clean: 0 changes
+
+## 2. The path-guard CI job fails on a throwaway branch that holds it
+# (the branch and its commit are made on GitHub through the API: nothing is pushed past the hook)
+throwaway/guard-proof on origin: commit 7b38bef on top of main e1a7f3f
+path-guard check on 7b38bef: completed failure 136889966403
+run 44918764269, the failing step:
+path-guard	every ref - commits, files, file names, tag messages, ref names	2026-11-21T15:21:46.5819693Z commit 7b38bef:guard-proof.txt:1: [home path] /Us...(12 characters)
+path-guard	every ref - commits, files, file names, tag messages, ref names	2026-11-21T15:21:46.5821106Z path-guard: 1 hit in every ref: commits, files, tag messages, ref names (2163 objects, 13300056 bytes). Fix each at its source; nothing is waved through.
+path-guard	every ref - commits, files, file names, tag messages, ref names	2026-11-21T15:21:46.5852756Z ##[error]Process completed with exit code 1.
+throwaway/guard-proof deleted on origin: 0 refs left

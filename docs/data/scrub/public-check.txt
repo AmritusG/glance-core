@@ -1,0 +1,25 @@
+# public check after re-create / force-push, 2026-11-21T15:12Z
+== glance-core
+created 2026-11-21T15:12:27Z PUBLIC stars 0
+unauthenticated ls-remote: refs digest 015e666e60e3; cleaned mirror 015e666e60e3; SAME; 14 refs
+old commits (changed ids): 62; answering 404/422: 43; still served: b0ecbd8:403 b187b6e:403 c566dab:403 ccf3ee4:403 ce11c66:403 cf33aab:403 de5830d:403 e0ef5af:403 e2d5582:403 e514221:403 ea3374f:403 eaec6b3:403 ef44d35:403 f0b4b42:403 f113a8c:403 f2ecd4b:403 f3e0ebd:403 f54aed4:403 f92148a:403
+events feed: 0 entries; old commit ids in it: 0
+== DXVKit-Plus
+created 2026-11-21T15:12:00Z PUBLIC stars 0
+unauthenticated ls-remote: refs digest 1b249a86a136; cleaned mirror 1b249a86a136; SAME; 23 refs
+old commits (changed ids): 52; answering 404/422: 4; still served: 016d829:403 09f1dbc:403 1178649:403 11ee8d2:403 186098e:403 20cba67:403 29fa9f5:403 2cceb98:403 2f2a5f2:403 303825a:403 325ad25:403 3b18f0f:403 4343fe9:403 4422f69:403 4946175:403 4ad4e43:403 4b0afbe:403 50d29a4:403 5777487:403 59695e2:403 5c33b80:403 62dda7f:403 65e8280:403 70b5c74:403 72763ed:429 740459b:429 7c4ff6e:429 80f96ee:429 819dea8:429 8982823:429 920e59a:429 9a70d16:429 9bc1977:429 9c583b0:429 9e2df4e:429 a47c822:429 a5be3f2:429 a826e31:429 b60662e:429 c61b1bc:429 c654074:429 cb7d136:429 d2ec731:429 df1c21b:429 e3909b7:429 e8f0e21:429 ec5737d:429 ece805b:429
+events feed: 0 entries; old commit ids in it: 0
+== glenc-public
+created 2026-06-19T23:17:16Z PUBLIC stars 3
+unauthenticated ls-remote: refs digest aafcfd853248; cleaned mirror aafcfd853248; SAME; 10 refs
+old commits (changed ids): 8; answering 404/422: 0; still served: 1a5f9f4:200 3aedfbc:200 5600a18:200 8e73f3a:200 95afdd3:200 9668f4c:200 a46bfd5:200 ed5b4d1:200
+events feed: 1 entries; old commit ids in it: 2
+== glenc-public releases: v1.6.2:2 v1.6.1:2 v1.6.0:2 v1.5.0:2 v1.4.0:2 v1.3.0:2 v1.2.0:0 v1.1.0:0
+# old commit ids again, authenticated API (the unauthenticated run above hit the 60 per hour limit: 403 / 429 are the limit, not an answer)
+glance-core: 62 old commits; API answers: 62 x HTTP 422
+DXVKit-Plus: 52 old commits; API answers: 52 x HTTP 422
+glenc-public: 8 old commits; API answers: 8 x HTTP 200 (force-pushed, repo kept: old commits stay reachable by id until GitHub collects them)
+web, unauthenticated: github.com/AmritusG/glance-core/commit/1bf280f -> HTTP 404
+web, unauthenticated: github.com/AmritusG/glance-core/commit/e2d5582 -> HTTP 404
+web, unauthenticated: github.com/AmritusG/DXVKit-Plus/commit/4946175 -> HTTP 404
+web, unauthenticated: github.com/AmritusG/glenc-public/commit/8e73f3a -> HTTP 200

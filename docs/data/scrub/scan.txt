@@ -1,0 +1,85 @@
+# Full-history scan of the three public repos, before and after the rewrite (2026-11-21).
+# Every blob, every file name, every commit and tag message, every ref name of a fresh mirror clone.
+# The /Users/, /Volumes/, /private/tmp and Windows-home rows also count the made-up names of tests and docs
+# (x, me, Fixture, ...): what is left after the rewrite in those rows is only those (path-guard: clean).
+
+## glance-core, before
+     3 blobs     0 messages   0 paths   0 refs  account name   (files/objects: 1)
+    31 blobs     0 messages   0 paths   0 refs  /Users/<name>   (files/objects: 7)
+     4 blobs     0 messages   0 paths   0 refs  /var/folders   (files/objects: 2)
+     4 blobs     0 messages   0 paths   0 refs  /private/tmp|/tmp/claude   (files/objects: 1)
+   265 blobs     0 messages   0 paths   0 refs  /Volumes/   (files/objects: 33)
+     0 blobs     0 messages   0 paths   0 refs  /home/<name>   (files/objects: 0)
+     2 blobs     0 messages   0 paths   0 refs  X:\Users\<name>   (files/objects: 1)
+    55 blobs     0 messages   0 paths   0 refs  host name   (files/objects: 11)
+     0 blobs     0 messages   0 paths   0 refs  claude.ai URL   (files/objects: 0)
+     2 blobs     0 messages   0 paths   0 refs  session id   (files/objects: 2)
+## glance-core, after
+     0 blobs     0 messages   0 paths   0 refs  account name   (files/objects: 0)
+    28 blobs     0 messages   0 paths   0 refs  /Users/<name>   (files/objects: 6)
+     0 blobs     0 messages   0 paths   0 refs  /var/folders   (files/objects: 0)
+     4 blobs     0 messages   0 paths   0 refs  /private/tmp|/tmp/claude   (files/objects: 1)
+   265 blobs     0 messages   0 paths   0 refs  /Volumes/   (files/objects: 33)
+     0 blobs     0 messages   0 paths   0 refs  /home/<name>   (files/objects: 0)
+     2 blobs     0 messages   0 paths   0 refs  X:\Users\<name>   (files/objects: 1)
+     0 blobs     0 messages   0 paths   0 refs  host name   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  claude.ai URL   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  session id   (files/objects: 0)
+## glance-core, tools/path-guard.sh history (the guard's own rules; generic names are not hits)
+before: path-guard: 128 hits in every ref: commits, files, tag messages, ref names (2127 objects, 13230448 bytes). Fix each at its source; nothing is waved through.
+after:  path-guard: clean - every ref: commits, files, tag messages, ref names (2127 objects, 13230046 bytes)
+## glance-core, gitleaks 8.30.1 (default rules + .gitleaks.toml), after: 62 commits scanned. no leaks found 
+
+## DXVKit-Plus, before
+   280 blobs     0 messages   0 paths   0 refs  account name   (files/objects: 14)
+    19 blobs     0 messages   0 paths   0 refs  /Users/<name>   (files/objects: 5)
+     1 blobs     0 messages   0 paths   0 refs  /var/folders   (files/objects: 1)
+   214 blobs     0 messages   0 paths   0 refs  /private/tmp|/tmp/claude   (files/objects: 4)
+     0 blobs     0 messages   0 paths   0 refs  /Volumes/   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /home/<name>   (files/objects: 0)
+    12 blobs     0 messages   0 paths   0 refs  X:\Users\<name>   (files/objects: 2)
+     2 blobs     0 messages   0 paths   0 refs  host name   (files/objects: 1)
+     0 blobs     0 messages   0 paths   0 refs  claude.ai URL   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  session id   (files/objects: 0)
+## DXVKit-Plus, after
+     0 blobs     0 messages   0 paths   0 refs  account name   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /Users/<name>   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /var/folders   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /private/tmp|/tmp/claude   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /Volumes/   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /home/<name>   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  X:\Users\<name>   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  host name   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  claude.ai URL   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  session id   (files/objects: 0)
+## DXVKit-Plus, tools/path-guard.sh history (the guard's own rules; generic names are not hits)
+before: path-guard: 1078 hits in every ref: commits, files, tag messages, ref names (1959 objects, 13767605 bytes). Fix each at its source; nothing is waved through.
+after:  path-guard: clean - every ref: commits, files, tag messages, ref names (1959 objects, 13739125 bytes)
+## DXVKit-Plus, gitleaks 8.30.1 (default rules + .gitleaks.toml), after: 53 commits scanned. no leaks found 
+
+## glenc-public, before
+     0 blobs     0 messages   0 paths   0 refs  account name   (files/objects: 0)
+     5 blobs     0 messages   0 paths   0 refs  /Users/<name>   (files/objects: 3)
+     0 blobs     0 messages   0 paths   0 refs  /var/folders   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /private/tmp|/tmp/claude   (files/objects: 0)
+    10 blobs     1 messages   0 paths   0 refs  /Volumes/   (files/objects: 4)
+     0 blobs     0 messages   0 paths   0 refs  /home/<name>   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  X:\Users\<name>   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  host name   (files/objects: 0)
+     0 blobs     1 messages   0 paths   0 refs  claude.ai URL   (files/objects: 1)
+     0 blobs     1 messages   0 paths   0 refs  session id   (files/objects: 1)
+## glenc-public, after
+     0 blobs     0 messages   0 paths   0 refs  account name   (files/objects: 0)
+     5 blobs     0 messages   0 paths   0 refs  /Users/<name>   (files/objects: 3)
+     0 blobs     0 messages   0 paths   0 refs  /var/folders   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  /private/tmp|/tmp/claude   (files/objects: 0)
+    10 blobs     1 messages   0 paths   0 refs  /Volumes/   (files/objects: 4)
+     0 blobs     0 messages   0 paths   0 refs  /home/<name>   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  X:\Users\<name>   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  host name   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  claude.ai URL   (files/objects: 0)
+     0 blobs     0 messages   0 paths   0 refs  session id   (files/objects: 0)
+## glenc-public, tools/path-guard.sh history (the guard's own rules; generic names are not hits)
+before: path-guard: 2 hits in every ref: commits, files, tag messages, ref names (968 objects, 5286389 bytes). Fix each at its source; nothing is waved through.
+after:  path-guard: clean - every ref: commits, files, tag messages, ref names (968 objects, 5286343 bytes)
+## glenc-public, gitleaks 8.30.1 (default rules + .gitleaks.toml), after: 11 commits scanned. no leaks found 

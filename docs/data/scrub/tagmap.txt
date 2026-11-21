@@ -1,0 +1,54 @@
+# ref, old commit, new commit (2026-11-21 rewrite). Tag names unchanged; only docs/, CHECKPOINT.md and Cargo.lock differ at any ref.
+
+## glance-core
+heads/main   f3e0ebd  ae2bedc
+tags/v0.1.0  39fde1a  0ac1647
+tags/v0.2.0  211e0b1  9e9b7ff
+tags/v0.3.0  0ffe8a4  bb106f2
+tags/v0.3.1  50a469b  467ec7d
+tags/v0.3.2  5a4d700  089357f
+tags/v0.3.3  ea3374f  ac02dbf
+tags/v0.4.0  46b53e7  583ca66
+tags/v0.5.0  49fdbe8  2f8279f
+tags/v0.7.0  7562f47  2e5e923
+tags/v0.7.1  497670a  1d27267
+tags/v0.7.2  f92148a  fd02fdb
+tags/v0.8.0  a790e25  c3f7a49
+tags/v0.8.1  1bf280f  83f5bcd
+
+## DXVKit-Plus
+heads/main         4946175  899fb50
+heads/w9-explore   5c33b80  2a3f2a4
+heads/w10-explore  a47c822  4336ccd
+tags/v0.1.0        ad01e37  ad01e37
+tags/v0.2.0        325ad25  a1f811d
+tags/v0.2.1        016d829  1c5620f
+tags/v0.3.0        4422f69  a7b828b
+tags/v0.3.1        65e8280  1b6673d
+tags/v0.4.0        fd9dd4d  3414a89
+tags/v0.5.0        9a70d16  39034b1
+tags/v0.6.0        5777487  3502b1a
+tags/v0.6.1        2cceb98  8ccd446
+tags/v0.7.0        2f2a5f2  d50922a
+tags/v0.7.1        09f1dbc  ea14298
+tags/v0.8.0        9bc1977  2c29c7b
+tags/v0.9.0        70b5c74  e18d15a
+tags/v0.10.0       72763ed  fb725a4
+tags/v0.11.0       29fa9f5  da3b11f
+tags/v0.12.0       4343fe9  8e1be72
+tags/v0.13.0       c61b1bc  23e8790
+tags/v0.14.0       11ee8d2  490defe
+tags/v0.15.0       819dea8  1a31112
+tags/v0.15.1       4946175  899fb50
+
+## glenc-public
+heads/main   9668f4c  60d6b98
+tags/v1.1.0  f839597  f839597
+tags/v1.2.0  bfd7a02  bfd7a02
+tags/v1.3.0  8e73f3a  0f2f91b
+tags/v1.4.0  95afdd3  708cbed
+tags/v1.5.0  a46bfd5  701d3a6
+tags/v1.6.0  3aedfbc  8efbad2
+tags/v1.6.1  5600a18  3063a5b
+tags/v1.6.2  1a5f9f4  7e69060
+tags/v1.7.0  9668f4c  60d6b98

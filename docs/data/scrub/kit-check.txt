@@ -1,0 +1,17 @@
+-- kit_path_guard on an installed app (Glance 0.19.2):
+path-guard: clean - Glance.app (10 objects, 19865342 bytes)
+   passed
+-- kit_path_guard on a file with a made-up home path:
+bad.txt:1: [home path] /Us...(12 characters)
+path-guard: 1 hit in bad.txt (2 objects, 34 bytes). Fix each at its source; nothing is waved through.
+kit: build-machine paths or names in what ships (above); fix them at the source
+   refused, exit 1
+-- dmg.sh, its own lines for the mounted contents, on a released image:
+   | mnt="$work/mnt"
+   | mkdir "$mnt"
+   | hdiutil attach -readonly -nobrowse -noautoopen -mountpoint "$mnt" "$DMG" >/dev/null
+   | (kit_path_guard "$mnt") || { hdiutil detach "$mnt" >/dev/null; exit 1; }
+   | hdiutil detach "$mnt" >/dev/null
+   | rmdir "$mnt"
+path-guard: clean - mnt (10 objects, 19865397 bytes)
+   block passed; mount point left: 0

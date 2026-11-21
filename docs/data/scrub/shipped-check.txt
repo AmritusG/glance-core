@@ -1,0 +1,10 @@
+# What has shipped, under the full guard (tools/path-guard.sh files), 2026-11-21. No app was rebuilt.
+# The installed apps, then the released DMGs mounted read-only (dmg.sh's new step, run by hand on the existing images).
+/Applications/Glance.app 0.19.2: path-guard: clean - Glance.app (10 objects, 19865342 bytes)
+/Applications/CueGlance.app 1.5.2: path-guard: clean - CueGlance.app (10 objects, 20919824 bytes)
+/Applications/GlEnc.app 1.8.0: path-guard: clean - GlEnc.app (10 objects, 22459318 bytes)
+/Applications/MaCrate.app 0.17.2: path-guard: clean - MaCrate.app (10 objects, 31922224 bytes)
+Glance-v0.19.2.dmg (sha256 446af4fe352b3cb0...), mounted: path-guard: clean - mnt (10 objects, 19865397 bytes)
+CueGlance-v1.5.2.dmg (sha256 da522740cdba3273...), mounted: path-guard: clean - mnt (10 objects, 20919894 bytes)
+GlEnc-v1.8.0.dmg (sha256 a3655d1a15da017a...), mounted: path-guard: clean - mnt (10 objects, 22459368 bytes)
+MaCrate-0.17.2.dmg (sha256 820b42331b4786ec...), mounted: path-guard: clean - mnt (10 objects, 31922284 bytes)
