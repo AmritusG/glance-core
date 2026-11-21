@@ -1,0 +1,264 @@
+kit-dmg-record-fix: which step of dmg.sh registers its staging copy with LaunchServices (2026-11-21, the home machine, macOS 27.0.1).
+Test app: glance-sample under the throw-away id com.amritus.glancecore.kitrecordtest ("Kit Record Test"), built, signed, notarised and stapled
+by the kit into <scratch>/stage; never in /Applications, never published. Each [label] line is the count of that id's records in
+`lsregister -dump` (one dump takes about 15 s, so "after X" is within 15 s of X); (+Ns) is the same count N seconds later.
+<scratch>/stage/Kit Record Test.app is the staged build product (registered by notarize.sh's Gatekeeper check; ls-cleanup.sh's business).
+hdiutil prints a deprecation warning for create / attach / detach on this macOS; the lines are kept as printed.
+
+================ run 1 (A, B, C, D) ================
+##### start
+[start] records: 1
+      <scratch>/stage/Kit Record Test.app
+
+##### A: the staging copy alone
+work=<TMPDIR>/T/tmp.PWg2duAHV8
+[A after ditto] records: 1
+      <scratch>/stage/Kit Record Test.app
+[A after ditto (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+[A after rm -r] records: 1
+      <scratch>/stage/Kit Record Test.app
+[A after rm -r (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+
+##### B: ditto + Applications link + hdiutil create, never mounted
+work=<TMPDIR>/T/tmp.dQjM16r7yS
+[B after ditto] records: 1
+      <scratch>/stage/Kit Record Test.app
+hdiutil: WARNING: 'hdiutil create -volname -format ...' is deprecated. Please use 'diskutil image create from/blank --volumeName --format ...' instead.
+[B after hdiutil create] records: 1
+      <scratch>/stage/Kit Record Test.app
+[B after hdiutil create (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+[B after rm -r] records: 1
+      <scratch>/stage/Kit Record Test.app
+[B after rm -r (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+
+##### C: the mount alone (a folder that never held a staging copy)
+work=<TMPDIR>/T/tmp.PpH3Y1rg0n
+hdiutil: WARNING: 'hdiutil attach -readonly -nobrowse -mountpoint ...' is deprecated. Please use 'diskutil image attach --readOnly --mountOptions nobrowse --mountPoint ...' instead.
+[C after attach] records: 1
+      <scratch>/stage/Kit Record Test.app
+[C after attach (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+guard exit 0
+[C after the path guard] records: 1
+      <scratch>/stage/Kit Record Test.app
+[C after the path guard (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+hdiutil: WARNING: 'hdiutil detach ...' is deprecated. Please use 'diskutil eject ...' instead.
+[C after detach] records: 1
+      <scratch>/stage/Kit Record Test.app
+[C after detach (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+[C after rm -r] records: 1
+      <scratch>/stage/Kit Record Test.app
+[C after rm -r (+8s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+
+##### D: dmg.sh's order (ditto, create, mount inside the staging folder, guard, detach, delete)
+work=<TMPDIR>/T/tmp.aiXA2QPDp2
+[D after ditto] records: 1
+      <scratch>/stage/Kit Record Test.app
+hdiutil: WARNING: 'hdiutil create -volname -format ...' is deprecated. Please use 'diskutil image create from/blank --volumeName --format ...' instead.
+[D after hdiutil create] records: 1
+      <scratch>/stage/Kit Record Test.app
+hdiutil: WARNING: 'hdiutil attach -readonly -nobrowse -mountpoint ...' is deprecated. Please use 'diskutil image attach --readOnly --mountOptions nobrowse --mountPoint ...' instead.
+[D after attach] records: 1
+      <scratch>/stage/Kit Record Test.app
+guard exit 0
+[D after the path guard] records: 1
+      <scratch>/stage/Kit Record Test.app
+hdiutil: WARNING: 'hdiutil detach ...' is deprecated. Please use 'diskutil eject ...' instead.
+[D after detach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D after rm -r (+8s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+##### end
+
+================ run 2 (D2, E, F, G, H) ================
+##### start
+[start] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### D2: staging copy + mount inside it, NO guard; settle after attach, then detach
+work=<TMPDIR>/T/tmp.VNaJXKRhmy
+[D2 after attach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D2 after attach (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D2 after detach] records: 3
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <TMPDIR>/T/tmp.VNaJXKRhmy/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D2 after detach (+12s)] records: 3
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <TMPDIR>/T/tmp.VNaJXKRhmy/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+lsregister -u (copy still on disk) exit 0
+[D2 after lsregister -u] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D2 after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D2 after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### E: staging copy in one folder, mount point in another; guard; detach
+work=<TMPDIR>/T/tmp.IYehgWvvXS mount in <TMPDIR>/T/tmp.Q6Gw5zcpkV
+[E after attach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+guard exit 0
+[E after detach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[E after detach (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[E after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[E after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### F: staging copy deleted before the mount (same folder)
+work=<TMPDIR>/T/tmp.kfL1nUxppp
+[F after attach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[F after detach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[F after detach (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[F after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[F after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### G: dmg.sh's order, then unregister AFTER the folder is deleted (by path)
+work=<TMPDIR>/T/tmp.aZ2tKDvjj6
+[G after detach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[G after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+failed to scan <TMPDIR>/T/tmp.aZ2tKDvjj6/Kit Record Test.app: -10814
+ from spotlightlsregister -u (path gone) exit 1
+[G after lsregister -u] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[G after lsregister -u (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### H: unregister both paths WHILE mounted, then detach
+work=<TMPDIR>/T/tmp.uPnELIyMQG
+failed to scan <TMPDIR>/T/tmp.uPnELIyMQG/Kit Record Test.app: -10814
+ from spotlightfailed to scan <TMPDIR>/T/tmp.uPnELIyMQG/mnt/Kit Record Test.app: -10814
+ from spotlightlsregister -u (mounted) exit 1
+[H after lsregister -u while mounted] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[H after detach] records: 3
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <TMPDIR>/T/tmp.uPnELIyMQG/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[H after detach (+12s)] records: 3
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <TMPDIR>/T/tmp.uPnELIyMQG/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+failed to scan <TMPDIR>/T/tmp.uPnELIyMQG/mnt/Kit Record Test.app: -10814
+ from spotlightlsregister -u (after detach; mnt path gone) exit 2
+[H after second lsregister -u] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[H after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[H after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+##### end
+
+================ run 3 (J1-J3, I, K) ================
+##### start
+[start] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### J1: dmg.sh's order with the guard; lsregister -u straight after detach; delete; settle
+work=<TMPDIR>/T/tmp.lxgtx2BCqE
+guard exit 0
+lsregister -u straight after detach: exit 0
+[J1 after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[J1 after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### J2: dmg.sh's order with the guard; lsregister -u straight after detach; delete; settle
+work=<TMPDIR>/T/tmp.Vkw1kZonsv
+guard exit 0
+lsregister -u straight after detach: exit 0
+[J2 after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[J2 after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### J3: dmg.sh's order with the guard; lsregister -u straight after detach; delete; settle
+work=<TMPDIR>/T/tmp.D0cV14pr0F
+guard exit 0
+lsregister -u straight after detach: exit 0
+[J3 after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[J3 after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### I: app in <work>/src, mount at <work>/mnt; guard; detach
+work=<TMPDIR>/T/tmp.fxRVamZ0qe
+guard exit 0
+[I after detach] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[I after detach (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+failed to scan <TMPDIR>/T/tmp.fxRVamZ0qe/src/Kit Record Test.app: -10814
+ from spotlightlsregister -u exit 1
+[I after rm -r] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[I after rm -r (+12s)] records: 2
+      <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+
+##### K: lsregister -u by path, every record of the id under the temporary folder whose path is gone
+lsregister -u <TMPDIR>/T/tmp.aiXA2QPDp2/Kit Record Test.app: exit 0
+[K after lsregister -u] records: 1
+      <scratch>/stage/Kit Record Test.app
+[K after lsregister -u (+12s)] records: 1
+      <scratch>/stage/Kit Record Test.app
+##### end

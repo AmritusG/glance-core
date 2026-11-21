@@ -23,6 +23,9 @@ kit_load() {
     # records with STAGE_DIR, so a path through a symlink would leave the staged copy registered.
     mkdir -p "$STAGE_DIR" || kit_die "cannot create STAGE_DIR ($STAGE_DIR)"
     STAGE_DIR="$(cd "$STAGE_DIR" && pwd -P)"
+    # The kit's temporary folder, physical for the same reason: dmg.sh makes its staging folder in
+    # it, and ls-cleanup.sh takes a record under it whose path is gone for the kit's own.
+    KIT_TMP="$(cd "${TMPDIR:-/tmp}" && pwd -P)" || kit_die "no temporary folder (${TMPDIR:-/tmp})"
     APP="$STAGE_DIR/$APP_NAME.app"
     KEEP="$INSTALL_DIR/$APP_NAME.app"
     DMG="$STAGE_DIR/${DMG_NAME:-$APP_NAME-v$VERSION.dmg}"

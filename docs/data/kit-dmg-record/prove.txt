@@ -1,0 +1,155 @@
+kit-dmg-record-fix: the proof (2026-11-21, the home machine, macOS 27.0.1). Same test app and counting as diagnose.txt.
+INSTALL_DIR is <scratch>/install, STAGE_DIR <scratch>/stage. "staging folders left on disk" counts <TMPDIR>/T/tmp.* folders that hold the
+test app or a mount point; <volume> is the mounted test image (install.sh mounts it under the system volumes folder, named "Kit Record Test 0.8.1").
+
+================ the kit under test (sha256 of the working tree, committed unchanged) ================
+6c73c8eb3f820a1c15d933e7d6daa005cc2740caa06edece49a31d186ac930dd  tools/package/bundle.sh
+ce60f4f84b27f04cbd42ec7457166d7a1c13027f3d9398f77e4a97797c0bf466  tools/package/dmg.sh
+6b938c6e024004b61673ba27b8de9b55a69428c96f7cbb5bd4b024829c7ee9b2  tools/package/install.sh
+baa233d8d7d4ffb5b6024db4f9066077d065e48f94030a31e168b5d2f566cf84  tools/package/lib.sh
+e95711557151f57041f14aeba3b92f76c5802d39347e624e23a96fdce812bfd9  tools/package/ls-cleanup.sh
+5b8bf1d073b073686ffdb68ddae968604665a90373a189f178fabd0d735f797a  tools/package/notarize.sh
+88494eb0e1d7b3c7caa86661af02503995e8220240d13a23a06d56fc1b099168  tools/package/release.sh
+b2147de5bcc945d73dd8178fd7f0fb7876ad7d158c4d6808bcc56d92c32dd0a5  tools/package/sign.sh
+987077f3f8ad83cd240591c073de73c8bbb6f76c6927379bb9febc6300b8a670  tools/path-guard.sh
+
+================ 1. before ================
+[before the new dmg.sh] records: 1
+      <scratch>/stage/Kit Record Test.app
+[before the new dmg.sh] staging folders left on disk: 0
+[before the new dmg.sh] images mounted under the temporary folder or <volume>: 0
+
+================ 2. the fixed dmg.sh, full run (sign, notarise, staple) ================
+==> hdiutil create Kit Record Test-v0.8.1.dmg
+hdiutil: WARNING: 'hdiutil create -volname -format ...' is deprecated. Please use 'diskutil image create from/blank --volumeName --format ...' instead.
+hdiutil: WARNING: 'hdiutil attach -readonly -nobrowse -mountpoint ...' is deprecated. Please use 'diskutil image attach --readOnly --mountOptions nobrowse --mountPoint ...' instead.
+path-guard: clean - mnt (8 objects, 32171064 bytes)
+hdiutil: WARNING: 'hdiutil detach ...' is deprecated. Please use 'diskutil eject ...' instead.
+==> notarytool submit Kit Record Test-v0.8.1.dmg (profile amritus-notary)
+    submission 681c623e-9a14-4222-b5ef-33612a918d24: Accepted
+==> stapler staple
+Processing: <scratch>/stage/Kit Record Test-v0.8.1.dmg
+Processing: <scratch>/stage/Kit Record Test-v0.8.1.dmg
+The staple and validate action worked!
+Processing: <scratch>/stage/Kit Record Test-v0.8.1.dmg
+The validate action worked!
+<scratch>/stage/Kit Record Test-v0.8.1.dmg: accepted
+source=Notarized Developer ID
+==> <scratch>/stage/Kit Record Test-v0.8.1.dmg (11642166 bytes), sha256 159b2285be27c3d095e95ef1c97ea215d9a539fdbe1e0d346e2b3881fb7afed2
+dmg.sh exit 0
+[after the new dmg.sh (full run)] records: 1
+      <scratch>/stage/Kit Record Test.app
+[after the new dmg.sh (full run)] staging folders left on disk: 0
+[after the new dmg.sh (full run)] images mounted under the temporary folder or <volume>: 0
+
+================ 3. install.sh into <scratch>/install (ends with ls-cleanup.sh) ================
+hdiutil: WARNING: 'hdiutil attach -nobrowse -readonly ...' is deprecated. Please use 'diskutil image attach --mountOptions nobrowse --readOnly ...' instead.
+==> Gatekeeper on the DMG's app (<volume>)
+<volume>/Kit Record Test.app: accepted
+source=Notarized Developer ID
+==> installed <scratch>/install/Kit Record Test.app (0.8.1)
+<scratch>/install/Kit Record Test.app: accepted
+source=Notarized Developer ID
+Processing: <scratch>/install/Kit Record Test.app
+The validate action worked!
+==> LaunchServices records for com.amritus.glancecore.kitrecordtest before:
+    <scratch>/install/Kit Record Test.app
+    <scratch>/stage/Kit Record Test.app
+    unregistered build product: <scratch>/stage/Kit Record Test.app
+==> LaunchServices records for com.amritus.glancecore.kitrecordtest after:
+    <scratch>/install/Kit Record Test.app
+==> OK: exactly one record (<scratch>/install/Kit Record Test.app)
+install.sh exit 0
+[after the new install.sh] records: 1
+      <scratch>/install/Kit Record Test.app
+[after the new install.sh] staging folders left on disk: 0
+[after the new install.sh] images mounted under the temporary folder or <volume>: 0
+
+================ 4. failure paths, the old kit (eadb97f) as control, old and new ls-cleanup.sh ================
+A / C use a conf whose NOTARY_PROFILE does not exist (dmg.sh fails after its detach). B / D use a copy of the kit beside a stand-in
+path-guard.sh that waits 6 s and reports one hit (dmg.sh fails while the image is mounted); the copy's dmg.sh, lib.sh and ls-cleanup.sh
+are byte-identical to the kit under test (cmp). hdiutil's deprecation warnings are filtered out of this part.
+##### A: NEW dmg.sh, notarisation refused (no such profile): failure after the detach
+==> hdiutil create Kit Record Test-v0.8.1.dmg
+path-guard: clean - mnt (8 objects, 32171064 bytes)
+==> notarytool submit Kit Record Test-v0.8.1.dmg (profile no-such-profile-kit-record-test)
+Error: No Keychain password item found for profile: no-such-profile-kit-record-test
+
+Run 'notarytool store-credentials' to create another credential profile.
+exit 69
+[A new, failure after detach] records: 2
+      <scratch>/install/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[A new, failure after detach] staging folders left on disk: 0
+[A new, failure after detach] images mounted under the temporary folder or <volume>: 0
+
+##### B: NEW dmg.sh, the guard reports a hit: failure while the image is mounted
+==> hdiutil create Kit Record Test-v0.8.1.dmg
+path-guard (test stand-in): 1 hit in <TMPDIR>/T/tmp.Bq9OZc47/mnt
+kit: build-machine paths or names in what ships (above); fix them at the source
+exit 1
+[B new, failure while mounted] records: 2
+      <scratch>/install/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[B new, failure while mounted] staging folders left on disk: 0
+[B new, failure while mounted] images mounted under the temporary folder or <volume>: 0
+
+##### C (control): OLD dmg.sh (eadb97f), notarisation refused
+==> hdiutil create Kit Record Test-v0.8.1.dmg
+path-guard: clean - mnt (8 objects, 32171064 bytes)
+==> notarytool submit Kit Record Test-v0.8.1.dmg (profile no-such-profile-kit-record-test)
+Error: No Keychain password item found for profile: no-such-profile-kit-record-test
+
+Run 'notarytool store-credentials' to create another credential profile.
+exit 69
+[C old, failure after detach] records: 3
+      <TMPDIR>/T/tmp.qtUeLaUKsF/Kit Record Test.app
+      <scratch>/install/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[C old, failure after detach] staging folders left on disk: 0
+[C old, failure after detach] images mounted under the temporary folder or <volume>: 0
+
+##### D (control): OLD dmg.sh (eadb97f), the guard reports a hit
+==> hdiutil create Kit Record Test-v0.8.1.dmg
+path-guard (test stand-in): 1 hit in <TMPDIR>/T/tmp.gQtPyyUoI1/mnt
+kit: build-machine paths or names in what ships (above); fix them at the source
+exit 1
+[D old, failure while mounted] records: 4
+      <TMPDIR>/T/tmp.gQtPyyUoI1/Kit Record Test.app
+      <TMPDIR>/T/tmp.qtUeLaUKsF/Kit Record Test.app
+      <scratch>/install/Kit Record Test.app
+      <scratch>/stage/Kit Record Test.app
+[D old, failure while mounted] staging folders left on disk: 0
+[D old, failure while mounted] images mounted under the temporary folder or <volume>: 0
+
+##### E (control): OLD ls-cleanup.sh (eadb97f)
+==> LaunchServices records for com.amritus.glancecore.kitrecordtest before:
+    <TMPDIR>/T/tmp.gQtPyyUoI1/Kit Record Test.app
+    <TMPDIR>/T/tmp.qtUeLaUKsF/Kit Record Test.app
+    <scratch>/install/Kit Record Test.app
+    <scratch>/stage/Kit Record Test.app
+    left alone (not a build product or DMG copy): <TMPDIR>/T/tmp.gQtPyyUoI1/Kit Record Test.app
+    left alone (not a build product or DMG copy): <TMPDIR>/T/tmp.qtUeLaUKsF/Kit Record Test.app
+    unregistered build product: <scratch>/stage/Kit Record Test.app
+==> LaunchServices records for com.amritus.glancecore.kitrecordtest after:
+    <TMPDIR>/T/tmp.gQtPyyUoI1/Kit Record Test.app
+    <TMPDIR>/T/tmp.qtUeLaUKsF/Kit Record Test.app
+    <scratch>/install/Kit Record Test.app
+WARNING: expected exactly one record (<scratch>/install/Kit Record Test.app).
+exit 1
+
+##### F: NEW ls-cleanup.sh
+==> LaunchServices records for com.amritus.glancecore.kitrecordtest before:
+    <TMPDIR>/T/tmp.gQtPyyUoI1/Kit Record Test.app
+    <TMPDIR>/T/tmp.qtUeLaUKsF/Kit Record Test.app
+    <scratch>/install/Kit Record Test.app
+    unregistered the kit's deleted staging copy: <TMPDIR>/T/tmp.gQtPyyUoI1/Kit Record Test.app
+    unregistered the kit's deleted staging copy: <TMPDIR>/T/tmp.qtUeLaUKsF/Kit Record Test.app
+==> LaunchServices records for com.amritus.glancecore.kitrecordtest after:
+    <scratch>/install/Kit Record Test.app
+==> OK: exactly one record (<scratch>/install/Kit Record Test.app)
+exit 0
+[F after the new ls-cleanup.sh] records: 1
+      <scratch>/install/Kit Record Test.app
+[F after the new ls-cleanup.sh] staging folders left on disk: 0
+[F after the new ls-cleanup.sh] images mounted under the temporary folder or <volume>: 0

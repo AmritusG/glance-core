@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # tools/package/ls-cleanup.sh <app.conf> — leave exactly one LaunchServices record for BUNDLE_ID:
 # INSTALL_DIR/<APP_NAME>.app. Swift Glance's scripts/ls-cleanup.sh made project-agnostic: a
-# targeted `lsregister -u` of the staged build product and of any mounted /Volumes/<APP_NAME>*
-# copy (a mounted disk image is ejected first; a real drive never), nothing else. Never touches the
-# installed copy, never runs -kill, -r, -delete or any database rebuild. Exit 1 when a record other
-# than the installed copy remains (listed, not removed: look at it by hand).
+# targeted `lsregister -u` of the staged build product, of any mounted /Volumes/<APP_NAME>* copy
+# (a mounted disk image is ejected first; a real drive never) and of a copy in the kit's temporary
+# folder that is no longer on disk (dmg.sh's staging copy, should a run have left its record),
+# nothing else. Never touches the installed copy, never runs -kill, -r, -delete or any database
+# rebuild. Exit 1 when a record other than the installed copy remains (listed, not removed: look
+# at it by hand).
 . "$(dirname "$0")/lib.sh"
 kit_load "${1:-}"
 set +e
@@ -31,6 +33,12 @@ while IFS= read -r path; do
                 hdiutil detach "$vol" -quiet && echo "    ejected disk image: $vol" || echo "    could not eject $vol (in use?)"
             fi
             "$LSR" -u "$path" && echo "    unregistered DMG copy: $path" ;;
+        "$KIT_TMP"/*/"$APP_NAME".app)
+            if [ -e "$path" ]; then
+                echo "    left alone (in the temporary folder, still on disk): $path"
+            else
+                "$LSR" -u "$path" && echo "    unregistered the kit's deleted staging copy: $path"
+            fi ;;
         *) echo "    left alone (not a build product or DMG copy): $path" ;;
     esac
 done < <(list)
