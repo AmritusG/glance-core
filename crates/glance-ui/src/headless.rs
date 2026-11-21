@@ -5,8 +5,15 @@
 //!
 //! [`on_screen`] is the software model of that picture: the clip's premultiplied picture sampled
 //! bilinearly at the screen pixel's centre and blended over the background.
+//!
+//! The stage is also a scripted host for an app's UI tests (v0.9.1): [`Stage::step`] runs one frame with input events
+//! and hands back egui's whole output (the AccessKit tree once [`Stage::context`] has AccessKit on), the screens
+//! attached are made up ([`Stage::set_screens`]: a replug), the output windows an app asks for are kept as a list
+//! ([`Stage::outputs`]) with the shell's own rules and events ([`Stage::take_events`]), and a quit is recorded
+//! ([`Stage::quit_asked`]). Nothing opens a window.
 
-use crate::{Background, CHECKER_CELL, CHECKER_GREYS, Checker, Host, Picture};
+use crate::output::Screen;
+use crate::{Background, CHECKER_CELL, CHECKER_GREYS, Checker, Host, OutputEnd, OutputRequest, Picture, ShellEvent, find_screen};
 use egui::mutex::RwLock;
 use egui_wgpu::{Renderer, RendererOptions, ScreenDescriptor};
 use glance_gpu::{Gpu, GpuError, read_texture_rgba};
@@ -21,6 +28,13 @@ pub struct Stage {
     renderer: RwLock<Renderer>,
     slot: Option<Picture>,
     checker: Option<Checker>,
+    /// The made-up screens, the outputs open on them (in the order they opened), what the app asked during the last
+    /// frame or event, the events waiting for the app, and whether it asked to quit.
+    screens: Vec<Screen>,
+    outputs: Vec<Screen>,
+    requests: Vec<OutputRequest>,
+    pending: Vec<ShellEvent>,
+    quit: bool,
 }
 
 impl Stage {
@@ -31,7 +45,142 @@ impl Stage {
         let _ = crate::fonts::install(&ctx);
         crate::look::apply(&ctx);
         let options = RendererOptions { dithering: false, ..Default::default() };
-        Stage { gpu: gpu.clone(), ctx, renderer: RwLock::new(Renderer::new(&gpu.device, SCREEN_FORMAT, options)), slot: None, checker: None }
+        Stage {
+            gpu: gpu.clone(),
+            ctx,
+            renderer: RwLock::new(Renderer::new(&gpu.device, SCREEN_FORMAT, options)),
+            slot: None,
+            checker: None,
+            screens: Vec::new(),
+            outputs: Vec::new(),
+            requests: Vec::new(),
+            pending: Vec::new(),
+            quit: false,
+        }
+    }
+
+    /// The stage's egui context (turn AccessKit on here: `context().enable_accesskit()`).
+    pub fn context(&self) -> &egui::Context {
+        &self.ctx
+    }
+
+    /// The screens attached from now on (v0.9.1). As the shell does once a second: a change is a
+    /// [`ShellEvent::Screens`], and an output whose screen left closes with [`OutputEnd::ScreenGone`].
+    pub fn set_screens(&mut self, screens: Vec<Screen>) {
+        if screens != self.screens {
+            self.screens = screens.clone();
+            self.pending.push(ShellEvent::Screens(screens));
+        }
+        let (keep, gone): (Vec<_>, Vec<_>) = std::mem::take(&mut self.outputs).into_iter().partition(|o| self.screens.iter().any(|s| s.id == o.id));
+        self.outputs = keep;
+        for o in gone {
+            self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(o.id)));
+        }
+    }
+
+    /// The screens with an output open on them, in the order they opened (v0.9.1).
+    pub fn outputs(&self) -> &[Screen] {
+        &self.outputs
+    }
+
+    /// The events the shell would deliver before the next frame (screens, outputs closed), oldest first (v0.9.1).
+    pub fn take_events(&mut self) -> Vec<ShellEvent> {
+        std::mem::take(&mut self.pending)
+    }
+
+    /// Whether the app asked to quit ([`Host::quit`]) since the stage was made (v0.9.1).
+    pub fn quit_asked(&self) -> bool {
+        self.quit
+    }
+
+    /// Run `f` with the stage's host (an [`crate::App::event`] call, for one); output windows it asks for are opened
+    /// or closed afterwards (v0.9.1).
+    pub fn with_host<R>(&mut self, f: impl FnOnce(&mut Host<'_>) -> R) -> R {
+        let outputs = self.outputs.clone();
+        let Stage { gpu, renderer, screens, requests, quit, .. } = self;
+        let mut host = Host {
+            gpu,
+            renderer,
+            last_interval: None,
+            refresh_millihertz: None,
+            window: None,
+            quit: Some(quit),
+            drop_at: None,
+            screens,
+            output_screens: outputs.iter().collect(),
+            output_request: Some(requests),
+        };
+        let r = f(&mut host);
+        self.apply_requests();
+        r
+    }
+
+    /// One frame of `ui` on a screen of `size` points at `pixels_per_point`, with `input` (its events, time and
+    /// modifiers; the screen size is the stage's), returning egui's output for the frame: the shapes, the platform
+    /// output with the AccessKit update. Textures are uploaded, nothing is drawn or read back (v0.9.1).
+    pub fn step(
+        &mut self,
+        size: egui::Vec2,
+        pixels_per_point: f32,
+        mut input: egui::RawInput,
+        mut ui: impl FnMut(&mut egui::Ui, &mut Host<'_>),
+    ) -> egui::FullOutput {
+        input.screen_rect = Some(egui::Rect::from_min_size(egui::Pos2::ZERO, size));
+        input.viewports.entry(egui::ViewportId::ROOT).or_default().native_pixels_per_point = Some(pixels_per_point);
+        let ctx = self.ctx.clone();
+        let mut out = self.with_host(|host| ctx.run_ui(input, |root| ui(root, host)));
+        // Applied in full, then cleared: egui 0.36 panics when a `TexturesDelta` is dropped unapplied.
+        let mut delta = std::mem::take(&mut out.textures_delta);
+        {
+            let mut r = self.renderer.write();
+            for (id, deltas) in &delta.set {
+                for d in deltas {
+                    r.update_texture(&self.gpu.device, &self.gpu.queue, *id, d);
+                }
+            }
+            for id in &delta.free {
+                r.free_texture(id);
+            }
+        }
+        delta.clear();
+        out
+    }
+
+    /// Carry out the output requests in order, by the shell's rules: Open keeps only that screen's output, Add one
+    /// more, a screen not attached closes at once ([`OutputEnd::ScreenGone`]), a close is [`OutputEnd::Closed`].
+    fn apply_requests(&mut self) {
+        for req in std::mem::take(&mut self.requests) {
+            match req {
+                OutputRequest::Close => {
+                    for _ in self.outputs.drain(..) {
+                        self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
+                    }
+                }
+                OutputRequest::CloseOn(id) => {
+                    let before = self.outputs.len();
+                    self.outputs.retain(|o| o.id != id && o.name != id);
+                    if self.outputs.len() < before {
+                        self.pending.push(ShellEvent::OutputClosed(OutputEnd::Closed));
+                    }
+                }
+                OutputRequest::Open(id) => self.open_on(id, true),
+                OutputRequest::Add(id) => self.open_on(id, false),
+            }
+        }
+    }
+
+    /// An output on the screen `id` (`only`: the others close).
+    fn open_on(&mut self, id: String, only: bool) {
+        let Some(screen) = find_screen(&self.screens, &id).cloned() else {
+            self.pending.push(ShellEvent::OutputClosed(OutputEnd::ScreenGone(id)));
+            return;
+        };
+        if only {
+            self.outputs.retain(|o| o.id == screen.id);
+        }
+        if !self.outputs.iter().any(|o| o.id == screen.id) {
+            self.outputs.push(screen);
+        }
     }
 
     pub fn gpu(&self) -> &Gpu {
@@ -60,20 +209,9 @@ impl Stage {
         let points = egui::vec2(width as f32, height as f32) / pixels_per_point;
         let mut raw = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, points)), ..Default::default() };
         raw.viewports.entry(egui::ViewportId::ROOT).or_default().native_pixels_per_point = Some(pixels_per_point);
-        let Stage { gpu, ctx, renderer, .. } = self;
-        let mut host = Host {
-            gpu,
-            renderer,
-            last_interval: None,
-            refresh_millihertz: None,
-            window: None,
-            quit: None,
-            drop_at: None,
-            screens: &[],
-            output_screens: Vec::new(),
-            output_request: None,
-        };
-        let mut out = ctx.run_ui(raw, |root| ui(root, &mut host));
+        let ctx = self.ctx.clone();
+        let mut out = self.with_host(|host| ctx.run_ui(raw, |root| ui(root, host)));
+        let Stage { gpu, renderer, .. } = self;
         // Applied in full, then cleared: egui 0.36 panics when a `TexturesDelta` is dropped unapplied.
         let mut delta = std::mem::take(&mut out.textures_delta);
         let jobs = ctx.tessellate(out.shapes, out.pixels_per_point);

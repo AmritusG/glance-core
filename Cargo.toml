@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.9.0"
+version = "0.9.1"
 edition = "2024"
 # Same floor as DXVKit Plus (let-chains, edition 2024).
 rust-version = "1.95"
@@ -24,14 +24,15 @@ glance-encode = { path = "crates/glance-encode" }
 glance-library = { path = "crates/glance-library" }
 glance-arena = { path = "crates/glance-arena" }
 # Decoders, demux, transport and BC upload are DXVKit Plus's (MIT, Amrit's own): the core never
-# carries a second copy of a decoder. Pinned by tag; bumped deliberately (docs/00-ROADMAP.md §4). v0.15.1 since
+# carries a second copy of a decoder. Pinned by tag; bumped deliberately (docs/00-ROADMAP.md §4). v0.15.2 since
+# core v0.9.1: the CVMetalTextureCache import route's crash fixed (a texture released on another thread). v0.15.1 since
 # core v0.8.1 (v0.15.0 since v0.8.0): fragmented MP4 read, faster DXV encode and CPU decode, the decoder's buffer to AvWriter.
-dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.1" }
-dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.1" }
-dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.1" }
-dxvkit-plus-enc = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.1" }
+dxvkit-plus-core = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.2" }
+dxvkit-plus-wgpu = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.2" }
+dxvkit-plus-apple = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.2" }
+dxvkit-plus-enc = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.2" }
 # Windows: the Media Foundation reader (0.14.0; it ran on Windows: DXVKit Plus run 44171687138).
-dxvkit-plus-windows = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.1" }
+dxvkit-plus-windows = { git = "https://github.com/AmritusG/DXVKit-Plus", tag = "v0.15.2" }
 # One wgpu major across DXVKit Plus, loombda-rs and egui 0.36 (which requires wgpu ^30).
 wgpu = "30.0.1"
 egui = { version = "0.36.2", default-features = false }

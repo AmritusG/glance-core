@@ -22,6 +22,10 @@ Wave: scrub-paths-and-guard. Brief: ~/claude-handoffs/glance-core_2026-11-21_scr
   (add / close per screen, `OutputFrame::screen`), glance-platform `SyphonServer` (macOS, Syphon.framework loaded at
   run time, wgpu's MTLTexture handed over) and `SpoutSender` (Windows, Spout 2's sender protocol); Handoff docs/handoffs/v090-several-outputs-syphon-spout.md.
 
+- 2026-11-21 (GlancEhr session, crawl-eval-transitions): **v0.9.1** — glance-ui's headless stage as a scripted host
+  (input events, AccessKit tree, made-up screens, outputs by the shell's rules, quit), glance-encode `FrameWriter`,
+  DXVKit Plus v0.15.2 (a CVMetalTextureCache crash); Handoff docs/handoffs/v091-stage-host-frame-writer.md.
+
 ## NEXT
 - Nothing queued for this wave. Amrit: remove the delete_repo scope if wanted; decide on the installed Glance Sample 0.3.1 (holds the home path; never published); GitHub Support can purge glenc-public's old commits. Next core work: the Windows milestone (ROADMAP §7).
 
