@@ -1,45 +1,30 @@
 # glance-core CHECKPOINT
 
-Wave: v0.6.0 (the show output, for GlancEhr; handoff docs/handoffs/v060-glancehr-output.md). Before that: clean-history-and-publish. Brief: ~/claude-handoffs/glance-core_2026-11-17_clean-history-and-publish_brief.md. Machine: <host>. Previous wave: v050-encode (closed, tag v0.5.0; its checkpoint is in git history at b187b6e).
+Wave: scrub-paths-and-guard. Brief: ~/claude-handoffs/glance-core_2026-11-21_scrub-paths-and-guard_brief.md. Machine: the core's home machine. Previous waves (v0.8.1 and before): closed; their checkpoint is in git history.
 
 ## DONE
-- DIAGNOSE: local clean and in sync (8e37377); full bundle of the old history kept privately in the mailbox backups (verified, test-restored); research notes copied to the private repo AmritusG/glance-research (byte-equal).
-- Rewrite: docs/research/ and the two C3 PNGs dropped from all history; paths, account name, session URLs and third-party clip names replaced in every blob and message; every removal count 0, gitleaks clean (`docs/data/publish/removal-scan.txt`).
-- Tip 4ae1791: media through GLANCE_TESTFILES only (renamed rows found by content), docs true for the cleaned history; gates 89 / 0 (`docs/data/publish/gates.txt`).
-- Published: force-push, public; old SHAs still served by GitHub → private again (~3 min), Amrit chose delete + re-create → re-created public, cleaned refs pushed; old SHAs 422 / 404, events feed empty, unauthenticated ls-remote ok (`docs/data/publish/public-check.txt`); CI 44087491117 green.
-- Local folder replaced by a clone of the new repo (old checkout in the Bin); gates pass.
-- Apps re-pinned on the rewritten tags, CI on without a deploy key: glance-rs 1f20339 (CI green), cueglance-rs 3261caf (CI green), glenc-rs 8605aa5 (lint, windows green; macOS never got a runner, below). Deploy-key secret deleted.
-- glenc-public re-seeded with the Rust source, tag v1.7.0; clean-room build from a fresh GitHub clone ok (`docs/data/publish/glenc-public-build.txt`).
-- Amrit's "public" (2026-11-17 08:46) recorded in ROADMAP and the three apps; Windows-only parity items stay open.
-- Handoff: `docs/handoffs/clean-history-and-publish.md`; glance-core CI 44140024833 green on 65c65cc.
-- 2026-11-17 fix (MaCrate's preview, Glance 0.19.0): with loop off and the sound driving the clock, the end is now heard and the clock stops on the last frame (glance-audio: silent buffers after the end no longer re-anchor the heard position); note to Glance: `~/claude-handoffs/glance-rs_2026-11-17_note-from-glance-core-loop-end.md`.
+- DIAGNOSE: fresh mirrors of glance-core, DXVKit-Plus, glenc-public scanned (every blob, tree path, commit and tag message, ref name). Real hits: glance-core 64 (home path 3, temp dir 4, host name 55, session id 2), DXVKit-Plus 280 account name / 19 home paths / 214 scratch paths / 1 temp dir / 2 host name, glenc-public 1 (a session URL in the message of the v1.3.0 commit). The four apps are private: not rewritten.
+- Safety bundles (all refs, verified, test-restored): ~/claude-handoffs/backups/<repo>/<repo>_pre-scrub_2026-11-21.bundle for the three.
+- Rewrite on mirrors (scratch ~/Documents/claude/scrap-test/glance-core/rewrite, rules in tools/ there), in the order DXVKit-Plus, glance-core, glenc-public so each Cargo.lock names the new commits of what it pins: every real count 0, gitleaks clean, only docs/, CHECKPOINT.md and Cargo.lock differ at any ref.
+- The guard was written and tested in scratch first (work/glance-core: tools/path-guard.sh, path-guard-setup.sh, push-main.sh, .gitleaks.toml, the path-guard workflow, kit checks, the rule in CLAUDE.md / README / kit README; work/DXVKit-Plus and work/glenc-public likewise): selftest ok, old histories 128 / 1078 / 2 hits, cleaned histories 0, the four installed apps and three released DMGs clean.
 
-- 2026-11-18 (glance-rs session, patch-releases): kit 1c9841c — the speed build by default in bundle.sh
-  (CARGO_PROFILE_RELEASE_LTO=fat, CODEGEN_UNITS=1, OPT_LEVEL=3, printed), README adoption step for the app profile,
-  RUSTFLAGS comment corrected. Shipped in Glance 0.19.1, CueGlance 1.5.1, GlEnc 1.7.1, MaCrate 0.17.1 (all on v0.7.1;
-  numbers in each app's docs/data/p1/speed/). This workspace's own profile unchanged (debug = 1 for its tests).
-
-- 2026-11-18 (glenc-rs session, train-loop-and-speed r2, PART A): v0.7.2 — glance-encode takes the platform's timing
-  when the demuxer does not read a native file (fragmented MP4: 0.0 fps up to v0.7.1); test + CC0 fixture
-  `tiles_h264_fragmented.mp4`; handoff docs/handoffs/v072-fragmented-mp4.md. OPEN there: AVFoundation's doubled
-  duration for such a file (count 2x on the grid fallback); a moof-reading demuxer in DXVKit Plus would fix it.
-
-- 2026-11-19 (glenc-rs session, speed-build-and-fragmented-mp4): **v0.8.0** — glance-encode frames in flight, native
-  BGRA kept for the platform writer, a fragmented file's exact count; DXVKit Plus v0.15.0 (fragmented MP4 read, faster
-  DXV encode / CPU decode); kit x86-64-v3 Intel slice. Gates 458 / 0, CI 44508562393 green, tag v0.8.0. Handoff
-  docs/handoffs/v080-frames-in-flight.md. **v0.8.1**: the decoder's own buffer to the platform writer
-  (DXVKit Plus v0.15.1), level with Swift on ProRes / H.264 from native sources. The OPEN of v0.7.2 (AVFoundation's doubled duration) is closed by DXVKit Plus 0.15.0.
+- Published 2026-11-21: DXVKit-Plus and glance-core deleted and re-created from the cleaned mirrors (all refs, same names, description, topics, public, secret scanning on); glenc-public force-pushed (Amrit's choice: stars and releases kept, its 8 old commits stay reachable by id until GitHub collects them). Old commit ids: 62 / 62 and 52 / 52 answer HTTP 422, web 404; events feeds empty; unauthenticated ls-remote equals the cleaned mirrors (`docs/data/scrub/public-check.txt`).
+- Local checkouts of glance-core and DXVKit-Plus replaced by clones of the clean repos (old ones in the Bin).
+- The guard in glance-core: `tools/path-guard.sh` (hook, gate, CI job, kit check of the bundle and of the DMG's contents), `tools/path-guard-setup.sh`, `tools/push-main.sh`, `.gitleaks.toml`, `.github/workflows/path-guard.yml`, rule 11 in CLAUDE.md, the README and the kit README. Gates 459 / 0, path-guard clean.
 
 ## NEXT
-- Amrit: Settings → Billing → Actions usage (private-repo macOS minutes), then `gh run rerun 44131258624 --failed -R AmritusG/glenc-rs` and watch to green. Next core work: the Windows milestone (ROADMAP §7).
+- Push this commit with tools/push-main.sh; the same guard commit in DXVKit-Plus (committed locally) and glenc-public (scratch clone ~/Documents/claude/scrap-test/glance-core/pub/glenc-public); branch protection (path-guard required, admins included) on the three; the proof (hook refuses a made-up path; the CI job fails on a throwaway branch made through the API); the four apps (locks refreshed, gates running: commit, then tools/path-guard.sh + the gate line + the rule); handoff.
 
 ## STATE
-- glance-core is PUBLIC (MIT), re-created 2026-11-17; tags v0.1.0–v0.5.0 on the rewritten commits (table in the handoff).
+- glance-core, DXVKit-Plus and glenc-public are PUBLIC; the old history is only in the private bundles (~/claude-handoffs/backups/<repo>/<repo>_pre-scrub_2026-11-21.bundle). Never push a bundle.
 - Gates on the home machine: set GLANCE_TESTFILES to the test media folder, GLANCE_REQUIRE_GPU=1.
-- Never push anything from glance-research or the backup bundle anywhere public.
+- main is pushed with tools/push-main.sh (rule 11, CLAUDE.md "Pushing").
 
 ## OPEN
-- [ ] glenc-rs CI 44131258624: macOS job green (4 attempts cancelled by GitHub, "not acquired by Runner of type hosted"; public glance-core's macOS job ran meanwhile; glenc-rs gates 232 / 0 locally)
+- [ ] The guard commit pushed in the three public repos, branch protection set
+- [ ] The proof (hook refusal, CI failure on a throwaway branch, a clean commit passing)
+- [ ] The four apps: lock refresh committed and pushed, hook, gate line, rule
+- [ ] Handoff
 
 ## IDEAS
 - Windows: Media Foundation reader / writer behind glance-encode's platform module (with DXVKit Plus's Windows backend).

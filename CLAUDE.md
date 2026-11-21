@@ -25,6 +25,9 @@ before it replaces its Swift twin), `CHECKPOINT.md` (where the work stands). Mea
 | `glance-proof` | the proof window (W0), and `verify` / `hapq` / `scrub` / `reroute` / `gpu` without a window. Not a product. |
 
 `tools/package/`: the packaging kit (universal build, sign, notarise, DMG, `ls-cleanup`), slots in an `app.conf`.
+`tools/path-guard.sh`: the family's path guard (rule 11): the pre-push hook, the gate, the CI job and the kit's check of
+what ships are all this one script. `tools/path-guard-setup.sh` puts it into every repo of the family;
+`tools/push-main.sh` is how a commit reaches the protected `main`. `.gitleaks.toml`: the same rules for gitleaks.
 
 Planned crates (library-db, arena-client, encode) are in the roadmap; a crate is
 created in the wave that fills it, never as an empty stub.
@@ -57,6 +60,11 @@ created in the wave that fills it, never as an empty stub.
    home machine; Windows only at the Windows milestone in the roadmap.
 10. One `main` branch. Dead code goes. Timestamps preserved on every copy (`cp -p`, `rsync -a`,
     `ditto`).
+11. **No build-machine path or account name ever enters a public repo or a released binary: no /Users/<name>, no ~/ expanded, no /private/var/folders, no /Volumes/<private>, no host names, no session URLs. Logs, test output and data files are scrubbed or kept out of git. This is enforced by the pre-push hook, the CI path check and the kit's binary check; none of them may be bypassed, disabled or weakened (no --no-verify, no allow-list for a real path). A hit is fixed at the source, never waved through.**
+    The machinery is `tools/path-guard.sh` (what counts as a hit is its `scan_line`; the made-up names tests and docs
+    may use are its GENERIC lists, and a real name never goes on one). A checkpoint or a handoff says "the home
+    machine", never its host name; a log is scrubbed before it is committed (`tools/path-guard.sh files <log>` says
+    what is left).
 
 ## Gates (every change)
 
@@ -66,13 +74,23 @@ cargo clippy --workspace --all-targets --release -- -D warnings
 cargo test --workspace --release
 cargo deny check
 cargo build --release
+tools/path-guard.sh check
 ```
+
+`tools/path-guard.sh check` fails unless the pre-push hook is installed and is that script (`tools/path-guard.sh install`,
+once per clone) and the working tree holds no build-machine path or name (rule 11).
+
+**Pushing.** `main` is protected on GitHub (admins included): a commit gets in only after the `path-guard` job passed on
+it. `tools/push-main.sh` does it (the commit goes to `guard/<sha>`, the job runs, then `main`, then the branch is
+deleted); a plain `git push origin main` of a new commit is refused by GitHub. Tags: `git push origin <tag>`. Never
+`--no-verify`.
 
 The exactness bar is a test: the picture equals the CPU reference at max 0 (`crates/glance-gpu/tests/exact.rs`),
 window-scaled within 1 (`crates/glance-ui/tests/screen.rs`). A change that moves either is not done.
 GPU tests skip on a machine without a GPU; on the home machine run them with `GLANCE_REQUIRE_GPU=1`
 so a skip is a failure. Tests on Amrit's media run only when `GLANCE_TESTFILES` names its folder (they skip otherwise;
-on the home machine set it for every gate run). CI (`.github/workflows/ci.yml`) runs the gates on every push; a tag is made
+on the home machine set it for every gate run). CI (`.github/workflows/ci.yml`) runs the gates on every push, and `.github/workflows/path-guard.yml` the path guard over
+every ref (and gitleaks with the same rules); a tag is made
 only from a green `main`. Fixtures and their licences: `tests/fixtures/`, `ATTRIBUTION.md`.
 
 GUI runs: `pgrep -x glance-proof` / `pkill -9 -x glance-proof` before and after (exact name, never

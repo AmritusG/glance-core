@@ -80,6 +80,16 @@ cargo build --release
   `clip_key`).
 - A headless stage (`glance_ui::headless`) that draws the real egui widget offscreen, for tests.
 
+## Rules
+
+The working rules are in `CLAUDE.md`. One of them holds for every repo of the family, word for word:
+
+> No build-machine path or account name ever enters a public repo or a released binary: no /Users/<name>, no ~/ expanded, no /private/var/folders, no /Volumes/<private>, no host names, no session URLs. Logs, test output and data files are scrubbed or kept out of git. This is enforced by the pre-push hook, the CI path check and the kit's binary check; none of them may be bypassed, disabled or weakened (no --no-verify, no allow-list for a real path). A hit is fixed at the source, never waved through.
+
+`tools/path-guard.sh` is that machinery: installed as the pre-push hook (`tools/path-guard.sh install`), run as a gate
+(`tools/path-guard.sh check`), run over every ref by the `path-guard` CI job (a required check on `main`), and run by the
+packaging kit over the app bundle and the contents of the DMG.
+
 ## Gates
 
 ```sh
@@ -88,10 +98,12 @@ cargo clippy --workspace --all-targets --release -- -D warnings
 cargo test --workspace --release
 cargo deny check
 cargo build --release
+tools/path-guard.sh check
 ```
 
 The GPU tests need a GPU (Metal on macOS); without one they skip, unless `GLANCE_REQUIRE_GPU=1`
-makes that a failure. CI (`.github/workflows/ci.yml`) runs the same gates on every push.
+makes that a failure. CI (`.github/workflows/ci.yml`) runs the same gates on every push;
+`.github/workflows/path-guard.yml` runs the path guard over every ref.
 
 ## Licence
 

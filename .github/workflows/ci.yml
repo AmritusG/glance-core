@@ -11,8 +11,12 @@
 #   on Windows at the Windows milestone (docs/00-ROADMAP.md §7).
 name: CI
 
+# guard/<sha> branches carry a commit to the path-guard job before it may reach main
+# (tools/push-main.sh, .github/workflows/path-guard.yml); the gates run when it is on main.
 on:
   push:
+    branches-ignore: ["guard/**"]
+    tags: ["**"]
   pull_request:
 
 concurrency:

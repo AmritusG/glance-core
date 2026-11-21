@@ -15,6 +15,14 @@ ln -s /Applications "$work/Applications"
 if [ -e "$DMG" ]; then rm "$DMG"; fi
 echo "==> hdiutil create $(basename "$DMG")"
 hdiutil create -volname "$APP_NAME $VERSION" -srcfolder "$work" -ov -format UDZO "$DMG" >/dev/null
+# What the image holds, read back from the image itself: no build-machine path or account name in
+# any file of it (the same guard as the bundle's, on the mounted contents).
+mnt="$work/mnt"
+mkdir "$mnt"
+hdiutil attach -readonly -nobrowse -noautoopen -mountpoint "$mnt" "$DMG" >/dev/null
+(kit_path_guard "$mnt") || { hdiutil detach "$mnt" >/dev/null; exit 1; }
+hdiutil detach "$mnt" >/dev/null
+rmdir "$mnt"
 "$here/sign.sh" "$1" "$DMG"
 "$here/notarize.sh" "$1" "$DMG"
 (cd "$(dirname "$DMG")" && shasum -a 256 "$(basename "$DMG")" > "$(basename "$DMG").sha256")

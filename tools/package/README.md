@@ -8,13 +8,20 @@ read for C3; `docs/handoffs/c3-shell.md` DIAGNOSE 4). Proven on `glance-sample`
 
 | Script | Does |
 |---|---|
-| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, the speed build by default (`lto = "fat"`, `codegen-units = 1`, `opt-level = 3`, through `CARGO_PROFILE_RELEASE_*`; set one in the environment to override), the Intel slice for `x86-64-v3` (every Intel Mac macOS 14 supports has AVX2 / FMA / BMI2), `strip -S` (debug information out, the symbol table kept; refuses if any debug map entry is left), source paths remapped (`--remap-path-prefix` for the cargo home, the repo, the stage's target; refuses a binary that still holds `$HOME`), the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
+| `bundle.sh <conf>` | `cargo build --release --locked` for `aarch64-apple-darwin` and `x86_64-apple-darwin` at `MIN_MACOS`, `lipo` into one binary, the speed build by default (`lto = "fat"`, `codegen-units = 1`, `opt-level = 3`, through `CARGO_PROFILE_RELEASE_*`; set one in the environment to override), the Intel slice for `x86-64-v3` (every Intel Mac macOS 14 supports has AVX2 / FMA / BMI2), `strip -S` (debug information out, the symbol table kept; refuses if any debug map entry is left), source paths remapped (`--remap-path-prefix` for the cargo home, the repo, the stage's target; refuses a binary that still holds `$HOME`; the path guard over the finished `.app`), the `.app` assembled in `STAGE_DIR` with `Info.plist` filled from the template; **refuses** when `CFBundleVersion` ≠ `CFBundleShortVersionString` or the bundle id is not the conf's |
 | `sign.sh <conf> [path]` | Developer ID, hardened runtime, secure timestamp, `entitlements.plist`; strict verify |
 | `notarize.sh <conf> [path]` | `notarytool submit --keychain-profile NOTARY_PROFILE --wait`, refuses anything but Accepted (prints the log), `stapler staple` + `validate`, Gatekeeper |
-| `dmg.sh <conf>` | UDZO image "`<APP_NAME> <VERSION>`" with the app and an `/Applications` link, file `<APP_NAME>-v<VERSION>.dmg`; signed, notarised, stapled; then `<dmg>.sha256` |
+| `dmg.sh <conf>` | UDZO image "`<APP_NAME> <VERSION>`" with the app and an `/Applications` link, file `<APP_NAME>-v<VERSION>.dmg`; the path guard over the image's mounted contents; signed, notarised, stapled; then `<dmg>.sha256` |
 | `ls-cleanup.sh <conf>` | targeted `lsregister -u` of the staged copy and mounted `/Volumes/<APP_NAME>*` copies; exit 1 unless the one record left is `INSTALL_DIR/<APP_NAME>.app`; never a database rebuild |
 | `install.sh <conf> [dmg]` | mount read-only, Gatekeeper, `ditto` into `INSTALL_DIR`, detach, Gatekeeper + staple check, `ls-cleanup.sh` |
 | `release.sh <conf>` | bundle → sign → notarise → DMG → ls-cleanup |
+
+**The rule the kit enforces on what ships.** No build-machine path or account name ever enters a public repo or a released binary: no /Users/<name>, no ~/ expanded, no /private/var/folders, no /Volumes/<private>, no host names, no session URLs. Logs, test output and data files are scrubbed or kept out of git. This is enforced by the pre-push hook, the CI path check and the kit's binary check; none of them may be bypassed, disabled or weakened (no --no-verify, no allow-list for a real path). A hit is fixed at the source, never waved through.
+
+The kit's part: `bundle.sh` refuses a binary that holds `$HOME`, then runs the family's path guard
+(`tools/path-guard.sh files`, beside the kit) over the whole `.app`; `dmg.sh` mounts the image it made, read-only, and
+runs the same guard over its contents before it is signed. Both stop the release on a hit. The guard also is the repo's
+pre-push hook and gate (`tools/path-guard.sh install`, `tools/path-guard.sh check`).
 
 Nothing is staged in or beside the project (`lib.sh` refuses such a `STAGE_DIR`). Identities,
 team ids and certificate hashes are masked in everything the kit prints.
@@ -44,7 +51,8 @@ The Rust toolchain must have both macOS standard libraries (`KIT_TOOLCHAIN_BIN`;
 ## Adoption checklist (an app repo taking the kit)
 
 1. Copy `tools/package/` (keep the timestamps: `cp -Rp` / `ditto`) and `.cargo/config.toml`
-   (deployment target 14.0).
+   (deployment target 14.0). The path guard comes with it: glance-core's `tools/path-guard-setup.sh <app repo>` copies
+   `tools/path-guard.sh` and installs the pre-push hook; `tools/path-guard.sh installed` goes into the app's gates.
    Set the same speed build in the app's `[profile.release]` (`lto = "fat"`, `codegen-units = 1`,
    `opt-level = 3`) so `cargo build --release` outside the kit builds what ships; keep the app's own `panic` and
    `debug`. Measure before / after (release, several runs, mean and spread) and keep it only when not slower.

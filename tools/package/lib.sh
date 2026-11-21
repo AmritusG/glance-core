@@ -30,6 +30,15 @@ kit_load() {
     LSR=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 }
 
+# No build-machine path or account name in what ships: the family's path guard (tools/path-guard.sh,
+# beside the kit in every repo that has the kit) over files and folders, binaries included.
+kit_path_guard() {
+    local guard
+    guard="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/path-guard.sh"
+    [ -x "$guard" ] || kit_die "no tools/path-guard.sh beside the kit (the kit is copied with it)"
+    "$guard" files "$@" || kit_die "build-machine paths or names in what ships (above); fix them at the source"
+}
+
 # The signing identity: SIGN_IDENTITY from the conf, or "auto" = the first "Developer ID
 # Application" identity in the keychain, by its hash (nothing identifying lives in the repo).
 kit_identity() {
