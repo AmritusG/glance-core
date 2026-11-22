@@ -1,0 +1,15 @@
+# kit run 'control' (glance-sample, changed kit, the toolchain's default: rustup stable 1.100.0 without rust-src; HOME and the scrap folder scrubbed)
+==> toolchain: rustc 1.100.0 (0ef1bc386 2026-11-09)
+==> release profile: lto fat, codegen-units 1, opt-level 3
+==> cargo build --release --target aarch64-apple-darwin -p glance-sample 
+    Finished `release` profile [optimized + debuginfo] target(s) in 1m 32s
+==> cargo build --release --target x86_64-apple-darwin -p glance-sample (RUSTFLAGS -C target-cpu=x86-64-v3 + path remaps)
+    Finished `release` profile [optimized + debuginfo] target(s) in 1m 35s
+==> assembling <scrap>/stages/control/Glance Sample.app
+path-guard: clean - Glance Sample.app (4 objects, 19663907 bytes)
+==> stripped: 0 debug map entries, 0 build-machine paths, 10826 symbols kept
+==> <scrap>/stages/control/Glance Sample.app: version 0.9.5, x86_64 arm64, minos 14.0
+exit 0
+## strings -a <binary> | grep -c "$HOME": 0
+## /rustc/src/library paths: 0
+## /rustc/<hash> paths: 180

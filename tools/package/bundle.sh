@@ -28,7 +28,11 @@ mkdir -p "$STAGE_DIR"
 # .cargo/config.toml (build and target.<triple>; Cargo uses one source), so a config's `-Wl,-S` does not apply here:
 # `strip -S` below does that work. A build that still holds $HOME is refused below.
 cargo_home="${CARGO_HOME:-$HOME/.cargo}"
-remap="--remap-path-prefix=$cargo_home=/cargo --remap-path-prefix=$REPO=/src --remap-path-prefix=$target_dir=/target"
+# With the toolchain's rust-src component installed, rustc writes the local copy's path for std code inlined into the
+# app instead of std's own /rustc/<hash> (GlancEhr 1.0.4: rust-src arrived on the build machine and 92 such paths
+# reached the binary): that folder is remapped too.
+rust_src="$("$bin_dir/rustc" --print sysroot)/lib/rustlib/src/rust"
+remap="--remap-path-prefix=$cargo_home=/cargo --remap-path-prefix=$REPO=/src --remap-path-prefix=$target_dir=/target --remap-path-prefix=$rust_src=/rustc/src"
 # The speed build (Amrit 2026-11-18: "Any software under 200 MB I want optimized for speed, not disk size"): whole-
 # program optimisation by default for every app the kit builds, whatever its Cargo.toml says; an app that measured
 # slower sets the CARGO_PROFILE_RELEASE_* variables itself. panic and debug / strip stay the app's profile's.

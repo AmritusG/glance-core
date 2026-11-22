@@ -1,0 +1,18 @@
+# Gates, kit-rust-src-remap (v0.9.5), home machine, GLANCE_TESTFILES set, GLANCE_REQUIRE_GPU=1
+### fmt	rc=0
+### clippy	rc=0
+### test	rc=101
+### deny	rc=0
+### build	rc=0
+### path-guard	rc=0
+# deny:
+advisories ok, bans ok, licenses ok, sources ok
+# path-guard:
+path-guard: clean - the hook is installed; the working tree (1418 objects, 7532079 bytes)
+# cargo test --workspace --release --no-fail-fast, summary lines
+total: passed 473 failed 1 ignored 0
+# the failure (known since v0.9.3: clipS_ProRes 4444.mov not in the test media folder):
+thread 'test_media_reads_as_swift_reads_it' (96295635) panicked at crates/glance-library/tests/files_swift_parity.rs:295:5:
+assertion `left == right` failed: every file Swift read is there
+  left: 182
+ right: 183
