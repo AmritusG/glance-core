@@ -1,6 +1,6 @@
 # glance-core CHECKPOINT
 
-Wave: serde-float-roundtrip (v0.9.4), run from the glance-rs session. Brief: ~/claude-handoffs/glance-rs_2026-11-22_serde-float-roundtrip-check_brief.md (from TestKard, TESTKARD-025). Machine: the core's home machine. Previous wave (covered-window-pacing / v0.9.3) closed; its checkpoint is in git history.
+Wave: serde-float-roundtrip (v0.9.4), run from the glance-rs session. CLOSED 2026-11-22. Brief: ~/claude-handoffs/glance-rs_2026-11-22_serde-float-roundtrip-check_brief.md (from TestKard, TESTKARD-025). Machine: the core's home machine. Previous wave (covered-window-pacing / v0.9.3) closed; its checkpoint is in git history.
 
 ## DONE
 - READ: every Cargo.toml for serde_json; the JSON read back with doubles: glance-settings FileStore (`real` values; the Windows store, and MaCrate's crawl mode), glance-arena's shared store (Swift `Date`s in recents.json / cache.json), glance-library's sidecars (already had float_roundtrip on its own line). glance-proof / glance-sample only write JSON.
@@ -9,9 +9,12 @@ Wave: serde-float-roundtrip (v0.9.4), run from the glance-rs session. Brief: ~/c
 - Workspace version 0.9.4 (version + lock).
 - Gates (docs/data/serde-float-roundtrip/gates.txt): fmt, clippy, deny, build, path-guard green; tests 472 passed / 1 failed (v0.9.3: 468 / 3): the one failure is files_swift_parity, clipS_ProRes 4444.mov still not in the test media folder.
 
+- Pushed 25325a3 through tools/push-main.sh (path-guard green on guard/25325a397337 and main); CI on main green: lint, macos, windows (run 45057815982), path-guard (45057815970). Tag v0.9.4 (annotated) on 25325a3, pushed.
+- No app takes v0.9.4 in this pass: MaCrate (the only user of FileStore on macOS and of glance-arena) already builds serde_json with float_roundtrip from its own workspace; Glance, CueGlance and GlEnc keep their settings in UserDefaults (GlEnc's own fix is in glenc-rs, 1.8.3). Apps pick v0.9.4 up at their next pin bump.
+- Wave closed 2026-11-22. Result: ~/claude-handoffs/glance-rs_2026-11-22_serde-float-roundtrip-result.md.
+
 ## NEXT
-- Push through tools/push-main.sh, CI green, tag v0.9.4, push the tag.
-- No app needs v0.9.4 now: MaCrate (the only user of FileStore on macOS and of glance-arena) already builds serde_json with float_roundtrip from its own workspace; Glance, CueGlance and GlEnc keep their settings in UserDefaults. Apps pick v0.9.4 up at their next pin bump.
+- Nothing queued for this wave. Carried over: clipS_ProRes 4444.mov is still missing from the test media folder (files_swift_parity red on the home machine; Amrit's call). Next core work: the Windows milestone (ROADMAP §7).
 
 ## STATE
 - Other sessions push to glance-core main from their own clones (GlancEhr's did, v0.9.0): `git fetch` and compare with origin/main before committing a version or tagging.
