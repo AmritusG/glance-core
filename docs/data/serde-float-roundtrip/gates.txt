@@ -1,5 +1,16 @@
-# serde-float-roundtrip gates, 2026-11-22, the home machine, GLANCE_TESTFILES set, GLANCE_REQUIRE_GPU=1, tree = v0.9.4 before its commit
+# serde-float-roundtrip gates, 2026-11-22, the home machine, GLANCE_TESTFILES set, GLANCE_REQUIRE_GPU=1
+# run 1: tree = v0.9.4 before its commit; run 2: v0.9.4 + crates/glance-library/tests/float_roundtrip.rs
 
+## run 2
+gate exit: fmt 0
+gate exit: clippy 0
+gate exit: test 101
+gate exit: deny 0
+gate exit: build 0
+gate exit: path-guard 0
+# total: 473 passed, 1 failed, 54 test binaries
+
+## run 1
 gate exit: fmt 0
 gate exit: clippy 0
 gate exit: test 101

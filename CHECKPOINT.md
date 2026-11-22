@@ -11,6 +11,7 @@ Wave: serde-float-roundtrip (v0.9.4), run from the glance-rs session. CLOSED 202
 
 - Pushed 25325a3 through tools/push-main.sh (path-guard green on guard/25325a397337 and main); CI on main green: lint, macos, windows (run 45057815982), path-guard (45057815970). Tag v0.9.4 (annotated) on 25325a3, pushed.
 - No app takes v0.9.4 in this pass: MaCrate (the only user of FileStore on macOS and of glance-arena) already builds serde_json with float_roundtrip from its own workspace; Glance, CueGlance and GlEnc keep their settings in UserDefaults (GlEnc's own fix is in glenc-rs, 1.8.3). Apps pick v0.9.4 up at their next pin bump.
+- After the tag (test only, no new tag): crates/glance-library/tests/float_roundtrip.rs, sidecars + a stash file (400 001 doubles): off 53 098 off, on 0 (must-fail.txt). Gates run 2: 473 passed / 1 failed (the same missing clip).
 - Wave closed 2026-11-22. Result: ~/claude-handoffs/glance-rs_2026-11-22_serde-float-roundtrip-result.md.
 
 ## NEXT

@@ -14,3 +14,16 @@ $ cargo test --release -p glance-settings --test float_roundtrip
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
 $ cargo test --release -p glance-arena --test float_roundtrip
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+# After v0.9.4 (test only, no new tag): crates/glance-library/tests/float_roundtrip.rs, sidecars (a real sidecar's
+# 17-digit timestamps + 66,666 random, created_at / updated_at / bpm) and one stash file of 100,000 stashes; the
+# workspace dependency set back to serde_json = "1" for the OFF run only, then restored.
+
+## OFF
+$ cargo test --release -p glance-library --test float_roundtrip
+assertion `left == right` failed: 53098 of 400001 doubles read back off, 23897 files re-saved differently
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.10s
+
+## ON
+$ cargo test --release -p glance-library --test float_roundtrip
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
