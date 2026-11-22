@@ -47,6 +47,12 @@ Brief: `~/claude-handoffs/glance-core_2026-11-22_from-glancehr_kit-rust-src-rema
   runs used a throw-away copy with rust-src added. That copy is in the Trash now.
 - The first "before" attempt was dropped: `bundle.sh` was edited while that run was reading it. It was rerun from a
   worktree at ead07ca.
+- The gates script's test step stopped at the first failing test binary (260 / 1). The 473 / 1 count comes from a
+  separate `cargo test --workspace --release --no-fail-fast` run with the same two variables set.
+- The verifier (cc-kit:verifier) confirmed 24 claims from the diff, the evidence files, GlancEhr's file and the trashed
+  logs and binaries. Three are this session's record only, because the evidence went with the scrap folder: the
+  "before" run's kit revision (the worktree is removed; only the old kit leaves those 82 paths unremapped), why the
+  first attempt was dropped, and the variables on the `--no-fail-fast` run.
 - Not taken (per the brief, the kit owner's call): GlancEhr's `lib.sh` requiring the ENTITLEMENTS slot, and its
   RESOURCES / FRAMEWORKS slots. The family default `entitlements.plist` stays as it is.
 - Scrap: `~/Documents/claude/scrap-test/glance-core/kit-rust-src`, 22 378 files, 9.1 GB (the toolchain copy and three

@@ -1,6 +1,6 @@
 # glance-core CHECKPOINT
 
-Wave: kit-rust-src-remap (v0.9.5). Brief: ~/claude-handoffs/glance-core_2026-11-22_from-glancehr_kit-rust-src-remap.md (from GlancEhr 1.0.4, its commit 6a7bc7b). Machine: the core's home machine. Previous wave (serde-float-roundtrip / v0.9.4) closed; its checkpoint is in git history.
+Wave: kit-rust-src-remap (v0.9.5). Brief: ~/claude-handoffs/glance-core_2026-11-22_from-glancehr_kit-rust-src-remap.md (from GlancEhr 1.0.4, its commit 6a7bc7b). CLOSED 2026-11-22. Machine: the core's home machine. Previous wave (serde-float-roundtrip / v0.9.4) closed; its checkpoint is in git history.
 
 ## DONE
 - READ: GlancEhr's tools/package/bundle.sh on its main (gh api, read-only): `rust_src="$("$bin_dir/rustc" --print sysroot)/lib/rustlib/src/rust"` and `--remap-path-prefix=$rust_src=/rustc/src` appended to remap. Not taken: its ENTITLEMENTS-required lib.sh and RESOURCES / FRAMEWORKS slots.
@@ -10,8 +10,13 @@ Wave: kit-rust-src-remap (v0.9.5). Brief: ~/claude-handoffs/glance-core_2026-11-
 - GATES (gates.txt): fmt, clippy, deny, build, path-guard green; tests 473 passed / 1 failed (files_swift_parity, clipS_ProRes 4444.mov missing; as v0.9.4).
 - HANDOFF: docs/handoffs/kit-rust-src-remap.md. Scrap swept to the Trash (22 378 files, 9.1 GB).
 
+- VERIFIER (cc-kit:verifier): 24 CONFIRMED; UNPROVEN only for what left with the scrap folder (the before run's kit revision, the dropped first attempt, the variables on the --no-fail-fast run; all three named in the handoff) and the then-pending tag / notes / mailbox copy; WRONG only for this file's then-stale NEXT (push already done).
+- Pushed 4f0c3d4 through tools/push-main.sh (path-guard green on guard/4f0c3d4eab1c and main); CI on main green: lint, macos, windows (run 45067716481), path-guard (45067716587). Tag v0.9.5 (annotated) on 4f0c3d4, pushed.
+- Notes in the mailbox: glance-rs, cueglance-rs, glenc-rs, macrate-rs (`<app>_2026-11-22_note-from-glance-core-kit-rust-src-remap.md`: cp -Rp tools/package/ at the next release; no pin change). GlancEhr already has the change (6a7bc7b).
+- Wave closed 2026-11-22. Result: ~/claude-handoffs/glance-core_2026-11-22_kit-rust-src-remap-result.md.
+
 ## NEXT
-- Push with tools/push-main.sh, CI on main, tag v0.9.5, one note per app (glance-rs, cueglance-rs, glenc-rs, macrate-rs), mailbox copy of the handoff.
+- Nothing queued for this wave. Carried over: clipS_ProRes 4444.mov is still missing from the test media folder (files_swift_parity red on the home machine; Amrit's call). Next core work: the Windows milestone (ROADMAP §7).
 
 ## STATE
 - Other sessions push to glance-core main from their own clones (GlancEhr's did, v0.9.0): `git fetch` and compare with origin/main before committing a version or tagging.
@@ -22,7 +27,6 @@ Wave: kit-rust-src-remap (v0.9.5). Brief: ~/claude-handoffs/glance-core_2026-11-
 - The kit's temporary folder is KIT_TMP (lib.sh): physical ${TMPDIR:-/tmp}. A record of the app's id under it whose path is gone is the kit's own (ls-cleanup.sh).
 
 ## OPEN
-- [ ] push, CI, tag v0.9.5, notes, mailbox copy
 
 ## IDEAS
 - Windows: Media Foundation reader / writer behind glance-encode's platform module (with DXVKit Plus's Windows backend).
