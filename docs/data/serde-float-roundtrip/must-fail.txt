@@ -1,0 +1,16 @@
+# The must-fail run, 2026-11-22: the two new tests with serde_json's float_roundtrip feature OFF (workspace dependency
+# serde_json = "1"; each crate tested alone with -p, so glance-library's own feature did not unify in), then ON.
+
+## OFF
+$ cargo test --release -p glance-settings --test float_roundtrip
+assertion `left == right` failed: 39837 of 200006 doubles read back off
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+$ cargo test --release -p glance-arena --test float_roundtrip
+assertion `left == right` failed: 25750 of 200001 dates read back off
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+## ON (serde_json = { version = "1", features = ["float_roundtrip"] }; Cargo.lock unchanged by it)
+$ cargo test --release -p glance-settings --test float_roundtrip
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+$ cargo test --release -p glance-arena --test float_roundtrip
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s

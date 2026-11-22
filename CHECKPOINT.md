@@ -1,21 +1,17 @@
 # glance-core CHECKPOINT
 
-Wave: covered-window-pacing. Brief: ~/claude-handoffs/glance-core_2026-11-21_from-glancehr_covered-window-pacing.md. Machine: the core's home machine. Previous waves (kit-dmg-record-fix / v0.9.1, v0.9.2 from the GlancEhr session, and before): closed; their checkpoint is in git history.
+Wave: serde-float-roundtrip (v0.9.4), run from the glance-rs session. Brief: ~/claude-handoffs/glance-rs_2026-11-22_serde-float-roundtrip-check_brief.md (from TestKard, TESTKARD-025). Machine: the core's home machine. Previous wave (covered-window-pacing / v0.9.3) closed; its checkpoint is in git history.
 
 ## DONE
-- READ: GlancEhr's fix (b2e7d78, crates/glancehr/src/app.rs `frame`: a frame within 2 ms of the last sleeps out 0.95 of a refresh) and its w6 evidence; glance-ui's loop (lib.rs Runner / Running::redraw, output.rs Output::present); winit 0.30.13: `WindowEvent::Occluded` on macOS (not Windows), `is_minimized` on Windows / macOS.
-- REPRODUCED (GUI runs allowed by Amrit for this wave): glance-proof playing glenc_hap5_1920x1080_chunks4.mov, its window fully covered 10 s by another process's window (docs/data/covered-window-pacing/cover.swift): v0.9.2 60 550 frames/s, 175 % CPU (visible 120 frames/s, 14 %). The spin = frames that get no drawable, back to back; nothing presented while covered (the logged present interval stays at its last value).
-- FIX: glance-ui `pace` (crate-private Pacer) for the main window and every output window: a redraw is held to 0.95 of a refresh after the last frame began when the OS says hidden (Occluded / is_minimized), when the last frame got no drawable, or when frames came < 2 ms apart twice in a row; the wait is ControlFlow::WaitUntil in `about_to_wait`, not a sleep; shown again, the next frame draws at once. GlancEhr's bare 2 ms rule (holding a single quick frame) was tried first and dropped: it holds FIFO catch-up frames of a visible window.
-- PROVED: 9 unit tests in pace.rs; diag build (prints, not committed): Occluded(true) 19 ms after the cover, (false) 9 ms after; 1 252 frames without a drawable while covered (about 10.5 s x 119 frames/s). A/B back to back under the same load (ab1-new / ab2-old / ab3-new): covered 119.2 / 62 983.9 / 116.5 frames/s, CPU 6.8 / 174.1 / 6.9 %; visible the same within load noise (113.4–119.8 vs 114.1–119.5 frames/s); un-cover longest gap 16.8 / 16.9 / 16.7 ms. docs/data/covered-window-pacing/results.txt.
-- Workspace version 0.9.3 (version + lock).
-- Gates (docs/data/covered-window-pacing/gates.txt): fmt, clippy, deny, build, path-guard green; tests 468 passed / 3 failed, all three Amrit's test media: clipS_ProRes 4444.mov (871 561 049 bytes) is no longer in the test media folder (folder last changed 21:39:53 local, between this session's last proof run and its gates; no command of this session and nothing in the workspace writes there). Last full run here (kit-dmg wave): 459 / 0. Handoff docs/handoffs/v093-covered-window-pacing.md.
-- Pushed 6869ca1 to main through tools/push-main.sh (path-guard green on guard/6869ca1558fb and main); CI on main green: lint, macos, windows (run 44947998261), path-guard (44947998235). Tag v0.9.3 (annotated) on 6869ca1, pushed.
-- Note to GlancEhr: ~/claude-handoffs/GlancEhr_2026-11-21_note-from-glance-core-covered-window-pacing.md (drop its local pacing at the next pin bump).
-- Verifier (cc-kit:verifier): 27 confirmed, 4 unproven, 3 wrong (presents "every 16 ms" while covered: none were presented; 10 unit tests for 9; "restored" drawn at once: at its due time); corrected in pace.rs's doc, the handoff and here (doc-only commit after the tag); the unproven ones stated in the handoff; load averages added (runs/ab-load.txt).
-- Wave closed 2026-11-21. Result: ~/claude-handoffs/glance-core_2026-11-21_covered-window-pacing-result.md.
+- READ: every Cargo.toml for serde_json; the JSON read back with doubles: glance-settings FileStore (`real` values; the Windows store, and MaCrate's crawl mode), glance-arena's shared store (Swift `Date`s in recents.json / cache.json), glance-library's sidecars (already had float_roundtrip on its own line). glance-proof / glance-sample only write JSON.
+- MUST-FAIL: crates/glance-settings/tests/float_roundtrip.rs and crates/glance-arena/tests/float_roundtrip.rs (typical values / dates the crate writes plus 200,000 seeded random doubles, bit for bit, and a byte-identical re-save). With the feature off: 39 837 of 200 006 and 25 750 of 200 001 read back off (docs/data/serde-float-roundtrip/must-fail.txt).
+- FIX: serde_json's `float_roundtrip` on the workspace dependency (every crate inherits it; glance-library's own feature line folded into it). No file format and no Cargo.lock entry changed. Both tests pass.
+- Workspace version 0.9.4 (version + lock).
+- Gates (docs/data/serde-float-roundtrip/gates.txt): fmt, clippy, deny, build, path-guard green; tests 472 passed / 1 failed (v0.9.3: 468 / 3): the one failure is files_swift_parity, clipS_ProRes 4444.mov still not in the test media folder.
 
 ## NEXT
-- Nothing queued for this wave. Amrit: clipS_ProRes 4444.mov is gone from the test media folder, so three test-media tests are red on the home machine (files_swift_parity, routing, swift_parity): put the file back, or have their expectations re-read without it (his media, his call). Next core work: the Windows milestone (ROADMAP §7).
+- Push through tools/push-main.sh, CI green, tag v0.9.4, push the tag.
+- No app needs v0.9.4 now: MaCrate (the only user of FileStore on macOS and of glance-arena) already builds serde_json with float_roundtrip from its own workspace; Glance, CueGlance and GlEnc keep their settings in UserDefaults. Apps pick v0.9.4 up at their next pin bump.
 
 ## STATE
 - Other sessions push to glance-core main from their own clones (GlancEhr's did, v0.9.0): `git fetch` and compare with origin/main before committing a version or tagging.
